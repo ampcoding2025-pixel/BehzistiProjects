@@ -7,6 +7,7 @@ import {
   sql,
   type DbTargetId,
 } from "@/lib/db/pool";
+import { findAllowlistEntry } from "@/lib/auth/users";
 import type { UserRole } from "@/lib/types";
 
 export type DbUserHit = {
@@ -210,11 +211,12 @@ async function authenticateOnTarget(
   const uname = String(row.username);
   const personName = row.displayName ? String(row.displayName).trim() : "";
 
-  // Panel allowlist users are treated as admin for this app.
+  // Prefer allowlist role; never elevate unknown allowlist gaps to admin.
+  const entry = findAllowlistEntry(uname);
   return {
     username: uname,
-    displayName: personName || uname,
-    role: "admin",
+    displayName: entry?.displayName || personName || uname,
+    role: entry?.role || "operator",
     dbUserId: Number(row.id),
   };
 }

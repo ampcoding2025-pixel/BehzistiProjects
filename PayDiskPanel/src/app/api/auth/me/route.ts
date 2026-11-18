@@ -15,6 +15,7 @@ export async function GET() {
     ok: true,
     user,
     access: {
+      role: access.role,
       allowedSupplyIds: access.allowedSupplyIds,
       allowedMostamariIds: access.allowedMostamariIds,
       canCreate: access.canCreate,

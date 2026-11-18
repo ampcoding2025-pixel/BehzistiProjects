@@ -69,9 +69,11 @@ export function UserBar() {
     );
   }
 
+  const isAdmin = me.role === "admin";
+
   return (
     <div className="flex items-center gap-2 flex-wrap justify-end">
-      {dbLabel ? (
+      {isAdmin && dbLabel ? (
         <span
           className="text-xs rounded-full border border-[var(--line)] px-3 py-1 font-mono"
           title={writable ? "خواندن و نوشتن روی این دیتابیس" : "فقط خواندن"}
@@ -82,7 +84,7 @@ export function UserBar() {
         </span>
       ) : null}
       <span className="text-xs rounded-full border border-[var(--line)] px-3 py-1">
-        {me.displayName} · {ROLE_FA[me.role] ?? me.role}
+        {me.username} · {me.displayName} · {ROLE_FA[me.role] ?? me.role}
       </span>
       <button type="button" className="btn btn-ghost text-xs" onClick={logout}>
         خروج

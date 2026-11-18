@@ -44,6 +44,7 @@ export async function GET(req: Request) {
     types: filterTypesByAccess(YARANE_DOC_TYPES, access),
     extraTypes: filterTypesByAccess(YARANE_EXTRA_TYPES, access),
     access: {
+      role: access.role,
       allowedSupplyIds: access.allowedSupplyIds,
       canCreate: access.canCreate,
       canApprove: access.canApprove,

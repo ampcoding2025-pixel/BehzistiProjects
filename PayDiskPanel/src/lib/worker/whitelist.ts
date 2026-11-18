@@ -8,6 +8,8 @@ export const ALLOWED_SQL_PROCS = [
   "CalculateMarakezYarane",
   /** یارانه list CSV → \\sqlcluster\...\Diskette + Key2 (same as Armaghan) */
   "ListExporMarakez",
+  /** مستمری bank diskette → \\sqlcluster\...\Diskette + PayedTransaction.FileName (same as Armaghan) */
+  "Export",
 ] as const;
 
 export type AllowedSqlProc = (typeof ALLOWED_SQL_PROCS)[number];

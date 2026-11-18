@@ -52,8 +52,6 @@ export const MOSTAMARI_STEP_CATALOG: Record<MostamariStepId, MostamariStepDef> =
     id: "calculate",
     label: "محاسبه",
     labelEn: "Calculate",
-    hintFa: "اجرای Calculate* مربوط به نوع با @TrId (فقط آزمایشی).",
-    hintEn: "EXEC type-specific Calculate* @TrId (lab only).",
   },
   report: {
     id: "report",

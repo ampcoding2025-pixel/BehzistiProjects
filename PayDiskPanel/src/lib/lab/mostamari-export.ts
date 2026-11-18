@@ -11,44 +11,54 @@ export { MOSTAMARI_EXPORT_FORMATS, MOSTAMARI_EXPORT_IBN_SCOPES };
 
 const BATCH = 3000;
 
-const COLS = [
+/**
+ * Same column set as Armaghan / ops-doc Excel for مستمری pay list
+ * (`mst-nurse-emdad-list` in txn-scripts — «خروجی اکسل پرداخت»).
+ *
+ * Order + English headers match the ops SELECT aliases:
+ *   Id, PersonId, AccountNumber, Money, NID, FirstName, LastName,
+ *   CenterTitle, CityTitle, ProvinceTitle, ibn
+ *
+ * Not included (panel UI-only): FamilyCount, SupplyLocationId.
+ */
+export const MOSTAMARI_ARMAGHAN_LIST_COLS = [
   "Id",
   "PersonId",
+  "AccountNumber",
+  "Money",
   "NID",
   "FirstName",
   "LastName",
-  "AccountNumber",
-  "ibn",
-  "Money",
-  "FamilyCount",
-  "SupplyLocationId",
   "CenterTitle",
   "CityTitle",
   "ProvinceTitle",
+  "ibn",
 ] as const;
 
-const COL_TITLES_FA: Record<(typeof COLS)[number], string> = {
-  Id: "شناسه",
-  PersonId: "شناسه فرد",
-  NID: "کدملی",
-  FirstName: "نام",
-  LastName: "نام‌خانوادگی",
-  AccountNumber: "شماره حساب",
-  ibn: "شبا",
-  Money: "مبلغ",
-  FamilyCount: "بعد خانوار",
-  SupplyLocationId: "محل تأمین",
-  CenterTitle: "مرکز",
-  CityTitle: "شهر",
-  ProvinceTitle: "استان",
-};
+const COLS = MOSTAMARI_ARMAGHAN_LIST_COLS;
+type Col = (typeof COLS)[number];
 
-function csvEscape(v: unknown, format: MostamariExportFormat, col: string): string {
+/** SELECT list matching ops-doc / Armaghan Excel (aliases = header names). */
+export const MOSTAMARI_ARMAGHAN_LIST_SELECT = `
+  p.Id AS Id,
+  p.PersonId AS PersonId,
+  p.AccountNumber AS AccountNumber,
+  p.Money AS Money,
+  Person.NID AS NID,
+  Person.FirstName AS FirstName,
+  Person.LastName AS LastName,
+  Center.CenterTitle AS CenterTitle,
+  City.CityTitle AS CityTitle,
+  Province.ProvinceTitle AS ProvinceTitle,
+  LTRIM(RTRIM(i.IBN)) AS ibn
+`;
+
+function csvEscape(v: unknown, format: MostamariExportFormat, col: Col): string {
   let s = v == null ? "" : String(v);
-  // Preserve leading zeros on NID for Excel
+  // Preserve leading zeros on NID for Excel (ops: «NID باید text بماند»)
   if (col === "NID" && s && (format === "csv-excel" || format === "csv")) {
-    s = `="${s.replace(/"/g, '""')}"`;
-    return s;
+    const inner = s.replace(/"/g, '""');
+    return `"=""${inner}"""`;
   }
   if (format === "tsv") {
     return s.replace(/\t/g, " ").replace(/\r?\n/g, " ");
@@ -69,9 +79,10 @@ function rowLine(
 
 function headerLine(format: MostamariExportFormat): string {
   const sep = format === "tsv" ? "\t" : ",";
+  // English aliases — same as Armaghan/ops SELECT column names
   return COLS.map((c) => {
-    const t = COL_TITLES_FA[c];
-    return format === "tsv" ? t : csvEscape(t, format, c);
+    if (format === "tsv") return c;
+    return csvEscape(c, format, c);
   }).join(sep);
 }
 
@@ -95,7 +106,7 @@ function ibnScopeSql(scope: MostamariExportIbnScope): string {
 
 /**
  * Async generator: streams pay-list rows in batches (no full materialization).
- * `ibnScope`: all | with-ibn | without-ibn
+ * Columns match Armaghan ops-doc Excel (`MOSTAMARI_ARMAGHAN_LIST_COLS`).
  */
 export async function* iterateMostamariPayListExport(
   trId: number,
@@ -127,26 +138,14 @@ export async function* iterateMostamariPayListExport(
         SELECT p.Id
         FROM dbo.PayedContinusPayment AS p WITH (NOLOCK)
         LEFT JOIN dbo.IBN_AccountNumber AS i WITH (NOLOCK)
-          ON i.AccountNumber = p.AccountNumber
+          ON LTRIM(RTRIM(i.AccountNumber)) = LTRIM(RTRIM(p.AccountNumber))
         WHERE p.TransactionId = @id
           ${scopePred}
         ORDER BY p.Id DESC
         OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY
       )
       SELECT
-        p.Id,
-        p.PersonId,
-        Person.NID,
-        Person.FirstName,
-        Person.LastName,
-        p.AccountNumber,
-        LTRIM(RTRIM(i.IBN)) AS ibn,
-        p.Money,
-        p.FamilyCount,
-        p.SupplyLocationId,
-        Center.CenterTitle,
-        City.CityTitle,
-        Province.ProvinceTitle
+        ${MOSTAMARI_ARMAGHAN_LIST_SELECT}
       FROM page_ids pid
       INNER JOIN dbo.PayedContinusPayment AS p WITH (NOLOCK) ON p.Id = pid.Id
       INNER JOIN dbo.Person WITH (NOLOCK) ON p.PersonId = Person.ID
@@ -154,7 +153,7 @@ export async function* iterateMostamariPayListExport(
       INNER JOIN dbo.City WITH (NOLOCK) ON Center.CityID = City.CityId
       INNER JOIN dbo.Province WITH (NOLOCK) ON City.ProvinceId = Province.ProvinceId
       LEFT JOIN dbo.IBN_AccountNumber AS i WITH (NOLOCK)
-        ON i.AccountNumber = p.AccountNumber
+        ON LTRIM(RTRIM(i.AccountNumber)) = LTRIM(RTRIM(p.AccountNumber))
       ORDER BY p.Id DESC
     `);
     const rows = rs.recordset as Record<string, unknown>[];

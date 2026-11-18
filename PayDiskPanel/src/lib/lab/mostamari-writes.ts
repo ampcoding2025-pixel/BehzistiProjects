@@ -5,12 +5,17 @@ import {
   sql,
   targetAllowsWrites,
 } from "@/lib/db/pool";
-import { labExecProc } from "@/lib/lab/writes";
+import {
+  mostamariBankFilename,
+  writeMostamariArmaghanBankFile,
+} from "@/lib/lab/mostamari-bank-export";
+import { defaultLabBankFile, labExecProc } from "@/lib/lab/writes";
 import {
   getMostamariType,
   inferMostamariType,
   type MostamariTypeId,
 } from "@/lib/mostamari/types";
+import { assertSqlProc } from "@/lib/worker/whitelist";
 
 function requireLab() {
   if (!targetAllowsWrites()) {
@@ -570,11 +575,78 @@ export async function mostamariMissingIbn(trId: number, limit = 40) {
     columns: rows[0] ? Object.keys(rows[0]) : [],
     message:
       rows.length > 0
-        ? `${rows.length} missing-IBN sample(s) — quarantine before 100k bank files`
-        : "No missing IBN in sample — still validate full export offline",
-    chunkNote:
-      "Bank Excel is exported in ~100k row chunks offline. Wizard does not write IT.dbo chunk tables.",
+        ? `${rows.length.toLocaleString("fa-IR")} ردیف فاقد شبا در نمونه`
+        : "در این نمونه فاقد شبا نیست",
+    chunkNote: null,
   };
+}
+
+/**
+ * Build Armaghan bank diskette for مستمری (same as dbo.Export):
+ * 1) write fixed-width file to Diskette UNC + SET FileName
+ * 2) fallback EXEC dbo.Export @name, @transactionId
+ */
+export async function labExportMostamariBank(trId: number, fileName?: string) {
+  requireLab();
+  if (!Number.isFinite(trId) || trId <= 0) throw new Error("TransactionId نامعتبر");
+  const name =
+    (fileName && fileName.trim()) ||
+    mostamariBankFilename(trId) ||
+    defaultLabBankFile(trId);
+  const started = Date.now();
+  const errors: string[] = [];
+
+  try {
+    const written = await writeMostamariArmaghanBankFile(trId, name);
+    const pool = await getWritePool();
+    const req = pool.request();
+    req.input("id", sql.Int, trId);
+    req.input("name", sql.NVarChar(100), name.slice(0, 100));
+    await req.query(`
+      UPDATE dbo.PayedTransaction
+      SET FileName = @name
+      WHERE Id = @id
+    `);
+    return {
+      ok: true as const,
+      action: "bank_export" as const,
+      trId,
+      fileName: name,
+      uncPath: written.uncPath,
+      bytes: written.bytes,
+      via: "unc" as const,
+      ms: Date.now() - started,
+      message: `دیسکت بانک ارمغان نوشته شد — FileName=${name}`,
+    };
+  } catch (err) {
+    errors.push(err instanceof Error ? err.message : String(err));
+  }
+
+  try {
+    assertSqlProc("Export");
+    await labExecProc("Export", { trId });
+    // labExecProc uses defaultLabBankFile — read FileName back
+    const after = await getMostamariTransaction(trId, { countRows: false });
+    const fn = after.header.FileName || defaultLabBankFile(trId);
+    return {
+      ok: true as const,
+      action: "bank_export" as const,
+      trId,
+      fileName: fn,
+      uncPath: null as string | null,
+      bytes: null as number | null,
+      via: "sp" as const,
+      ms: Date.now() - started,
+      message: `دیسکت بانک با dbo.Export ساخته شد — FileName=${fn}`,
+      warnings: errors,
+    };
+  } catch (err) {
+    errors.push(err instanceof Error ? err.message : String(err));
+  }
+
+  throw new Error(
+    `ساخت دیسکت بانک ناموفق:\n۱) UNC: ${errors[0] || "—"}\n۲) dbo.Export: ${errors[1] || "—"}`,
+  );
 }
 
 /**
@@ -647,13 +719,29 @@ export async function labApproveMostamari(opts: {
     WHERE Id = @id
   `);
 
+  let bankFileName: string | null = null;
+  let bankVia: "unc" | "sp" | null = null;
+  let bankWarning: string | null = null;
+  try {
+    const bank = await labExportMostamariBank(trId);
+    bankFileName = bank.fileName || null;
+    bankVia = bank.via;
+  } catch (err) {
+    bankWarning = err instanceof Error ? err.message : String(err);
+  }
+
   return {
     ok: true as const,
     action: "approve" as const,
     trId,
     ky: type!.ky,
     yearMonth,
+    fileName: bankFileName,
+    bankVia,
     ms: Date.now() - started,
-    message: `تایید شد — Ky=${type!.ky} · Year=${yearMonth}`,
+    message: bankFileName
+      ? `تایید شد — Ky=${type!.ky} · Year=${yearMonth} · دیسکت بانک=${bankFileName}`
+      : `تایید شد — Ky=${type!.ky} · Year=${yearMonth}`,
+    bankWarning,
   };
 }

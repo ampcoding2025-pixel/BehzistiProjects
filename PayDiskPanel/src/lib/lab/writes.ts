@@ -102,6 +102,10 @@ export async function labExecProc(
     // Prefer labListExporMarakez(); keep worker path working with generated name
     req.input("TranId", sql.BigInt, params.trId);
     req.input("FileName", sql.NVarChar(100), defaultLabListFile(params.trId));
+  } else if (proc === "Export") {
+    // Armaghan مستمری bank diskette — dbo.Export @name, @transactionId
+    req.input("name", sql.NVarChar(100), defaultLabBankFile(params.trId));
+    req.input("transactionId", sql.BigInt, params.trId);
   } else {
     // Ops docs: CalculateTransaction / Hadafmandi / HaghParastari* / Emdad use @TrId
     req.input("TrId", sql.BigInt, params.trId);

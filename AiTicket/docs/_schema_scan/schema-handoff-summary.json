@@ -1,0 +1,2962 @@
+{
+    "database":  "DidehbanDb",
+    "engine":  "SQL Server",
+    "scannedAt":  "2026-11-14",
+    "accessPolicy":  "read-only SELECT/metadata",
+    "domain":  "Behzisti Didban; Cookie=case",
+    "counts":  {
+                   "tables":  196,
+                   "nonEmpty":  115,
+                   "empty":  81,
+                   "foreignKeys":  310
+               },
+    "coreModel":  {
+                      "case":  "Cookie",
+                      "citizenGeo":  "Inform",
+                      "workflow":  "CookieFlow",
+                      "workbasket":  "Cartable",
+                      "pursuit":  "CookiePursuit",
+                      "taxonomy":  [
+                                       "SubjectClass",
+                                       "SubjectNature",
+                                       "SubjectGroup",
+                                       "Subject",
+                                       "Zone"
+                                   ],
+                      "org":  [
+                                  "Department",
+                                  "DepartmentChart"
+                              ],
+                      "geo":  [
+                                  "Region",
+                                  "Area"
+                              ]
+                  },
+    "tables":  [
+                   {
+                       "name":  "AccessLevel",
+                       "rows":  1786,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "AccessLevelLog",
+                       "rows":  1226,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "Agent",
+                       "rows":  69517,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "AgentExpertiseField",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "AgentExpertiseFieldLog",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "AgentGift",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "AgentGiftLog",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "AgentGiftType",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "AgentGiftTypeLog",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "AgentGrade",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "AgentGradeLog",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "AgentGradeType",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "AgentGradeTypeLog",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "AgentGroup",
+                       "rows":  4,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "AgentGroupLog",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "AgentGroupMembership",
+                       "rows":  50112,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "AgentGroupMembershipLog",
+                       "rows":  6,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "AgentLog",
+                       "rows":  73567,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "AgentSocialClass",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "AgentSocialClassLog",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "AgentStatus",
+                       "rows":  5,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "AgentStatusLog",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "AppVersion",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "Area",
+                       "rows":  477,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "AreaLog",
+                       "rows":  2209,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "AttachmentVisite",
+                       "rows":  75721,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "BuildingStep",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "Calandar",
+                       "rows":  372,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CallLog",
+                       "rows":  11,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CallLogLog",
+                       "rows":  605598,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CallReceived",
+                       "rows":  81214,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CallReceivedType",
+                       "rows":  5,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CallRecord",
+                       "rows":  31974,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "Cartable",
+                       "rows":  30122,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CenterCategory",
+                       "rows":  19,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "ChatMessage",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "ChatRoom",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "ChatUser",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "CheckList",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "CheckListFlowNode",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "ChkAnswer",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "ChkGroupQuestion",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "ChkQuestion",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "ChkRecordedAnswer",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "ChkRecordedAnswerIndex",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "ContractorContract",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "ContractorContractDepartment",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "Cookie",
+                       "rows":  193084,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CookieCause",
+                       "rows":  1,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CookieCauseLog",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "CookieChannel",
+                       "rows":  10,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CookieChannelLog",
+                       "rows":  7,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CookieComment",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "CookieCommentDisAgree",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "CookieFieldType",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "CookieFieldTypeCollection",
+                       "rows":  7,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CookieFlow",
+                       "rows":  632835,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CookieFlowDeleteLog",
+                       "rows":  1,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CookieHint",
+                       "rows":  8,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CookieHintLog",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "CookieHintType",
+                       "rows":  2,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CookieHintTypeLog",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "CookieLog",
+                       "rows":  668796,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CookiePursuit",
+                       "rows":  150280,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CookieShare",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "CookieStatus",
+                       "rows":  30,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CookieStatusAttachmentStep",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "CookieStatusGroup",
+                       "rows":  5,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CookieStatusGroupLog",
+                       "rows":  36,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CookieStatusLog",
+                       "rows":  208,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CookieSubjectChild",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "CookieType",
+                       "rows":  5,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CookieTypeLog",
+                       "rows":  3,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "CookieUserNotification",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "DefaultUserSms",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "Department",
+                       "rows":  1710,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "DepartmentChart",
+                       "rows":  1710,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "DepartmentChartLog",
+                       "rows":  538,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "DepartmentLog",
+                       "rows":  13117,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "DepartmentType",
+                       "rows":  18,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "DepartmentTypeLog",
+                       "rows":  25,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "deptemp",
+                       "rows":  691,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "Dictionary",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "District",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "DistrictLog",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "EducationType",
+                       "rows":  5,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "Equip",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "EquipMember",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "Executer",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "ExecuterLog",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "ExecuterType",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "ExecuterTypeLog",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "ExternalService",
+                       "rows":  3,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "FAQ",
+                       "rows":  5,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "Feature",
+                       "rows":  649,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "FeatureLog",
+                       "rows":  11,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "FeatureType",
+                       "rows":  132,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "FeatureTypeLog",
+                       "rows":  2,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "FeedbackStatus",
+                       "rows":  3,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "Flow",
+                       "rows":  4,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "FlowLog",
+                       "rows":  7,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "FlowNode",
+                       "rows":  109,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "FlowNodeCause",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "FlowNodeCauseLog",
+                       "rows":  2,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "FlowNodeLog",
+                       "rows":  486,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "Gender",
+                       "rows":  3,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "GenderLog",
+                       "rows":  4,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "GeneralVariable",
+                       "rows":  36,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "GeneralVariableLog",
+                       "rows":  17,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "Gift",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "GiftLog",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "GiftType",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "GiftTypeLog",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "HttpLog",
+                       "rows":  1443762,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "Inbox",
+                       "rows":  9736,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "Inform",
+                       "rows":  193084,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "InformerVisitorLog",
+                       "rows":  205186,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "InformLog",
+                       "rows":  668796,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "IVRCallLog",
+                       "rows":  65,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "Job",
+                       "rows":  25,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "JobLog",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "Library",
+                       "rows":  1,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "LoginLog",
+                       "rows":  4176,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "MaritalStatus",
+                       "rows":  2,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "MaritalStatusLog",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "MayorMeeting",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "MeetingMember",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "Message",
+                       "rows":  230,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "MessageLog",
+                       "rows":  3211,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "MessageReceiver",
+                       "rows":  41,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "MessageViewerLog",
+                       "rows":  1167,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "Mission",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "MissionLog",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "MobileGISRequests",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "NewSubj",
+                       "rows":  296,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "NewSubj2",
+                       "rows":  296,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "NotificationSentbox",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "Personnel",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "PersonnelLog",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "PursuitTemplate",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "Referal",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "Region",
+                       "rows":  33,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "RegionLog",
+                       "rows":  137,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "Reminder",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "ReportResult",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "Role",
+                       "rows":  15,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "RoleLog",
+                       "rows":  45,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "RoleMember",
+                       "rows":  909,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "RoleMemberAccess",
+                       "rows":  6821,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "RoleMemberAccessLog",
+                       "rows":  32188,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "RoleMemberLog",
+                       "rows":  2020,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "RoleStatusReports",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "Segment",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "Sentbox",
+                       "rows":  208823,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "ShiftType",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "SmsConfirmation",
+                       "rows":  5900,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "StatusMessage",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "Subject",
+                       "rows":  420,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "SubjectChild",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "SubjectClass",
+                       "rows":  4,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "SubjectClassLog",
+                       "rows":  2,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "SubjectClassMember",
+                       "rows":  1289,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "SubjectClassMemberLog",
+                       "rows":  5102,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "SubjectClassMemberReference",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "Subject-Copy-14040410",
+                       "rows":  420,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "SubjectGroup",
+                       "rows":  93,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "SubjectGroupLog",
+                       "rows":  48,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "SubjectIndex",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "SubjectlLog",
+                       "rows":  1694,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "SubjectNature",
+                       "rows":  30,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "SubjectNatureLog",
+                       "rows":  3,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "SubjectPriority",
+                       "rows":  3,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "SubjectPriorityLog",
+                       "rows":  6,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "SubjectReference",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "SubReport",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "SubSystem",
+                       "rows":  131,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "SubSystemLog",
+                       "rows":  422,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "TempSubject",
+                       "rows":  174,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "TerminalStatus",
+                       "rows":  29,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "TotalSystem",
+                       "rows":  10,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "TotalSystemLog",
+                       "rows":  484815,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "TotalSystemMenuLog",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "TrackUserApp",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "TrackUsers",
+                       "rows":  290545,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "UserDevice",
+                       "rows":  3178,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "UserInfo",
+                       "rows":  1538,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "UserInfoGroup",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "UserInfoLog",
+                       "rows":  18419,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "Vehicle",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "VehicleType",
+                       "rows":  0,
+                       "empty":  true
+                   },
+                   {
+                       "name":  "Workspace",
+                       "rows":  2,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "WorkspaceLog",
+                       "rows":  4,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "WorkspaceMember",
+                       "rows":  1533,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "WorkspaceMemberLog",
+                       "rows":  2,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "Zone",
+                       "rows":  8,
+                       "empty":  false
+                   },
+                   {
+                       "name":  "ZoneLog",
+                       "rows":  28,
+                       "empty":  false
+                   }
+               ],
+    "foreignKeys":  [
+                        {
+                            "fromTable":  "AccessLevel",
+                            "fromColumn":  "FeatureId",
+                            "toTable":  "Feature",
+                            "toColumn":  "FeatureId"
+                        },
+                        {
+                            "fromTable":  "AccessLevel",
+                            "fromColumn":  "RoleId",
+                            "toTable":  "Role",
+                            "toColumn":  "RoleId"
+                        },
+                        {
+                            "fromTable":  "Agent",
+                            "fromColumn":  "AgentExpertiseFieldId",
+                            "toTable":  "AgentExpertiseField",
+                            "toColumn":  "AgentExpertiseFieldId"
+                        },
+                        {
+                            "fromTable":  "Agent",
+                            "fromColumn":  "AgentSocialClassId",
+                            "toTable":  "AgentSocialClass",
+                            "toColumn":  "AgentSocialClassId"
+                        },
+                        {
+                            "fromTable":  "Agent",
+                            "fromColumn":  "AreaId",
+                            "toTable":  "Area",
+                            "toColumn":  "AreaId"
+                        },
+                        {
+                            "fromTable":  "Agent",
+                            "fromColumn":  "DistrictId",
+                            "toTable":  "District",
+                            "toColumn":  "DistrictId"
+                        },
+                        {
+                            "fromTable":  "Agent",
+                            "fromColumn":  "EducationTypeId",
+                            "toTable":  "EducationType",
+                            "toColumn":  "EducationTypeId"
+                        },
+                        {
+                            "fromTable":  "Agent",
+                            "fromColumn":  "GenderId",
+                            "toTable":  "Gender",
+                            "toColumn":  "GenderId"
+                        },
+                        {
+                            "fromTable":  "Agent",
+                            "fromColumn":  "RegionId",
+                            "toTable":  "Region",
+                            "toColumn":  "RegionId"
+                        },
+                        {
+                            "fromTable":  "AgentGift",
+                            "fromColumn":  "AgentGiftTypeId",
+                            "toTable":  "AgentGiftType",
+                            "toColumn":  "AgentGiftTypeId"
+                        },
+                        {
+                            "fromTable":  "AgentGift",
+                            "fromColumn":  "AgentId",
+                            "toTable":  "Agent",
+                            "toColumn":  "AgentId"
+                        },
+                        {
+                            "fromTable":  "AgentGrade",
+                            "fromColumn":  "AgentGradeTypeId",
+                            "toTable":  "AgentGradeType",
+                            "toColumn":  "AgentGradeTypeId"
+                        },
+                        {
+                            "fromTable":  "AgentGrade",
+                            "fromColumn":  "AgentId",
+                            "toTable":  "Agent",
+                            "toColumn":  "AgentId"
+                        },
+                        {
+                            "fromTable":  "AgentGroup",
+                            "fromColumn":  "WorkspaceId",
+                            "toTable":  "Workspace",
+                            "toColumn":  "WorkspaceId"
+                        },
+                        {
+                            "fromTable":  "AgentGroupMembership",
+                            "fromColumn":  "AgentGroupId",
+                            "toTable":  "AgentGroup",
+                            "toColumn":  "AgentGroupId"
+                        },
+                        {
+                            "fromTable":  "AgentGroupMembership",
+                            "fromColumn":  "AgentId",
+                            "toTable":  "Agent",
+                            "toColumn":  "AgentId"
+                        },
+                        {
+                            "fromTable":  "AgentGroupMembership",
+                            "fromColumn":  "AgentStatusId",
+                            "toTable":  "AgentStatus",
+                            "toColumn":  "AgentStatusId"
+                        },
+                        {
+                            "fromTable":  "Area",
+                            "fromColumn":  "DepartmentId",
+                            "toTable":  "Department",
+                            "toColumn":  "DepartmentId"
+                        },
+                        {
+                            "fromTable":  "Area",
+                            "fromColumn":  "RegionId",
+                            "toTable":  "Region",
+                            "toColumn":  "RegionId"
+                        },
+                        {
+                            "fromTable":  "Area",
+                            "fromColumn":  "SegmentId",
+                            "toTable":  "Segment",
+                            "toColumn":  "SegmentId"
+                        },
+                        {
+                            "fromTable":  "AttachmentVisite",
+                            "fromColumn":  "CookieId",
+                            "toTable":  "Cookie",
+                            "toColumn":  "CookieId"
+                        },
+                        {
+                            "fromTable":  "AttachmentVisite",
+                            "fromColumn":  "CookieStatusId",
+                            "toTable":  "CookieStatus",
+                            "toColumn":  "CookieStatusId"
+                        },
+                        {
+                            "fromTable":  "AttachmentVisite",
+                            "fromColumn":  "RoleId",
+                            "toTable":  "Role",
+                            "toColumn":  "RoleId"
+                        },
+                        {
+                            "fromTable":  "AttachmentVisite",
+                            "fromColumn":  "UserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "CallLog",
+                            "fromColumn":  "UserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "CallLog",
+                            "fromColumn":  "WorkspaceId",
+                            "toTable":  "Workspace",
+                            "toColumn":  "WorkspaceId"
+                        },
+                        {
+                            "fromTable":  "CallRecord",
+                            "fromColumn":  "CookieFlowId",
+                            "toTable":  "CookieFlow",
+                            "toColumn":  "CookieFlowId"
+                        },
+                        {
+                            "fromTable":  "CallRecord",
+                            "fromColumn":  "CookieId",
+                            "toTable":  "Cookie",
+                            "toColumn":  "CookieId"
+                        },
+                        {
+                            "fromTable":  "CallRecord",
+                            "fromColumn":  "CookiePursuitId",
+                            "toTable":  "CookiePursuit",
+                            "toColumn":  "CookiePursuitId"
+                        },
+                        {
+                            "fromTable":  "CallRecord",
+                            "fromColumn":  "UserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "AgentPersonnelId",
+                            "toTable":  "Personnel",
+                            "toColumn":  "PersonnelId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "CartableFieldTypeId1",
+                            "toTable":  "CookieFieldType",
+                            "toColumn":  "CookieFieldTypeId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "CartableFieldTypeId2",
+                            "toTable":  "CookieFieldType",
+                            "toColumn":  "CookieFieldTypeId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "CartableFieldTypeId3",
+                            "toTable":  "CookieFieldType",
+                            "toColumn":  "CookieFieldTypeId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "CartableFieldTypeId4",
+                            "toTable":  "CookieFieldType",
+                            "toColumn":  "CookieFieldTypeId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "CartableFieldTypeId5",
+                            "toTable":  "CookieFieldType",
+                            "toColumn":  "CookieFieldTypeId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "CartableUserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "CartableUserRoleId",
+                            "toTable":  "Role",
+                            "toColumn":  "RoleId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "CartableVisitedUserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "CookieCauseId",
+                            "toTable":  "CookieCause",
+                            "toColumn":  "CookieCauseId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "CookieChannelId",
+                            "toTable":  "CookieChannel",
+                            "toColumn":  "CookieChannelId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "CookieFlowId",
+                            "toTable":  "CookieFlow",
+                            "toColumn":  "CookieFlowId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "CookieId",
+                            "toTable":  "Cookie",
+                            "toColumn":  "CookieId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "CookieStatusId",
+                            "toTable":  "CookieStatus",
+                            "toColumn":  "CookieStatusId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "CookieTypeId",
+                            "toTable":  "CookieType",
+                            "toColumn":  "CookieTypeId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "DepartmentId",
+                            "toTable":  "Department",
+                            "toColumn":  "DepartmentId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "ExecuterPersonnelId",
+                            "toTable":  "Personnel",
+                            "toColumn":  "PersonnelId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "FlowId",
+                            "toTable":  "Flow",
+                            "toColumn":  "FlowId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "PreCookieFlowId",
+                            "toTable":  "CookieFlow",
+                            "toColumn":  "CookieFlowId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "PreCookieStatusId",
+                            "toTable":  "CookieStatus",
+                            "toColumn":  "CookieStatusId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "PreCookieStatusId",
+                            "toTable":  "CookieStatus",
+                            "toColumn":  "CookieStatusId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "ReferToUserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "SubjectClassId",
+                            "toTable":  "SubjectClass",
+                            "toColumn":  "SubjectClassId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "SubjectGroupId",
+                            "toTable":  "SubjectGroup",
+                            "toColumn":  "SubjectGroupId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "SubjectId",
+                            "toTable":  "Subject",
+                            "toColumn":  "SubjectId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "SubjectNatureId",
+                            "toTable":  "SubjectNature",
+                            "toColumn":  "SubjectNatureId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "SubjectPriorityId",
+                            "toTable":  "SubjectPriority",
+                            "toColumn":  "SubjectPriorityId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "UserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "Cartable",
+                            "fromColumn":  "ZoneId",
+                            "toTable":  "Zone",
+                            "toColumn":  "ZoneId"
+                        },
+                        {
+                            "fromTable":  "CenterCategory",
+                            "fromColumn":  "ParentId",
+                            "toTable":  "CenterCategory",
+                            "toColumn":  "CenterCategoryId"
+                        },
+                        {
+                            "fromTable":  "ContractorContractDepartment",
+                            "fromColumn":  "DepartmentId",
+                            "toTable":  "Department",
+                            "toColumn":  "DepartmentId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "AgentId",
+                            "toTable":  "Agent",
+                            "toColumn":  "AgentId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "AgentPersonnelId",
+                            "toTable":  "Personnel",
+                            "toColumn":  "PersonnelId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "CookieCauseId",
+                            "toTable":  "CookieCause",
+                            "toColumn":  "CookieCauseId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "CookieChannelId",
+                            "toTable":  "CookieChannel",
+                            "toColumn":  "CookieChannelId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "CookieFieldTypeId1",
+                            "toTable":  "CookieFieldType",
+                            "toColumn":  "CookieFieldTypeId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "CookieFieldTypeId2",
+                            "toTable":  "CookieFieldType",
+                            "toColumn":  "CookieFieldTypeId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "CookieFieldTypeId3",
+                            "toTable":  "CookieFieldType",
+                            "toColumn":  "CookieFieldTypeId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "CookieFieldTypeId4",
+                            "toTable":  "CookieFieldType",
+                            "toColumn":  "CookieFieldTypeId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "CookieFieldTypeId5",
+                            "toTable":  "CookieFieldType",
+                            "toColumn":  "CookieFieldTypeId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "CookieStatusId",
+                            "toTable":  "CookieStatus",
+                            "toColumn":  "CookieStatusId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "CookieTypeId",
+                            "toTable":  "CookieType",
+                            "toColumn":  "CookieTypeId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "CookieUserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "CookieUserRoleId",
+                            "toTable":  "Role",
+                            "toColumn":  "RoleId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "CookieVisitedUserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "DepartmentId",
+                            "toTable":  "Department",
+                            "toColumn":  "DepartmentId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "EventId",
+                            "toTable":  "Cookie",
+                            "toColumn":  "CookieId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "ExecuterPersonnelId",
+                            "toTable":  "Personnel",
+                            "toColumn":  "PersonnelId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "FlowId",
+                            "toTable":  "Flow",
+                            "toColumn":  "FlowId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "GiftId",
+                            "toTable":  "Gift",
+                            "toColumn":  "GiftId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "GiftTypeId",
+                            "toTable":  "GiftType",
+                            "toColumn":  "GiftTypeId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "PhoneBookDepartmentId",
+                            "toTable":  "Department",
+                            "toColumn":  "DepartmentId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "ReferringCookieId",
+                            "toTable":  "Cookie",
+                            "toColumn":  "CookieId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "SubjectClassId",
+                            "toTable":  "SubjectClass",
+                            "toColumn":  "SubjectClassId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "SubjectGroupId",
+                            "toTable":  "SubjectGroup",
+                            "toColumn":  "SubjectGroupId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "SubjectId",
+                            "toTable":  "Subject",
+                            "toColumn":  "SubjectId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "SubjectNatureId",
+                            "toTable":  "SubjectNature",
+                            "toColumn":  "SubjectNatureId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "SubjectPriorityId",
+                            "toTable":  "SubjectPriority",
+                            "toColumn":  "SubjectPriorityId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "UserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "Cookie",
+                            "fromColumn":  "ZoneId",
+                            "toTable":  "Zone",
+                            "toColumn":  "ZoneId"
+                        },
+                        {
+                            "fromTable":  "CookieCause",
+                            "fromColumn":  "CookieTypeId",
+                            "toTable":  "CookieType",
+                            "toColumn":  "CookieTypeId"
+                        },
+                        {
+                            "fromTable":  "CookieChannel",
+                            "fromColumn":  "CookieTypeId",
+                            "toTable":  "CookieType",
+                            "toColumn":  "CookieTypeId"
+                        },
+                        {
+                            "fromTable":  "CookieComment",
+                            "fromColumn":  "CookieFlowId",
+                            "toTable":  "CookieFlow",
+                            "toColumn":  "CookieFlowId"
+                        },
+                        {
+                            "fromTable":  "CookieComment",
+                            "fromColumn":  "CookieId",
+                            "toTable":  "Cookie",
+                            "toColumn":  "CookieId"
+                        },
+                        {
+                            "fromTable":  "CookieComment",
+                            "fromColumn":  "RoleId",
+                            "toTable":  "Role",
+                            "toColumn":  "RoleId"
+                        },
+                        {
+                            "fromTable":  "CookieComment",
+                            "fromColumn":  "UserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "CookieCommentDisAgree",
+                            "fromColumn":  "AgentId",
+                            "toTable":  "Agent",
+                            "toColumn":  "AgentId"
+                        },
+                        {
+                            "fromTable":  "CookieCommentDisAgree",
+                            "fromColumn":  "CookieFlowId",
+                            "toTable":  "CookieFlow",
+                            "toColumn":  "CookieFlowId"
+                        },
+                        {
+                            "fromTable":  "CookieCommentDisAgree",
+                            "fromColumn":  "CookieId",
+                            "toTable":  "Cookie",
+                            "toColumn":  "CookieId"
+                        },
+                        {
+                            "fromTable":  "CookieCommentDisAgree",
+                            "fromColumn":  "UserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "CookieFieldType",
+                            "fromColumn":  "CookieTypeId",
+                            "toTable":  "CookieType",
+                            "toColumn":  "CookieTypeId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "AgentPersonnelId",
+                            "toTable":  "Personnel",
+                            "toColumn":  "PersonnelId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "CookieCauseId",
+                            "toTable":  "CookieCause",
+                            "toColumn":  "CookieCauseId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "CookieChannelId",
+                            "toTable":  "CookieChannel",
+                            "toColumn":  "CookieChannelId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "CookieFlowFieldTypeId1",
+                            "toTable":  "CookieFieldType",
+                            "toColumn":  "CookieFieldTypeId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "CookieFlowFieldTypeId2",
+                            "toTable":  "CookieFieldType",
+                            "toColumn":  "CookieFieldTypeId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "CookieFlowFieldTypeId3",
+                            "toTable":  "CookieFieldType",
+                            "toColumn":  "CookieFieldTypeId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "CookieFlowFieldTypeId4",
+                            "toTable":  "CookieFieldType",
+                            "toColumn":  "CookieFieldTypeId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "CookieFlowFieldTypeId5",
+                            "toTable":  "CookieFieldType",
+                            "toColumn":  "CookieFieldTypeId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "CookieFlowUserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "CookieFlowUserRoleId",
+                            "toTable":  "Role",
+                            "toColumn":  "RoleId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "CookieFlowVisitedUserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "CookieId",
+                            "toTable":  "Cookie",
+                            "toColumn":  "CookieId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "CookieStatusId",
+                            "toTable":  "CookieStatus",
+                            "toColumn":  "CookieStatusId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "CookieTypeId",
+                            "toTable":  "CookieType",
+                            "toColumn":  "CookieTypeId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "DepartmentId",
+                            "toTable":  "Department",
+                            "toColumn":  "DepartmentId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "ExecuterPersonnelId",
+                            "toTable":  "Personnel",
+                            "toColumn":  "PersonnelId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "FlowId",
+                            "toTable":  "Flow",
+                            "toColumn":  "FlowId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "PreCookieFlowId",
+                            "toTable":  "CookieFlow",
+                            "toColumn":  "CookieFlowId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "PreCookieStatusId",
+                            "toTable":  "CookieStatus",
+                            "toColumn":  "CookieStatusId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "PreCookieStatusId",
+                            "toTable":  "CookieStatus",
+                            "toColumn":  "CookieStatusId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "ReferToUserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "SubjectClassId",
+                            "toTable":  "SubjectClass",
+                            "toColumn":  "SubjectClassId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "SubjectGroupId",
+                            "toTable":  "SubjectGroup",
+                            "toColumn":  "SubjectGroupId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "SubjectId",
+                            "toTable":  "Subject",
+                            "toColumn":  "SubjectId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "SubjectNatureId",
+                            "toTable":  "SubjectNature",
+                            "toColumn":  "SubjectNatureId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "SubjectPriorityId",
+                            "toTable":  "SubjectPriority",
+                            "toColumn":  "SubjectPriorityId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "UserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "CookieFlow",
+                            "fromColumn":  "ZoneId",
+                            "toTable":  "Zone",
+                            "toColumn":  "ZoneId"
+                        },
+                        {
+                            "fromTable":  "CookieHint",
+                            "fromColumn":  "CookieFlowId",
+                            "toTable":  "CookieFlow",
+                            "toColumn":  "CookieFlowId"
+                        },
+                        {
+                            "fromTable":  "CookieHint",
+                            "fromColumn":  "CookieHintTypeId",
+                            "toTable":  "CookieHintType",
+                            "toColumn":  "CookieHintTypeId"
+                        },
+                        {
+                            "fromTable":  "CookieHint",
+                            "fromColumn":  "CookieId",
+                            "toTable":  "Cookie",
+                            "toColumn":  "CookieId"
+                        },
+                        {
+                            "fromTable":  "CookieHint",
+                            "fromColumn":  "RoleId",
+                            "toTable":  "Role",
+                            "toColumn":  "RoleId"
+                        },
+                        {
+                            "fromTable":  "CookieHint",
+                            "fromColumn":  "UserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "CookieHint",
+                            "fromColumn":  "ViaCookieId",
+                            "toTable":  "Cookie",
+                            "toColumn":  "CookieId"
+                        },
+                        {
+                            "fromTable":  "CookieLog",
+                            "fromColumn":  "AgentPersonnelId",
+                            "toTable":  "Personnel",
+                            "toColumn":  "PersonnelId"
+                        },
+                        {
+                            "fromTable":  "CookieLog",
+                            "fromColumn":  "CookieId",
+                            "toTable":  "Cookie",
+                            "toColumn":  "CookieId"
+                        },
+                        {
+                            "fromTable":  "CookieLog",
+                            "fromColumn":  "CookieLogUserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "CookieLog",
+                            "fromColumn":  "CookieLogUserRoleId",
+                            "toTable":  "Role",
+                            "toColumn":  "RoleId"
+                        },
+                        {
+                            "fromTable":  "CookieLog",
+                            "fromColumn":  "DepartmentId",
+                            "toTable":  "Department",
+                            "toColumn":  "DepartmentId"
+                        },
+                        {
+                            "fromTable":  "CookieLog",
+                            "fromColumn":  "ExecuterPersonnelId",
+                            "toTable":  "Personnel",
+                            "toColumn":  "PersonnelId"
+                        },
+                        {
+                            "fromTable":  "CookieLog",
+                            "fromColumn":  "FlowId",
+                            "toTable":  "Flow",
+                            "toColumn":  "FlowId"
+                        },
+                        {
+                            "fromTable":  "CookieLog",
+                            "fromColumn":  "SubjectClassId",
+                            "toTable":  "SubjectClass",
+                            "toColumn":  "SubjectClassId"
+                        },
+                        {
+                            "fromTable":  "CookieLog",
+                            "fromColumn":  "SubjectGroupId",
+                            "toTable":  "SubjectGroup",
+                            "toColumn":  "SubjectGroupId"
+                        },
+                        {
+                            "fromTable":  "CookieLog",
+                            "fromColumn":  "SubjectId",
+                            "toTable":  "Subject",
+                            "toColumn":  "SubjectId"
+                        },
+                        {
+                            "fromTable":  "CookieLog",
+                            "fromColumn":  "SubjectNatureId",
+                            "toTable":  "SubjectNature",
+                            "toColumn":  "SubjectNatureId"
+                        },
+                        {
+                            "fromTable":  "CookieLog",
+                            "fromColumn":  "SubjectPriorityId",
+                            "toTable":  "SubjectPriority",
+                            "toColumn":  "SubjectPriorityId"
+                        },
+                        {
+                            "fromTable":  "CookieLog",
+                            "fromColumn":  "UserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "CookieLog",
+                            "fromColumn":  "ZoneId",
+                            "toTable":  "Zone",
+                            "toColumn":  "ZoneId"
+                        },
+                        {
+                            "fromTable":  "CookiePursuit",
+                            "fromColumn":  "CookieChannelId",
+                            "toTable":  "CookieChannel",
+                            "toColumn":  "CookieChannelId"
+                        },
+                        {
+                            "fromTable":  "CookiePursuit",
+                            "fromColumn":  "CookieFlowId",
+                            "toTable":  "CookieFlow",
+                            "toColumn":  "CookieFlowId"
+                        },
+                        {
+                            "fromTable":  "CookiePursuit",
+                            "fromColumn":  "CookieId",
+                            "toTable":  "Cookie",
+                            "toColumn":  "CookieId"
+                        },
+                        {
+                            "fromTable":  "CookiePursuit",
+                            "fromColumn":  "RoleId",
+                            "toTable":  "Role",
+                            "toColumn":  "RoleId"
+                        },
+                        {
+                            "fromTable":  "CookiePursuit",
+                            "fromColumn":  "UserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "CookiePursuit",
+                            "fromColumn":  "ViaCookieId",
+                            "toTable":  "Cookie",
+                            "toColumn":  "CookieId"
+                        },
+                        {
+                            "fromTable":  "CookieShare",
+                            "fromColumn":  "CookieFlowId",
+                            "toTable":  "CookieFlow",
+                            "toColumn":  "CookieFlowId"
+                        },
+                        {
+                            "fromTable":  "CookieShare",
+                            "fromColumn":  "CookieId",
+                            "toTable":  "Cookie",
+                            "toColumn":  "CookieId"
+                        },
+                        {
+                            "fromTable":  "CookieShare",
+                            "fromColumn":  "RoleId",
+                            "toTable":  "Role",
+                            "toColumn":  "RoleId"
+                        },
+                        {
+                            "fromTable":  "CookieShare",
+                            "fromColumn":  "UserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "CookieStatus",
+                            "fromColumn":  "CookieStatusGroupId",
+                            "toTable":  "CookieStatusGroup",
+                            "toColumn":  "CookieStatusGroupId"
+                        },
+                        {
+                            "fromTable":  "CookieStatus",
+                            "fromColumn":  "CookieTypeId",
+                            "toTable":  "CookieType",
+                            "toColumn":  "CookieTypeId"
+                        },
+                        {
+                            "fromTable":  "CookieStatusAttachmentStep",
+                            "fromColumn":  "CookieStatusId",
+                            "toTable":  "CookieStatus",
+                            "toColumn":  "CookieStatusId"
+                        },
+                        {
+                            "fromTable":  "CookieStatusGroup",
+                            "fromColumn":  "CookieTypeId",
+                            "toTable":  "CookieType",
+                            "toColumn":  "CookieTypeId"
+                        },
+                        {
+                            "fromTable":  "CookieType",
+                            "fromColumn":  "WorkspaceId",
+                            "toTable":  "Workspace",
+                            "toColumn":  "WorkspaceId"
+                        },
+                        {
+                            "fromTable":  "CookieUserNotification",
+                            "fromColumn":  "AgentId",
+                            "toTable":  "Agent",
+                            "toColumn":  "AgentId"
+                        },
+                        {
+                            "fromTable":  "CookieUserNotification",
+                            "fromColumn":  "CookieId",
+                            "toTable":  "Cookie",
+                            "toColumn":  "CookieId"
+                        },
+                        {
+                            "fromTable":  "CookieUserNotification",
+                            "fromColumn":  "UserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "DefaultUserSms",
+                            "fromColumn":  "SubjectClassMemberId",
+                            "toTable":  "SubjectClassMember",
+                            "toColumn":  "SubjectClassMemberId"
+                        },
+                        {
+                            "fromTable":  "DefaultUserSms",
+                            "fromColumn":  "UserGroupId",
+                            "toTable":  "UserInfoGroup",
+                            "toColumn":  "UserGroupId"
+                        },
+                        {
+                            "fromTable":  "DefaultUserSms",
+                            "fromColumn":  "UserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "Department",
+                            "fromColumn":  "AreaId",
+                            "toTable":  "Area",
+                            "toColumn":  "AreaId"
+                        },
+                        {
+                            "fromTable":  "Department",
+                            "fromColumn":  "DepartmentTypeId",
+                            "toTable":  "DepartmentType",
+                            "toColumn":  "DepartmentTypeId"
+                        },
+                        {
+                            "fromTable":  "Department",
+                            "fromColumn":  "FlowId",
+                            "toTable":  "Flow",
+                            "toColumn":  "FlowId"
+                        },
+                        {
+                            "fromTable":  "Department",
+                            "fromColumn":  "RegionId",
+                            "toTable":  "Region",
+                            "toColumn":  "RegionId"
+                        },
+                        {
+                            "fromTable":  "DepartmentChart",
+                            "fromColumn":  "DepartmentId",
+                            "toTable":  "Department",
+                            "toColumn":  "DepartmentId"
+                        },
+                        {
+                            "fromTable":  "DepartmentChart",
+                            "fromColumn":  "ParentDepartmentId",
+                            "toTable":  "Department",
+                            "toColumn":  "DepartmentId"
+                        },
+                        {
+                            "fromTable":  "DepartmentChart",
+                            "fromColumn":  "WorkspaceId",
+                            "toTable":  "Workspace",
+                            "toColumn":  "WorkspaceId"
+                        },
+                        {
+                            "fromTable":  "DepartmentType",
+                            "fromColumn":  "WorkspaceId",
+                            "toTable":  "Workspace",
+                            "toColumn":  "WorkspaceId"
+                        },
+                        {
+                            "fromTable":  "District",
+                            "fromColumn":  "RegionId",
+                            "toTable":  "Region",
+                            "toColumn":  "RegionId"
+                        },
+                        {
+                            "fromTable":  "Equip",
+                            "fromColumn":  "DepartmentId",
+                            "toTable":  "Department",
+                            "toColumn":  "DepartmentId"
+                        },
+                        {
+                            "fromTable":  "Equip",
+                            "fromColumn":  "ShiftTypeId",
+                            "toTable":  "ShiftType",
+                            "toColumn":  "ShiftTypeId"
+                        },
+                        {
+                            "fromTable":  "Equip",
+                            "fromColumn":  "VehicleId",
+                            "toTable":  "Vehicle",
+                            "toColumn":  "VehicleId"
+                        },
+                        {
+                            "fromTable":  "EquipMember",
+                            "fromColumn":  "EquipId",
+                            "toTable":  "Equip",
+                            "toColumn":  "EquipId"
+                        },
+                        {
+                            "fromTable":  "EquipMember",
+                            "fromColumn":  "JobId",
+                            "toTable":  "Job",
+                            "toColumn":  "JobId"
+                        },
+                        {
+                            "fromTable":  "EquipMember",
+                            "fromColumn":  "PersonnelId",
+                            "toTable":  "Personnel",
+                            "toColumn":  "PersonnelId"
+                        },
+                        {
+                            "fromTable":  "Executer",
+                            "fromColumn":  "DepartmentId",
+                            "toTable":  "Department",
+                            "toColumn":  "DepartmentId"
+                        },
+                        {
+                            "fromTable":  "Executer",
+                            "fromColumn":  "ExecuterTypeId",
+                            "toTable":  "ExecuterType",
+                            "toColumn":  "ExecuterTypeId"
+                        },
+                        {
+                            "fromTable":  "Feature",
+                            "fromColumn":  "FeatureTypeId",
+                            "toTable":  "FeatureType",
+                            "toColumn":  "FeatureTypeId"
+                        },
+                        {
+                            "fromTable":  "Feature",
+                            "fromColumn":  "SubSystemId",
+                            "toTable":  "SubSystem",
+                            "toColumn":  "SubSystemId"
+                        },
+                        {
+                            "fromTable":  "Feature",
+                            "fromColumn":  "TargetSubSystemId",
+                            "toTable":  "SubSystem",
+                            "toColumn":  "SubSystemId"
+                        },
+                        {
+                            "fromTable":  "FeedbackStatus",
+                            "fromColumn":  "CookieStatusId",
+                            "toTable":  "CookieStatus",
+                            "toColumn":  "CookieStatusId"
+                        },
+                        {
+                            "fromTable":  "FeedbackStatus",
+                            "fromColumn":  "CookieTypeId",
+                            "toTable":  "CookieType",
+                            "toColumn":  "CookieTypeId"
+                        },
+                        {
+                            "fromTable":  "FeedbackStatus",
+                            "fromColumn":  "RoleId",
+                            "toTable":  "Role",
+                            "toColumn":  "RoleId"
+                        },
+                        {
+                            "fromTable":  "Flow",
+                            "fromColumn":  "CookieTypeId",
+                            "toTable":  "CookieType",
+                            "toColumn":  "CookieTypeId"
+                        },
+                        {
+                            "fromTable":  "Flow",
+                            "fromColumn":  "DepartmentTypeId",
+                            "toTable":  "DepartmentType",
+                            "toColumn":  "DepartmentTypeId"
+                        },
+                        {
+                            "fromTable":  "FlowNode",
+                            "fromColumn":  "CookieHintTypeId",
+                            "toTable":  "CookieHintType",
+                            "toColumn":  "CookieHintTypeId"
+                        },
+                        {
+                            "fromTable":  "FlowNode",
+                            "fromColumn":  "CookieStatusId",
+                            "toTable":  "CookieStatus",
+                            "toColumn":  "CookieStatusId"
+                        },
+                        {
+                            "fromTable":  "FlowNode",
+                            "fromColumn":  "FlowId",
+                            "toTable":  "Flow",
+                            "toColumn":  "FlowId"
+                        },
+                        {
+                            "fromTable":  "FlowNode",
+                            "fromColumn":  "NextCookieStatusId",
+                            "toTable":  "CookieStatus",
+                            "toColumn":  "CookieStatusId"
+                        },
+                        {
+                            "fromTable":  "FlowNode",
+                            "fromColumn":  "RoleId",
+                            "toTable":  "Role",
+                            "toColumn":  "RoleId"
+                        },
+                        {
+                            "fromTable":  "FlowNodeCause",
+                            "fromColumn":  "CookieCauseId",
+                            "toTable":  "CookieCause",
+                            "toColumn":  "CookieCauseId"
+                        },
+                        {
+                            "fromTable":  "FlowNodeCause",
+                            "fromColumn":  "FlowNodeId",
+                            "toTable":  "FlowNode",
+                            "toColumn":  "FlowNodeId"
+                        },
+                        {
+                            "fromTable":  "Gift",
+                            "fromColumn":  "GiftTypeId",
+                            "toTable":  "GiftType",
+                            "toColumn":  "GiftTypeId"
+                        },
+                        {
+                            "fromTable":  "Inbox",
+                            "fromColumn":  "SentboxId",
+                            "toTable":  "Sentbox",
+                            "toColumn":  "SentboxId"
+                        },
+                        {
+                            "fromTable":  "Inform",
+                            "fromColumn":  "AreaId",
+                            "toTable":  "Area",
+                            "toColumn":  "AreaId"
+                        },
+                        {
+                            "fromTable":  "Inform",
+                            "fromColumn":  "CenterCategoryId",
+                            "toTable":  "CenterCategory",
+                            "toColumn":  "CenterCategoryId"
+                        },
+                        {
+                            "fromTable":  "Inform",
+                            "fromColumn":  "CookieId",
+                            "toTable":  "Cookie",
+                            "toColumn":  "CookieId"
+                        },
+                        {
+                            "fromTable":  "Inform",
+                            "fromColumn":  "DepartmentIdPlaceOccur",
+                            "toTable":  "Department",
+                            "toColumn":  "DepartmentId"
+                        },
+                        {
+                            "fromTable":  "Inform",
+                            "fromColumn":  "DistrinctId",
+                            "toTable":  "District",
+                            "toColumn":  "DistrictId"
+                        },
+                        {
+                            "fromTable":  "Inform",
+                            "fromColumn":  "InformerAgentGroupId",
+                            "toTable":  "AgentGroup",
+                            "toColumn":  "AgentGroupId"
+                        },
+                        {
+                            "fromTable":  "Inform",
+                            "fromColumn":  "InformerAgentId",
+                            "toTable":  "Agent",
+                            "toColumn":  "AgentId"
+                        },
+                        {
+                            "fromTable":  "Inform",
+                            "fromColumn":  "InformerAreaId",
+                            "toTable":  "Area",
+                            "toColumn":  "AreaId"
+                        },
+                        {
+                            "fromTable":  "Inform",
+                            "fromColumn":  "InformerDistrinctId",
+                            "toTable":  "District",
+                            "toColumn":  "DistrictId"
+                        },
+                        {
+                            "fromTable":  "Inform",
+                            "fromColumn":  "InformerEducationTypeId",
+                            "toTable":  "EducationType",
+                            "toColumn":  "EducationTypeId"
+                        },
+                        {
+                            "fromTable":  "Inform",
+                            "fromColumn":  "InformerGenderId",
+                            "toTable":  "Gender",
+                            "toColumn":  "GenderId"
+                        },
+                        {
+                            "fromTable":  "Inform",
+                            "fromColumn":  "InformerRegionId",
+                            "toTable":  "Region",
+                            "toColumn":  "RegionId"
+                        },
+                        {
+                            "fromTable":  "Inform",
+                            "fromColumn":  "InformerSocialClassId",
+                            "toTable":  "AgentSocialClass",
+                            "toColumn":  "AgentSocialClassId"
+                        },
+                        {
+                            "fromTable":  "Inform",
+                            "fromColumn":  "RegionId",
+                            "toTable":  "Region",
+                            "toColumn":  "RegionId"
+                        },
+                        {
+                            "fromTable":  "Inform",
+                            "fromColumn":  "SegmentId",
+                            "toTable":  "Segment",
+                            "toColumn":  "SegmentId"
+                        },
+                        {
+                            "fromTable":  "InformerVisitorLog",
+                            "fromColumn":  "CookieId",
+                            "toTable":  "Cookie",
+                            "toColumn":  "CookieId"
+                        },
+                        {
+                            "fromTable":  "InformerVisitorLog",
+                            "fromColumn":  "UserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "InformLog",
+                            "fromColumn":  "AreaId",
+                            "toTable":  "Area",
+                            "toColumn":  "AreaId"
+                        },
+                        {
+                            "fromTable":  "InformLog",
+                            "fromColumn":  "CookieId",
+                            "toTable":  "Cookie",
+                            "toColumn":  "CookieId"
+                        },
+                        {
+                            "fromTable":  "InformLog",
+                            "fromColumn":  "DistrinctId",
+                            "toTable":  "District",
+                            "toColumn":  "DistrictId"
+                        },
+                        {
+                            "fromTable":  "InformLog",
+                            "fromColumn":  "InformId",
+                            "toTable":  "Inform",
+                            "toColumn":  "InformId"
+                        },
+                        {
+                            "fromTable":  "InformLog",
+                            "fromColumn":  "InformLogerAgentGroupId",
+                            "toTable":  "AgentGroup",
+                            "toColumn":  "AgentGroupId"
+                        },
+                        {
+                            "fromTable":  "InformLog",
+                            "fromColumn":  "InformLogerAgentId",
+                            "toTable":  "Agent",
+                            "toColumn":  "AgentId"
+                        },
+                        {
+                            "fromTable":  "InformLog",
+                            "fromColumn":  "InformLogerAreaId",
+                            "toTable":  "Area",
+                            "toColumn":  "AreaId"
+                        },
+                        {
+                            "fromTable":  "InformLog",
+                            "fromColumn":  "InformLogerDistrinctId",
+                            "toTable":  "District",
+                            "toColumn":  "DistrictId"
+                        },
+                        {
+                            "fromTable":  "InformLog",
+                            "fromColumn":  "InformLogerEducationTypeId",
+                            "toTable":  "EducationType",
+                            "toColumn":  "EducationTypeId"
+                        },
+                        {
+                            "fromTable":  "InformLog",
+                            "fromColumn":  "InformLogerGenderId",
+                            "toTable":  "Gender",
+                            "toColumn":  "GenderId"
+                        },
+                        {
+                            "fromTable":  "InformLog",
+                            "fromColumn":  "InformLogerRegionId",
+                            "toTable":  "Region",
+                            "toColumn":  "RegionId"
+                        },
+                        {
+                            "fromTable":  "InformLog",
+                            "fromColumn":  "InformLogerSocialClassId",
+                            "toTable":  "AgentSocialClass",
+                            "toColumn":  "AgentSocialClassId"
+                        },
+                        {
+                            "fromTable":  "InformLog",
+                            "fromColumn":  "RegionId",
+                            "toTable":  "Region",
+                            "toColumn":  "RegionId"
+                        },
+                        {
+                            "fromTable":  "InformLog",
+                            "fromColumn":  "SegmentId",
+                            "toTable":  "Segment",
+                            "toColumn":  "SegmentId"
+                        },
+                        {
+                            "fromTable":  "Library",
+                            "fromColumn":  "LibraryParentId",
+                            "toTable":  "Library",
+                            "toColumn":  "LibraryId"
+                        },
+                        {
+                            "fromTable":  "MeetingMember",
+                            "fromColumn":  "CookieId",
+                            "toTable":  "Cookie",
+                            "toColumn":  "CookieId"
+                        },
+                        {
+                            "fromTable":  "MeetingMember",
+                            "fromColumn":  "MayorMeetingId",
+                            "toTable":  "MayorMeeting",
+                            "toColumn":  "MayorMeetingId"
+                        },
+                        {
+                            "fromTable":  "Message",
+                            "fromColumn":  "MessageSenderUserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "MessageReceiver",
+                            "fromColumn":  "MessageId",
+                            "toTable":  "Message",
+                            "toColumn":  "MessageId"
+                        },
+                        {
+                            "fromTable":  "MessageReceiver",
+                            "fromColumn":  "MessageReceiverAgentId",
+                            "toTable":  "Agent",
+                            "toColumn":  "AgentId"
+                        },
+                        {
+                            "fromTable":  "MessageReceiver",
+                            "fromColumn":  "MessageReceiverUserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "MessageViewerLog",
+                            "fromColumn":  "AgentId",
+                            "toTable":  "Agent",
+                            "toColumn":  "AgentId"
+                        },
+                        {
+                            "fromTable":  "MessageViewerLog",
+                            "fromColumn":  "MessageId",
+                            "toTable":  "Message",
+                            "toColumn":  "MessageId"
+                        },
+                        {
+                            "fromTable":  "MessageViewerLog",
+                            "fromColumn":  "UserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "Mission",
+                            "fromColumn":  "AreaId",
+                            "toTable":  "Area",
+                            "toColumn":  "AreaId"
+                        },
+                        {
+                            "fromTable":  "Mission",
+                            "fromColumn":  "CookieId",
+                            "toTable":  "Cookie",
+                            "toColumn":  "CookieId"
+                        },
+                        {
+                            "fromTable":  "Mission",
+                            "fromColumn":  "DistrictId",
+                            "toTable":  "District",
+                            "toColumn":  "DistrictId"
+                        },
+                        {
+                            "fromTable":  "Mission",
+                            "fromColumn":  "RegionId",
+                            "toTable":  "Region",
+                            "toColumn":  "RegionId"
+                        },
+                        {
+                            "fromTable":  "MissionLog",
+                            "fromColumn":  "AreaId",
+                            "toTable":  "Area",
+                            "toColumn":  "AreaId"
+                        },
+                        {
+                            "fromTable":  "MissionLog",
+                            "fromColumn":  "CookieId",
+                            "toTable":  "Cookie",
+                            "toColumn":  "CookieId"
+                        },
+                        {
+                            "fromTable":  "MissionLog",
+                            "fromColumn":  "DistrictId",
+                            "toTable":  "District",
+                            "toColumn":  "DistrictId"
+                        },
+                        {
+                            "fromTable":  "MissionLog",
+                            "fromColumn":  "RegionId",
+                            "toTable":  "Region",
+                            "toColumn":  "RegionId"
+                        },
+                        {
+                            "fromTable":  "NotificationSentbox",
+                            "fromColumn":  "RoleId",
+                            "toTable":  "Role",
+                            "toColumn":  "RoleId"
+                        },
+                        {
+                            "fromTable":  "NotificationSentbox",
+                            "fromColumn":  "UserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "NotificationSentbox",
+                            "fromColumn":  "WorkspaceId",
+                            "toTable":  "Workspace",
+                            "toColumn":  "WorkspaceId"
+                        },
+                        {
+                            "fromTable":  "Personnel",
+                            "fromColumn":  "DepartmentId",
+                            "toTable":  "Department",
+                            "toColumn":  "DepartmentId"
+                        },
+                        {
+                            "fromTable":  "Personnel",
+                            "fromColumn":  "EducationTypeId",
+                            "toTable":  "EducationType",
+                            "toColumn":  "EducationTypeId"
+                        },
+                        {
+                            "fromTable":  "Personnel",
+                            "fromColumn":  "GenderId",
+                            "toTable":  "Gender",
+                            "toColumn":  "GenderId"
+                        },
+                        {
+                            "fromTable":  "Personnel",
+                            "fromColumn":  "JobId",
+                            "toTable":  "Job",
+                            "toColumn":  "JobId"
+                        },
+                        {
+                            "fromTable":  "Personnel",
+                            "fromColumn":  "MaritalStatusId",
+                            "toTable":  "MaritalStatus",
+                            "toColumn":  "MaritalStatusId"
+                        },
+                        {
+                            "fromTable":  "Personnel",
+                            "fromColumn":  "SupervisorId",
+                            "toTable":  "Personnel",
+                            "toColumn":  "PersonnelId"
+                        },
+                        {
+                            "fromTable":  "Region",
+                            "fromColumn":  "DepartmentId",
+                            "toTable":  "Department",
+                            "toColumn":  "DepartmentId"
+                        },
+                        {
+                            "fromTable":  "ReportResult",
+                            "fromColumn":  "RoleId",
+                            "toTable":  "Role",
+                            "toColumn":  "RoleId"
+                        },
+                        {
+                            "fromTable":  "ReportResult",
+                            "fromColumn":  "UserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "Role",
+                            "fromColumn":  "WorkspaceId",
+                            "toTable":  "Workspace",
+                            "toColumn":  "WorkspaceId"
+                        },
+                        {
+                            "fromTable":  "RoleMember",
+                            "fromColumn":  "RoleId",
+                            "toTable":  "Role",
+                            "toColumn":  "RoleId"
+                        },
+                        {
+                            "fromTable":  "RoleMember",
+                            "fromColumn":  "RoleMemberId",
+                            "toTable":  "RoleMember",
+                            "toColumn":  "RoleMemberId"
+                        },
+                        {
+                            "fromTable":  "RoleMember",
+                            "fromColumn":  "UserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "RoleMemberAccess",
+                            "fromColumn":  "ChangedDepartmentId",
+                            "toTable":  "Department",
+                            "toColumn":  "DepartmentId"
+                        },
+                        {
+                            "fromTable":  "RoleMemberAccess",
+                            "fromColumn":  "CookieChannelId",
+                            "toTable":  "CookieChannel",
+                            "toColumn":  "CookieChannelId"
+                        },
+                        {
+                            "fromTable":  "RoleMemberAccess",
+                            "fromColumn":  "DepartmentId",
+                            "toTable":  "Department",
+                            "toColumn":  "DepartmentId"
+                        },
+                        {
+                            "fromTable":  "RoleMemberAccess",
+                            "fromColumn":  "RoleMemberId",
+                            "toTable":  "RoleMember",
+                            "toColumn":  "RoleMemberId"
+                        },
+                        {
+                            "fromTable":  "RoleStatusReports",
+                            "fromColumn":  "RoleId",
+                            "toTable":  "Role",
+                            "toColumn":  "RoleId"
+                        },
+                        {
+                            "fromTable":  "Segment",
+                            "fromColumn":  "WorkspaceId",
+                            "toTable":  "Workspace",
+                            "toColumn":  "WorkspaceId"
+                        },
+                        {
+                            "fromTable":  "Subject",
+                            "fromColumn":  "CookieTypeId",
+                            "toTable":  "CookieType",
+                            "toColumn":  "CookieTypeId"
+                        },
+                        {
+                            "fromTable":  "Subject",
+                            "fromColumn":  "SubjectGroupId",
+                            "toTable":  "SubjectGroup",
+                            "toColumn":  "SubjectGroupId"
+                        },
+                        {
+                            "fromTable":  "Subject",
+                            "fromColumn":  "SubjectNatureId",
+                            "toTable":  "SubjectNature",
+                            "toColumn":  "SubjectNatureId"
+                        },
+                        {
+                            "fromTable":  "Subject",
+                            "fromColumn":  "ZoneId",
+                            "toTable":  "Zone",
+                            "toColumn":  "ZoneId"
+                        },
+                        {
+                            "fromTable":  "SubjectChild",
+                            "fromColumn":  "SubjectId",
+                            "toTable":  "Subject",
+                            "toColumn":  "SubjectId"
+                        },
+                        {
+                            "fromTable":  "SubjectClass",
+                            "fromColumn":  "CookieTypeId",
+                            "toTable":  "CookieType",
+                            "toColumn":  "CookieTypeId"
+                        },
+                        {
+                            "fromTable":  "SubjectClassMember",
+                            "fromColumn":  "DepartmentId",
+                            "toTable":  "Department",
+                            "toColumn":  "DepartmentId"
+                        },
+                        {
+                            "fromTable":  "SubjectClassMember",
+                            "fromColumn":  "DepartmentTypeId",
+                            "toTable":  "DepartmentType",
+                            "toColumn":  "DepartmentTypeId"
+                        },
+                        {
+                            "fromTable":  "SubjectClassMember",
+                            "fromColumn":  "FlowId",
+                            "toTable":  "Flow",
+                            "toColumn":  "FlowId"
+                        },
+                        {
+                            "fromTable":  "SubjectClassMember",
+                            "fromColumn":  "SubjectClassId",
+                            "toTable":  "SubjectClass",
+                            "toColumn":  "SubjectClassId"
+                        },
+                        {
+                            "fromTable":  "SubjectClassMember",
+                            "fromColumn":  "SubjectClassMemberCookieFieldTypeId1",
+                            "toTable":  "CookieFieldType",
+                            "toColumn":  "CookieFieldTypeId"
+                        },
+                        {
+                            "fromTable":  "SubjectClassMember",
+                            "fromColumn":  "SubjectClassMemberCookieFieldTypeId2",
+                            "toTable":  "CookieFieldType",
+                            "toColumn":  "CookieFieldTypeId"
+                        },
+                        {
+                            "fromTable":  "SubjectClassMember",
+                            "fromColumn":  "SubjectClassMemberCookieFieldTypeId3",
+                            "toTable":  "CookieFieldType",
+                            "toColumn":  "CookieFieldTypeId"
+                        },
+                        {
+                            "fromTable":  "SubjectClassMember",
+                            "fromColumn":  "SubjectClassMemberCookieFieldTypeId4",
+                            "toTable":  "CookieFieldType",
+                            "toColumn":  "CookieFieldTypeId"
+                        },
+                        {
+                            "fromTable":  "SubjectClassMember",
+                            "fromColumn":  "SubjectClassMemberCookieFieldTypeId5",
+                            "toTable":  "CookieFieldType",
+                            "toColumn":  "CookieFieldTypeId"
+                        },
+                        {
+                            "fromTable":  "SubjectClassMember",
+                            "fromColumn":  "SubjectId",
+                            "toTable":  "Subject",
+                            "toColumn":  "SubjectId"
+                        },
+                        {
+                            "fromTable":  "SubjectClassMember",
+                            "fromColumn":  "SubjectIndexId",
+                            "toTable":  "SubjectIndex",
+                            "toColumn":  "SubjectIndexId"
+                        },
+                        {
+                            "fromTable":  "SubjectClassMember",
+                            "fromColumn":  "SubjectPriorityId",
+                            "toTable":  "SubjectPriority",
+                            "toColumn":  "SubjectPriorityId"
+                        },
+                        {
+                            "fromTable":  "SubjectGroup",
+                            "fromColumn":  "CookieTypeId",
+                            "toTable":  "CookieType",
+                            "toColumn":  "CookieTypeId"
+                        },
+                        {
+                            "fromTable":  "SubjectNature",
+                            "fromColumn":  "CookieTypeId",
+                            "toTable":  "CookieType",
+                            "toColumn":  "CookieTypeId"
+                        },
+                        {
+                            "fromTable":  "SubjectPriority",
+                            "fromColumn":  "CookieTypeId",
+                            "toTable":  "CookieType",
+                            "toColumn":  "CookieTypeId"
+                        },
+                        {
+                            "fromTable":  "SubSystem",
+                            "fromColumn":  "TotalSystemId",
+                            "toTable":  "TotalSystem",
+                            "toColumn":  "TotalSystemId"
+                        },
+                        {
+                            "fromTable":  "TerminalStatus",
+                            "fromColumn":  "CookieStatusId",
+                            "toTable":  "CookieStatus",
+                            "toColumn":  "CookieStatusId"
+                        },
+                        {
+                            "fromTable":  "TrackUserApp",
+                            "fromColumn":  "UserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "TrackUsers",
+                            "fromColumn":  "CookieChannelId",
+                            "toTable":  "CookieChannel",
+                            "toColumn":  "CookieChannelId"
+                        },
+                        {
+                            "fromTable":  "TrackUsers",
+                            "fromColumn":  "TrackUserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "UserDevice",
+                            "fromColumn":  "AgentId",
+                            "toTable":  "Agent",
+                            "toColumn":  "AgentId"
+                        },
+                        {
+                            "fromTable":  "UserDevice",
+                            "fromColumn":  "GenderId",
+                            "toTable":  "Gender",
+                            "toColumn":  "GenderId"
+                        },
+                        {
+                            "fromTable":  "UserInfo",
+                            "fromColumn":  "PersonnelId",
+                            "toTable":  "Personnel",
+                            "toColumn":  "PersonnelId"
+                        },
+                        {
+                            "fromTable":  "UserInfo",
+                            "fromColumn":  "UserGroupId",
+                            "toTable":  "UserInfoGroup",
+                            "toColumn":  "UserGroupId"
+                        },
+                        {
+                            "fromTable":  "Vehicle",
+                            "fromColumn":  "DepartmentId",
+                            "toTable":  "Department",
+                            "toColumn":  "DepartmentId"
+                        },
+                        {
+                            "fromTable":  "Vehicle",
+                            "fromColumn":  "VehicleTypeId",
+                            "toTable":  "VehicleType",
+                            "toColumn":  "VehicleTypeId"
+                        },
+                        {
+                            "fromTable":  "WorkspaceMember",
+                            "fromColumn":  "UserId",
+                            "toTable":  "UserInfo",
+                            "toColumn":  "UserId"
+                        },
+                        {
+                            "fromTable":  "WorkspaceMember",
+                            "fromColumn":  "WorkspaceId",
+                            "toTable":  "Workspace",
+                            "toColumn":  "WorkspaceId"
+                        },
+                        {
+                            "fromTable":  "Zone",
+                            "fromColumn":  "CookieTypeId",
+                            "toTable":  "CookieType",
+                            "toColumn":  "CookieTypeId"
+                        }
+                    ],
+    "emptyTables":  [
+                        "AgentExpertiseField",
+                        "AgentExpertiseFieldLog",
+                        "AgentGift",
+                        "AgentGiftLog",
+                        "AgentGiftType",
+                        "AgentGiftTypeLog",
+                        "AgentGrade",
+                        "AgentGradeLog",
+                        "AgentGradeType",
+                        "AgentGradeTypeLog",
+                        "AgentGroupLog",
+                        "AgentSocialClass",
+                        "AgentSocialClassLog",
+                        "AgentStatusLog",
+                        "AppVersion",
+                        "BuildingStep",
+                        "ChatMessage",
+                        "ChatRoom",
+                        "ChatUser",
+                        "CheckList",
+                        "CheckListFlowNode",
+                        "ChkAnswer",
+                        "ChkGroupQuestion",
+                        "ChkQuestion",
+                        "ChkRecordedAnswer",
+                        "ChkRecordedAnswerIndex",
+                        "ContractorContract",
+                        "ContractorContractDepartment",
+                        "CookieCauseLog",
+                        "CookieComment",
+                        "CookieCommentDisAgree",
+                        "CookieFieldType",
+                        "CookieHintLog",
+                        "CookieHintTypeLog",
+                        "CookieShare",
+                        "CookieStatusAttachmentStep",
+                        "CookieSubjectChild",
+                        "CookieUserNotification",
+                        "DefaultUserSms",
+                        "Dictionary",
+                        "District",
+                        "DistrictLog",
+                        "Equip",
+                        "EquipMember",
+                        "Executer",
+                        "ExecuterLog",
+                        "ExecuterType",
+                        "ExecuterTypeLog",
+                        "FlowNodeCause",
+                        "Gift",
+                        "GiftLog",
+                        "GiftType",
+                        "GiftTypeLog",
+                        "JobLog",
+                        "MaritalStatusLog",
+                        "MayorMeeting",
+                        "MeetingMember",
+                        "Mission",
+                        "MissionLog",
+                        "MobileGISRequests",
+                        "NotificationSentbox",
+                        "Personnel",
+                        "PersonnelLog",
+                        "PursuitTemplate",
+                        "Referal",
+                        "Reminder",
+                        "ReportResult",
+                        "RoleStatusReports",
+                        "Segment",
+                        "ShiftType",
+                        "StatusMessage",
+                        "SubjectChild",
+                        "SubjectClassMemberReference",
+                        "SubjectIndex",
+                        "SubjectReference",
+                        "SubReport",
+                        "TotalSystemMenuLog",
+                        "TrackUserApp",
+                        "UserInfoGroup",
+                        "Vehicle",
+                        "VehicleType"
+                    ]
+}

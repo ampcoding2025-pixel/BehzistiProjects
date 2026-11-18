@@ -1,0 +1,557 @@
+[
+    {
+        "table":  "HttpLog",
+        "rows":  1443762,
+        "columns":  "CERT_SERVER_SUBJECT, CERT_SUBJECT, HTTP_REFERER, HTTPS_SERVER_SUBJECT, HttpLogDateTime, HttpLogDateTimeSolar"
+    },
+    {
+        "table":  "InformLog",
+        "rows":  668796,
+        "columns":  "InformLogerRegionId, RegionId, InsertTime, UpdateUserId, UpdateTime, ChangeTime, DepartmentIdPlaceOccur, ReferalId"
+    },
+    {
+        "table":  "CookieLog",
+        "rows":  668796,
+        "columns":  "CookieLogTime, CookieLogTimeSolar, CookieLogSubmitTime, CookieLogSubmitTimeSolar, CookieLogFinishTime, CookieLogFinishTimeSolar, CookieLogLastActionTime, CookieLogLastActionTimeSolar, CookieLogPreLastActionTime, CookieLogPreLastActionTimeSolar, CookieLogRequiredTime, CookieLogRequiredTimeSolar, CookieLogDeadlineTotal, CookieLogDeadlineTotalTime, CookieLogDeadlineTotalTimeSolar, CookieLogDeadline, CookieLogDeadlineCoef, CookieLogDeadlineTime, CookieLogDeadlineTimeSolar, CookieLogIsCritical, CookieLogTimeRequired, CookieLogAttachmentsCount, CookieLogPersuitsCount, CookieLogHintsCount, CookieLogLinkedCount, CookieLogStatusId, CookieLogCauseId, CookieLogChannelId, SubjectId, SubjectGroupId, SubjectPriorityId, SubjectNatureId, SubjectClassId, DepartmentId, ReferringCookieLogId, CookieLogCancelTime, CookieLogCancelTimeSolar, InsertTime, UpdateUserId, UpdateTime, ChangeTime, CookieLogDiscontentCount, CookieLogDiscontentTime, CookieLogDiscontentTimeSolar, CookieLogVisitedTime, CookieLogVisitedTimeSolar, CookieRequireTimeCorroborant, CookieLogScoreFinal, SatisfactionScore, CookieLogScore"
+    },
+    {
+        "table":  "CookieFlow",
+        "rows":  632835,
+        "columns":  "CookieFlowIsCritical, CookieFlowTime, CookieFlowTimeSolar, CookieFlowFinishTime, CookieFlowFinishTimeSolar, CookieFlowActionTime, CookieFlowActionTimeSolar, CookieFlowPreActionTime, CookieFlowPreActionTimeSolar, CookieFlowRequiredTime, CookieFlowRequiredTimeSolar, CookieFlowDuration, CookieFlowAttachmentsCount, CookieFlowPersuitsCount, CookieFlowHintsCount, CookieFlowLinkedCount, CookieFlowDeadlineTotal, CookieFlowDeadlineTotalTime, CookieFlowDeadlineTotalTimeSolar, CookieFlowDeadlineCoef, CookieFlowDeadline, CookieFlowDeadlineTime, CookieFlowDeadlineTimeSolar, CookieStatusId, CookieCauseId, CookieChannelId, PreCookieStatusId, SubjectId, SubjectGroupId, SubjectPriorityId, SubjectNatureId, SubjectClassId, DepartmentId, CookieFlowCancelTime, CookieFlowCancelTimeSolar, InsertTime, UpdateUserId, UpdateTime, ChangeTime, CookieFlowDiscontentCount, CookieFlowDiscontentTime, CookieFlowDiscontentTimeSolar, CookieFlowVisitedTime, CookieFlowVisitedTimeSolar, CookieflowRequireTimeCorroborant, CookieFlowTakeTime, CookieFlowDelayTime, CookieFlowScore, ReferToUserId, SatisfactionScore, CookieTakeTime, CookieScore, CookieFlowReplyCitizen, ReferToUserPosition"
+    },
+    {
+        "table":  "CallLogLog",
+        "rows":  605598,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime, Referenceid"
+    },
+    {
+        "table":  "TotalSystemLog",
+        "rows":  484815,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "TrackUsers",
+        "rows":  290545,
+        "columns":  "TrackLoginTimeSolar, TrackLogoutTimeSolar, TrackLogoutTime, TrackLoginTime, CookieChannelId"
+    },
+    {
+        "table":  "Sentbox",
+        "rows":  208823,
+        "columns":  "SentboxCost, SentboxTime, SentboxTimeSolar, MessageStatus, InsertTime, UpdateUserId, UpdateTime, ChangeTime, DeliveryStatus"
+    },
+    {
+        "table":  "InformerVisitorLog",
+        "rows":  205186,
+        "columns":  "InsertTime, VisitedChannel"
+    },
+    {
+        "table":  "Inform",
+        "rows":  193084,
+        "columns":  "InformerRegionId, RegionId, InsertTime, UpdateUserId, UpdateTime, ChangeTime, DepartmentIdPlaceOccur, ReferalId"
+    },
+    {
+        "table":  "Cookie",
+        "rows":  193084,
+        "columns":  "CookieTime, CookieTimeSolar, CookieSubmitTime, CookieSubmitTimeSolar, CookieFinishTime, CookieFinishTimeSolar, CookieLastActionTime, CookieLastActionTimeSolar, CookiePreLastActionTime, CookiePreLastActionTimeSolar, CookieActionTime, CookieActionTimeSolar, CookieRequiredTime, CookieRequiredTimeSolar, CookieDeadlineTotal, CookieDeadlineTotalTime, CookieDeadlineTotalTimeSolar, CookieDeadline, CookieDeadlineCoef, CookieDeadlineTime, CookieDeadlineTimeSolar, CookieIsCritical, CookieTimeRequired, CookieAttachmentsCount, CookiePersuitsCount, CookieHintsCount, CookieLinkedCount, CookieStatusId, CookieCauseId, CookieChannelId, SubjectId, SubjectGroupId, SubjectPriorityId, SubjectNatureId, SubjectClassId, DepartmentId, ReferringCookieId, CookieCancelTime, CookieCancelTimeSolar, InsertTime, UpdateUserId, UpdateTime, ChangeTime, CookieDiscontentCount, CookieDiscontentTime, CookieDiscontentTimeSolar, CookieVisitedTime, CookieVisitedTimeSolar, CookieRequireTimeCorroborant, CookieScoreFinal, SatisfactionScore, CommentDisAgreeCount, CommentAgreeCount, PhoneBookDepartmentId, CookieTakeTime, CookieScore"
+    },
+    {
+        "table":  "CookiePursuit",
+        "rows":  150280,
+        "columns":  "CookiePursuitTime, CookiePursuitTimeSolar, CookieChannelId, InsertTime, UpdateUserId, UpdateTime, ChangeTime, CookiePursuitReply, CookiePursuitReplyUserId, CookiePursuitReplyRoleId, CookiePursuitReplyTime"
+    },
+    {
+        "table":  "CallReceived",
+        "rows":  81214,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime, Referenceid"
+    },
+    {
+        "table":  "AttachmentVisite",
+        "rows":  75721,
+        "columns":  "CookieStatusId, DateTimeSolarVisited, DateTimeVisited, InsertTime"
+    },
+    {
+        "table":  "AgentLog",
+        "rows":  73567,
+        "columns":  "AgentBirthDate, AgentBirthDateSolar, RegionId, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "Agent",
+        "rows":  69517,
+        "columns":  "AgentBirthDate, AgentBirthDateSolar, RegionId, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "AgentGroupMembership",
+        "rows":  50112,
+        "columns":  "AgentGroupMembershipExpireTime, AgentGroupMembershipExpireTimeSolar, AgentGroupMembershipCardIssueDate, AgentGroupMembershipCardIssueDateSolar, AgentStatusId, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "RoleMemberAccessLog",
+        "rows":  32188,
+        "columns":  "DepartmentId, InsertTime, UpdateUserId, UpdateTime, ChangeTime, SubjectClassMemberId, ChangedDepartmentId, CookieChannelId"
+    },
+    {
+        "table":  "CallRecord",
+        "rows":  31974,
+        "columns":  "ReferenceId, InsertTime, UpdateUserId, UpdateTime"
+    },
+    {
+        "table":  "Cartable",
+        "rows":  30122,
+        "columns":  "CartableIsCritical, CartableTime, CartableTimeSolar, CartableFinishTime, CartableFinishTimeSolar, CartableActionTime, CartableActionTimeSolar, CartablePreActionTime, CartablePreActionTimeSolar, CartableRequiredTime, CartableRequiredTimeSolar, CartableDuration, CartableAttachmentsCount, CartablePersuitsCount, CartableHintsCount, CartableLinkedCount, CartableDeadlineTotal, CartableDeadlineTotalTime, CartableDeadlineTotalTimeSolar, CartableDeadlineCoef, CartableDeadline, CartableDeadlineTime, CartableDeadlineTimeSolar, CookieStatusId, CookieCauseId, CookieChannelId, PreCookieStatusId, SubjectId, SubjectGroupId, SubjectPriorityId, SubjectNatureId, SubjectClassId, DepartmentId, CartableCancelTime, CartableCancelTimeSolar, InsertTime, UpdateUserId, UpdateTime, ChangeTime, CartableDiscontentCount, CartableDiscontentTime, CartableDiscontentTimeSolar, CartableVisitedTime, CartableVisitedTimeSolar, CartableRequireTimeCorroborant, ReferToUserId, CommentDisAgreeCount, CommentAgreeCount, CartableScore"
+    },
+    {
+        "table":  "UserInfoLog",
+        "rows":  18419,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime, UserExpireTime, UserExpireTimeSolar"
+    },
+    {
+        "table":  "DepartmentLog",
+        "rows":  13117,
+        "columns":  "DepartmentId, DepartmentCode, DepartmentName, RegionId, DepartmentZiped, DepartmentAddress, DepartmentPostalCode, DepartmentPhone1, DepartmentPhone2, DepartmentPhone3, DepartmentFax, DepartmentRank, DepartmentIsActive, DepartmentTypeId, InsertTime, UpdateUserId, UpdateTime, ChangeTime, DepartmentIsOutOfRange, DepartmentOrPlaceOccur, DepartmentDesc"
+    },
+    {
+        "table":  "Inbox",
+        "rows":  9736,
+        "columns":  "InboxTime, InboxTimeSolar, InboxCharCount, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "RoleMemberAccess",
+        "rows":  6821,
+        "columns":  "DepartmentId, InsertTime, UpdateUserId, UpdateTime, ChangeTime, SubjectClassMemberId, ChangedDepartmentId, CookieChannelId"
+    },
+    {
+        "table":  "SmsConfirmation",
+        "rows":  5900,
+        "columns":  "ExpireTime, InsertTime"
+    },
+    {
+        "table":  "SubjectClassMemberLog",
+        "rows":  5102,
+        "columns":  "SubjectClassMemberId, SubjectClassId, SubjectId, SubjectClassMemberInstructionText, SubjectClassMemberTemplateText, SubjectClassMemberZiped, SubjectClassMemberIsOptionalDepartment, DepartmentId, SubjectClassMemberDeadline, SubjectClassMemberDeadlineTotal, SubjectClassMemberScoreFactor, SubjectClassMemberWeightFactor, SubjectClassMemberCookieFieldTypeId1, SubjectClassMemberCookieFieldMandatory1, SubjectClassMemberCookieFieldValidation1, SubjectClassMemberCookieFieldTypeId2, SubjectClassMemberCookieFieldMandatory2, SubjectClassMemberCookieFieldValidation2, SubjectClassMemberCookieFieldTypeId3, SubjectClassMemberCookieFieldMandatory3, SubjectClassMemberCookieFieldValidation3, SubjectClassMemberCookieFieldTypeId4, SubjectClassMemberCookieFieldMandatory4, SubjectClassMemberCookieFieldValidation4, SubjectClassMemberCookieFieldTypeId5, SubjectClassMemberCookieFieldMandatory5, SubjectClassMemberCookieFieldValidation5, SubjectClassMemberSendSms, SubjectClassMemberIsCritial, SubjectClassMemberPersonIsVisible, SubjectClassMemberIsInform, SubjectPriorityId, InsertTime, UpdateUserId, UpdateTime, ChangeTime, SubjectClassMemberRequireRegion, SubjectClassMemberRequireMap, SubjectClassMemberRequireAddress, SubjectClassMemberOptionalSendSmsCitizen, SubjectClassMemberIsActive, SubjectClassMemberHelpText, SubjectClassMemberRequireDistrict, DepartmentTypeId, SubjectClassMemberRequireInformerCellPhone, SubjectClassMemberMaxRequiredTime, DefineRegionDistrict, DefineDepartmentIdPlaceOccur, SubjectClassMemberTrackingSendSmsCitizen, SubjectClassMemberSendSmsUsers, SubjectClassMemberIsHamyar, SubjectClassMemberChangeStatusRequireMap, SubjectClassMemberInformationText, SubjectClassMemberUserSMSText, SubjectClassMemberIcon, SubjectIndexId"
+    },
+    {
+        "table":  "LoginLog",
+        "rows":  4176,
+        "columns":  "InsertTime"
+    },
+    {
+        "table":  "MessageLog",
+        "rows":  3211,
+        "columns":  "MessageTime, MessageTimeSolar, MessageReadTime, MessageReadTimeSolar, InsertTime, UpdateUserId, UpdateTime, ChangeTime, MessageExpireTime, MessageExpireTimeSolar, MessageAttachmentCount"
+    },
+    {
+        "table":  "UserDevice",
+        "rows":  3178,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "AreaLog",
+        "rows":  2209,
+        "columns":  "RegionId, DepartmentId, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "RoleMemberLog",
+        "rows":  2020,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "AccessLevel",
+        "rows":  1786,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "Department",
+        "rows":  1710,
+        "columns":  "DepartmentId, DepartmentCode, DepartmentName, RegionId, DepartmentZiped, DepartmentAddress, DepartmentPostalCode, DepartmentPhone1, DepartmentPhone2, DepartmentPhone3, DepartmentFax, DepartmentRank, DepartmentIsActive, DepartmentTypeId, InsertTime, UpdateUserId, UpdateTime, ChangeTime, DepartmentIsOutOfRange, DepartmentOrPlaceOccur, DepartmentDesc"
+    },
+    {
+        "table":  "DepartmentChart",
+        "rows":  1710,
+        "columns":  "DepartmentChartId, DepartmentId, ParentDepartmentId, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "SubjectlLog",
+        "rows":  1694,
+        "columns":  "SubjectId, SubjectCode, SubjectName, SubjectZiped, SubjectEventRadius, SubjectEventTimeRadius, SubjectIsRelatedBySegment, SubjectIsRelatedByRegion, SubjectIsRelatedByArea, SubjectIsRelatedByDepartment, SubjectGroupId, SubjectNatureId, InsertTime, UpdateUserId, UpdateTime, ChangeTime, SubjectSummaryName, SubjectIsInternet, SubjectIsRelatedByGetter, SubjectIsRelatedByCenter, SubjectEventDetectionBy, SubjectEventSmsExceed"
+    },
+    {
+        "table":  "UserInfo",
+        "rows":  1538,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime, UserExpireTime, UserExpireTimeSolar"
+    },
+    {
+        "table":  "WorkspaceMember",
+        "rows":  1533,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "SubjectClassMember",
+        "rows":  1289,
+        "columns":  "SubjectClassMemberId, SubjectClassId, SubjectId, SubjectClassMemberInstructionText, SubjectClassMemberTemplateText, SubjectClassMemberZiped, SubjectClassMemberIsOptionalDepartment, DepartmentId, SubjectClassMemberDeadline, SubjectClassMemberDeadlineTotal, SubjectClassMemberScoreFactor, SubjectClassMemberWeightFactor, SubjectClassMemberCookieFieldTypeId1, SubjectClassMemberCookieFieldMandatory1, SubjectClassMemberCookieFieldValidation1, SubjectClassMemberCookieFieldTypeId2, SubjectClassMemberCookieFieldMandatory2, SubjectClassMemberCookieFieldValidation2, SubjectClassMemberCookieFieldTypeId3, SubjectClassMemberCookieFieldMandatory3, SubjectClassMemberCookieFieldValidation3, SubjectClassMemberCookieFieldTypeId4, SubjectClassMemberCookieFieldMandatory4, SubjectClassMemberCookieFieldValidation4, SubjectClassMemberCookieFieldTypeId5, SubjectClassMemberCookieFieldMandatory5, SubjectClassMemberCookieFieldValidation5, SubjectClassMemberSendSms, SubjectClassMemberIsCritial, SubjectClassMemberPersonIsVisible, SubjectClassMemberIsInform, SubjectPriorityId, InsertTime, UpdateUserId, UpdateTime, ChangeTime, SubjectClassMemberRequireRegion, SubjectClassMemberRequireMap, SubjectClassMemberRequireAddress, SubjectClassMemberOptionalSendSmsCitizen, SubjectClassMemberIsActive, SubjectClassMemberHelpText, SubjectClassMemberRequireDistrict, DepartmentTypeId, SubjectClassMemberRequireInformerCellPhone, SubjectClassMemberMaxRequiredTime, DefineRegionDistrict, DefineDepartmentIdPlaceOccur, SubjectClassMemberTrackingSendSmsCitizen, SubjectClassMemberSendSmsUsers, SubjectClassMemberIsHamyar, SubjectClassMemberChangeStatusRequireMap, SubjectClassMemberInformationText, SubjectClassMemberUserSMSText, SubjectClassMemberIcon, SubjectIndexId"
+    },
+    {
+        "table":  "AccessLevelLog",
+        "rows":  1226,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "MessageViewerLog",
+        "rows":  1167,
+        "columns":  "InsertTime"
+    },
+    {
+        "table":  "RoleMember",
+        "rows":  909,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "deptemp",
+        "rows":  691,
+        "columns":  "DepartmentId, DepartmentName, DepartmentTypeName, DepartmentTypeId"
+    },
+    {
+        "table":  "Feature",
+        "rows":  649,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "DepartmentChartLog",
+        "rows":  538,
+        "columns":  "DepartmentChartId, DepartmentId, ParentDepartmentId, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "FlowNodeLog",
+        "rows":  486,
+        "columns":  "FlowNodeIsDelayed, FlowNodeActionTimeShow, FlowNodeActionTimeIsMandatory, FlowNodeCauseShow, FlowNodeCauseIsMandatory, FlowNodeDepartmentIsMandatory, FlowNodeRegionIsMandatory, FlowNodeDeadlineCoef, CookieStatusId, NextCookieStatusId, InsertTime, UpdateUserId, UpdateTime, ChangeTime, CookieStatusDesc, CookieStatusFileName, FlowNodeIsDiscontent, FlowNodeNextStatusIsDefault, FlowNodeIsExpireRequiredTime, FlowNodeExpireRequiredTimeIsDefault, FlowNodeRequireTimeCorroborant, FlowNodeIsScore, FlowNodeIsScoreFinal, FlowNodeIsReplyCitizen, RepeatCountStatus, IsNotEffectSubjectClassMemberDepartment, FlowNodeScore, FlowNodeDeadlineFixed, FlowNodeIsChangeStatusMapVisible, FlowNodeCanChangeReferral, FlowNodeDuplicateStatusProccessing, FlowNodeDuplicateStatusProccessed"
+    },
+    {
+        "table":  "Area",
+        "rows":  477,
+        "columns":  "RegionId, DepartmentId, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "SubSystemLog",
+        "rows":  422,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "Subject-Copy-14040410",
+        "rows":  420,
+        "columns":  "SubjectId, SubjectCode, SubjectName, SubjectZiped, SubjectEventRadius, SubjectEventTimeRadius, SubjectIsRelatedBySegment, SubjectIsRelatedByRegion, SubjectIsRelatedByArea, SubjectIsRelatedByDepartment, SubjectGroupId, SubjectNatureId, InsertTime, UpdateUserId, UpdateTime, ChangeTime, SubjectSummaryName, SubjectIsInternet, SubjectIsRelatedByGetter, SubjectIsRelatedByCenter, SubjectEventDetectionBy, SubjectEventSmsExceed"
+    },
+    {
+        "table":  "Subject",
+        "rows":  420,
+        "columns":  "SubjectId, SubjectCode, SubjectName, SubjectZiped, SubjectEventRadius, SubjectEventTimeRadius, SubjectIsRelatedBySegment, SubjectIsRelatedByRegion, SubjectIsRelatedByArea, SubjectIsRelatedByDepartment, SubjectGroupId, SubjectNatureId, InsertTime, UpdateUserId, UpdateTime, ChangeTime, SubjectSummaryName, SubjectIsInternet, SubjectIsRelatedByGetter, SubjectIsRelatedByCenter, SubjectEventDetectionBy, SubjectEventSmsExceed"
+    },
+    {
+        "table":  "Calandar",
+        "rows":  372,
+        "columns":  "CalandarDate, CalandarDateSolar, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "Message",
+        "rows":  230,
+        "columns":  "MessageTime, MessageTimeSolar, MessageReadTime, MessageReadTimeSolar, InsertTime, UpdateUserId, UpdateTime, ChangeTime, MessageExpireTime, MessageExpireTimeSolar, MessageAttachmentCount"
+    },
+    {
+        "table":  "CookieStatusLog",
+        "rows":  208,
+        "columns":  "CookieStatusId, CookieStatusName, CookieStatusSummaryName, CookieStatusZiped, CookieStatusIsActive, CookieStatusIsUrbanRelated, CookieStatusCitizenDescription, CookieStatusValue, CookieStatusHasDepartment, CookieStatusHasMessageCode, CookieStatusHasTimer, CookieStatusHasAgentCode, CookieStatusIsRefer, CookieStatusIsRefund, CookieStatusIsEditable, CookieStatusCleanStack, CookieStatusGroupId, CookieStatusVoice, InsertTime, UpdateUserId, UpdateTime, ChangeTime, CookieStatusNameCitizen, CookieStatusFinished, IsNotEffectOnTimeBasedReports, CookieStatusAttachmentCount"
+    },
+    {
+        "table":  "TempSubject",
+        "rows":  174,
+        "columns":  "SubjectGroupName, SubjectName, SubjectId, SubjectGroupId"
+    },
+    {
+        "table":  "RegionLog",
+        "rows":  137,
+        "columns":  "RegionId, RegionName, RegionSummaryName, RegionZiped, RegionPopulation, RegionExtent, DepartmentId, InsertTime, UpdateUserId, UpdateTime, ChangeTime, RegionIsActive"
+    },
+    {
+        "table":  "FeatureType",
+        "rows":  132,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "SubSystem",
+        "rows":  131,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "FlowNode",
+        "rows":  109,
+        "columns":  "FlowNodeIsDelayed, FlowNodeActionTimeShow, FlowNodeActionTimeIsMandatory, FlowNodeCauseShow, FlowNodeCauseIsMandatory, FlowNodeDepartmentIsMandatory, FlowNodeRegionIsMandatory, FlowNodeDeadlineCoef, CookieStatusId, NextCookieStatusId, InsertTime, UpdateUserId, UpdateTime, ChangeTime, CookieStatusDesc, CookieStatusFileName, FlowNodeIsDiscontent, FlowNodeNextStatusIsDefault, FlowNodeIsExpireRequiredTime, FlowNodeExpireRequiredTimeIsDefault, FlowNodeRequireTimeCorroborant, FlowNodeIsScore, FlowNodeIsScoreFinal, FlowNodeIsReplyCitizen, RepeatCountStatus, IsNotEffectSubjectClassMemberDepartment, FlowNodeScore, FlowNodeDeadlineFixed, FlowNodeIsChangeStatusMapVisible, FlowNodeCanChangeReferral, FlowNodeDuplicateStatusProccessing, FlowNodeDuplicateStatusProccessed"
+    },
+    {
+        "table":  "SubjectGroup",
+        "rows":  93,
+        "columns":  "SubjectGroupId, SubjectGroupName, SubjectGroupSummaryName, SubjectGroupZiped, InsertTime, UpdateUserId, UpdateTime, ChangeTime, SubjectGroupCode"
+    },
+    {
+        "table":  "IVRCallLog",
+        "rows":  65,
+        "columns":  "Referenceid, Status, InsertTime"
+    },
+    {
+        "table":  "SubjectGroupLog",
+        "rows":  48,
+        "columns":  "SubjectGroupId, SubjectGroupName, SubjectGroupSummaryName, SubjectGroupZiped, InsertTime, UpdateUserId, UpdateTime, ChangeTime, SubjectGroupCode"
+    },
+    {
+        "table":  "RoleLog",
+        "rows":  45,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "MessageReceiver",
+        "rows":  41,
+        "columns":  "MessageReceiverReadTime, MessageReceiverReadTimeSolar, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "CookieStatusGroupLog",
+        "rows":  36,
+        "columns":  "CookieStatusGroupId, CookieStatusGroupName, CookieStatusGroupZiped, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "GeneralVariable",
+        "rows":  36,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "Region",
+        "rows":  33,
+        "columns":  "RegionId, RegionName, RegionSummaryName, RegionZiped, RegionPopulation, RegionExtent, DepartmentId, InsertTime, UpdateUserId, UpdateTime, ChangeTime, RegionIsActive"
+    },
+    {
+        "table":  "SubjectNature",
+        "rows":  30,
+        "columns":  "SubjectNatureId, SubjectNatureName, SubjectNatureSummaryName, SubjectNatureZiped, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "CookieStatus",
+        "rows":  30,
+        "columns":  "CookieStatusId, CookieStatusName, CookieStatusSummaryName, CookieStatusZiped, CookieStatusIsActive, CookieStatusIsUrbanRelated, CookieStatusCitizenDescription, CookieStatusValue, CookieStatusHasDepartment, CookieStatusHasMessageCode, CookieStatusHasTimer, CookieStatusHasAgentCode, CookieStatusIsRefer, CookieStatusIsRefund, CookieStatusIsEditable, CookieStatusCleanStack, CookieStatusGroupId, CookieStatusVoice, InsertTime, UpdateUserId, UpdateTime, ChangeTime, CookieStatusNameCitizen, CookieStatusFinished, IsNotEffectOnTimeBasedReports, CookieStatusAttachmentCount"
+    },
+    {
+        "table":  "TerminalStatus",
+        "rows":  29,
+        "columns":  "CookieStatusId"
+    },
+    {
+        "table":  "ZoneLog",
+        "rows":  28,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "Job",
+        "rows":  25,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "DepartmentTypeLog",
+        "rows":  25,
+        "columns":  "DepartmentTypeId, DepartmentTypeName, DepartmentTypeZiped, InsertTime, UpdateUserId, UpdateTime, ChangeTime, DepartmentTypeShowIsChart, DepartmentTypeSummaryName, DepartmentTypeChartName"
+    },
+    {
+        "table":  "CenterCategory",
+        "rows":  19,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime"
+    },
+    {
+        "table":  "DepartmentType",
+        "rows":  18,
+        "columns":  "DepartmentTypeId, DepartmentTypeName, DepartmentTypeZiped, InsertTime, UpdateUserId, UpdateTime, ChangeTime, DepartmentTypeShowIsChart, DepartmentTypeSummaryName, DepartmentTypeChartName"
+    },
+    {
+        "table":  "GeneralVariableLog",
+        "rows":  17,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "Role",
+        "rows":  15,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "FeatureLog",
+        "rows":  11,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "CallLog",
+        "rows":  11,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime, Referenceid"
+    },
+    {
+        "table":  "CookieChannel",
+        "rows":  10,
+        "columns":  "CookieChannelId, CookieChannelName, CookieChannelEnglishName, CookieChannelZiped, CookieChannelIsDefault, CookieChannelIsAutomatic, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "TotalSystem",
+        "rows":  10,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "CookieHint",
+        "rows":  8,
+        "columns":  "CookieHintTime, CookieHintTimeSolar, InsertTime, UpdateUserId, UpdateTime, ChangeTime, CookieHintAttachmentsCount"
+    },
+    {
+        "table":  "Zone",
+        "rows":  8,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "FlowLog",
+        "rows":  7,
+        "columns":  "DepartmentTypeId, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "CookieChannelLog",
+        "rows":  7,
+        "columns":  "CookieChannelId, CookieChannelName, CookieChannelEnglishName, CookieChannelZiped, CookieChannelIsDefault, CookieChannelIsAutomatic, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "AgentGroupMembershipLog",
+        "rows":  6,
+        "columns":  "AgentGroupMembershipExpireTime, AgentGroupMembershipExpireTimeSolar, AgentGroupMembershipCardIssueDate, AgentGroupMembershipCardIssueDateSolar, AgentStatusId, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "SubjectPriorityLog",
+        "rows":  6,
+        "columns":  "SubjectPriorityId, SubjectPriorityName, SubjectPrioritySummaryName, SubjectPriorityZiped, InsertTime, UpdateUserId, UpdateTime, ChangeTime, SubjectPriorityIndex"
+    },
+    {
+        "table":  "CookieType",
+        "rows":  5,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "AgentStatus",
+        "rows":  5,
+        "columns":  "AgentStatusId, AgentStatusName, AgentStatusZiped, AgentStatusIsActive, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "CallReceivedType",
+        "rows":  5,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "EducationType",
+        "rows":  5,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "CookieStatusGroup",
+        "rows":  5,
+        "columns":  "CookieStatusGroupId, CookieStatusGroupName, CookieStatusGroupZiped, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "WorkspaceLog",
+        "rows":  4,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "AgentGroup",
+        "rows":  4,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "GenderLog",
+        "rows":  4,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "Flow",
+        "rows":  4,
+        "columns":  "DepartmentTypeId, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "SubjectClass",
+        "rows":  4,
+        "columns":  "SubjectClassId, SubjectClassName, SubjectClassZiped, SubjectClassSummaryName, SubjectClassIsCookieTypeDefault, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "Gender",
+        "rows":  3,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "FeedbackStatus",
+        "rows":  3,
+        "columns":  "CookieStatusId, InsertTime"
+    },
+    {
+        "table":  "ExternalService",
+        "rows":  3,
+        "columns":  "ExternalServiceStatusCode, ExternalServiceStatusMessage, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "CookieTypeLog",
+        "rows":  3,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "SubjectNatureLog",
+        "rows":  3,
+        "columns":  "SubjectNatureId, SubjectNatureName, SubjectNatureSummaryName, SubjectNatureZiped, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "SubjectPriority",
+        "rows":  3,
+        "columns":  "SubjectPriorityId, SubjectPriorityName, SubjectPrioritySummaryName, SubjectPriorityZiped, InsertTime, UpdateUserId, UpdateTime, ChangeTime, SubjectPriorityIndex"
+    },
+    {
+        "table":  "Workspace",
+        "rows":  2,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "FlowNodeCauseLog",
+        "rows":  2,
+        "columns":  "FlowNodeCauseId, CookieCauseId, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "WorkspaceMemberLog",
+        "rows":  2,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "MaritalStatus",
+        "rows":  2,
+        "columns":  "MaritalStatusId, MaritalStatusName, MaritalStatusZiped, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "SubjectClassLog",
+        "rows":  2,
+        "columns":  "SubjectClassId, SubjectClassName, SubjectClassZiped, SubjectClassSummaryName, SubjectClassIsCookieTypeDefault, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "FeatureTypeLog",
+        "rows":  2,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "CookieHintType",
+        "rows":  2,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "CookieCause",
+        "rows":  1,
+        "columns":  "CookieCauseId, CookieCauseName, CookieCauseZiped, InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "Library",
+        "rows":  1,
+        "columns":  "InsertTime, UpdateUserId, UpdateTime, ChangeTime"
+    },
+    {
+        "table":  "CookieFlowDeleteLog",
+        "rows":  1,
+        "columns":  "CookieFlowIsCritical, CookieFlowTime, CookieFlowTimeSolar, CookieFlowFinishTime, CookieFlowFinishTimeSolar, CookieFlowActionTime, CookieFlowActionTimeSolar, CookieFlowPreActionTime, CookieFlowPreActionTimeSolar, CookieFlowRequiredTime, CookieFlowRequiredTimeSolar, CookieFlowDuration, CookieFlowAttachmentsCount, CookieFlowPersuitsCount, CookieFlowHintsCount, CookieFlowLinkedCount, CookieFlowDeadlineTotal, CookieFlowDeadlineTotalTime, CookieFlowDeadlineTotalTimeSolar, CookieFlowDeadlineCoef, CookieFlowDeadline, CookieFlowDeadlineTime, CookieFlowDeadlineTimeSolar, CookieStatusId, CookieCauseId, CookieChannelId, PreCookieStatusId, SubjectId, SubjectGroupId, SubjectPriorityId, SubjectNatureId, SubjectClassId, DepartmentId, CookieFlowCancelTime, CookieFlowCancelTimeSolar, InsertTime, UpdateUserId, UpdateTime, ChangeTime, CookieFlowDiscontentCount, CookieFlowDiscontentTime, CookieFlowDiscontentTimeSolar, CookieFlowVisitedTime, CookieFlowVisitedTimeSolar, CookieflowRequireTimeCorroborant, CookieFlowTakeTime, CookieFlowDelayTime, CookieFlowScore, ReferToUserId, SatisfactionScore, InsertTimeLog"
+    }
+]

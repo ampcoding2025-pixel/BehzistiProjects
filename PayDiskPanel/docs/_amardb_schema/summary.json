@@ -1,0 +1,487 @@
+{
+  "scannedAt": "2026-11-14T11:19:32.999Z",
+  "server": "10.1.0.157",
+  "database": "AmarDB",
+  "policy": "metadata SELECT only",
+  "counts": {
+    "tables": 261,
+    "columns": 2165,
+    "fks": 0,
+    "views": 1,
+    "relevantProcs": 0,
+    "paydiskRelatedTables": 94
+  },
+  "paydiskRelatedTables": [
+    {
+      "schema": "dbo",
+      "table": "AmbiliopyCenter",
+      "approxRows": 2301
+    },
+    {
+      "schema": "dbo",
+      "table": "AsibPersons",
+      "approxRows": 183170
+    },
+    {
+      "schema": "dbo",
+      "table": "AsibReportCenterDocuments",
+      "approxRows": 2
+    },
+    {
+      "schema": "dbo",
+      "table": "AsibReportCenters",
+      "approxRows": 111
+    },
+    {
+      "schema": "dbo",
+      "table": "AsibReportCenterTypes",
+      "approxRows": 233
+    },
+    {
+      "schema": "dbo",
+      "table": "CardPaymentCenterBudjets",
+      "approxRows": 0
+    },
+    {
+      "schema": "dbo",
+      "table": "CardPaymentCenterBudjetTransfers",
+      "approxRows": 0
+    },
+    {
+      "schema": "dbo",
+      "table": "CardPaymentProvinceBudjets",
+      "approxRows": 3
+    },
+    {
+      "schema": "dbo",
+      "table": "CardPaymentProvinceBudjetTransfers",
+      "approxRows": 1
+    },
+    {
+      "schema": "dbo",
+      "table": "CardPaymentsSupplyLocationBudjets",
+      "approxRows": 1
+    },
+    {
+      "schema": "dbo",
+      "table": "CardPaymentSupplyLocations",
+      "approxRows": 1
+    },
+    {
+      "schema": "dbo",
+      "table": "Center",
+      "approxRows": 67775
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterAccount",
+      "approxRows": 16171
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterCatagory",
+      "approxRows": 20
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterCategoryQuestionarySchema",
+      "approxRows": 0
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterDocumentCategories",
+      "approxRows": 28
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterDocuments",
+      "approxRows": 371065
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterJob",
+      "approxRows": 78
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterOwningType",
+      "approxRows": 2
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterPersonnel",
+      "approxRows": 5018
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterRequestActionTypes",
+      "approxRows": 0
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterRequestDocuments",
+      "approxRows": 0
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterRequesters",
+      "approxRows": 2
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterRequests",
+      "approxRows": 0
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterSelfAssessmentItems",
+      "approxRows": 74
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterSelfAssessmentRegisteredItems",
+      "approxRows": 175824
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterSelfAssessmentRegistereds",
+      "approxRows": 2376
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterSelfAssessments",
+      "approxRows": 1
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterSelfAssessmentValidSubCategories",
+      "approxRows": 1
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterSubCatagory",
+      "approxRows": 199
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterType",
+      "approxRows": 9
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterUnit",
+      "approxRows": 18
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterWarn",
+      "approxRows": 0
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterWastageCategories",
+      "approxRows": 2
+    },
+    {
+      "schema": "dbo",
+      "table": "CenterWastages",
+      "approxRows": 11714
+    },
+    {
+      "schema": "dbo",
+      "table": "City",
+      "approxRows": 488
+    },
+    {
+      "schema": "dbo",
+      "table": "ContinusNegativePayment",
+      "approxRows": 67
+    },
+    {
+      "schema": "dbo",
+      "table": "ContinusNegativePaymentFireRequest",
+      "approxRows": 1752
+    },
+    {
+      "schema": "dbo",
+      "table": "ContinusNegativePaymentRequest",
+      "approxRows": 1488
+    },
+    {
+      "schema": "dbo",
+      "table": "ContinusPayment",
+      "approxRows": 2187421
+    },
+    {
+      "schema": "dbo",
+      "table": "ContinusPaymentCityThreshold",
+      "approxRows": 5426
+    },
+    {
+      "schema": "dbo",
+      "table": "ContinusPaymentDefenition",
+      "approxRows": 418
+    },
+    {
+      "schema": "dbo",
+      "table": "ContinusPaymentFireRequest",
+      "approxRows": 1285068
+    },
+    {
+      "schema": "dbo",
+      "table": "ContinusPaymentHistory",
+      "approxRows": 1241295
+    },
+    {
+      "schema": "dbo",
+      "table": "ContinusPaymentProvinceSupplyLocationThresholds",
+      "approxRows": 489
+    },
+    {
+      "schema": "dbo",
+      "table": "ContinusPaymentProvinceThreshold",
+      "approxRows": 32
+    },
+    {
+      "schema": "dbo",
+      "table": "ContinusPaymentRequest",
+      "approxRows": 2901191
+    },
+    {
+      "schema": "dbo",
+      "table": "ContinusPaymentSupplyLocation",
+      "approxRows": 43
+    },
+    {
+      "schema": "dbo",
+      "table": "ElecronicPercasePaymentCenterBalances",
+      "approxRows": 9014
+    },
+    {
+      "schema": "dbo",
+      "table": "ElecronicPercasePaymentProvinceBalances",
+      "approxRows": 1353
+    },
+    {
+      "schema": "dbo",
+      "table": "IBN_AccountNumber",
+      "approxRows": 1584038
+    },
+    {
+      "schema": "dbo",
+      "table": "IBNAccountNumber14050505",
+      "approxRows": 1759384
+    },
+    {
+      "schema": "dbo",
+      "table": "InsuranceSupplyLocation",
+      "approxRows": 3
+    },
+    {
+      "schema": "dbo",
+      "table": "MakeOver",
+      "approxRows": 1220211
+    },
+    {
+      "schema": "dbo",
+      "table": "MakeOverActivity",
+      "approxRows": 119
+    },
+    {
+      "schema": "dbo",
+      "table": "MakeOverCenterThresholds",
+      "approxRows": 2677
+    },
+    {
+      "schema": "dbo",
+      "table": "MakeOverFireReasons",
+      "approxRows": 3
+    },
+    {
+      "schema": "dbo",
+      "table": "MakeOverFireRequests",
+      "approxRows": 0
+    },
+    {
+      "schema": "dbo",
+      "table": "MakeOverProvinceThreshold",
+      "approxRows": 1439
+    },
+    {
+      "schema": "dbo",
+      "table": "MakeOverRequest",
+      "approxRows": 1365872
+    },
+    {
+      "schema": "dbo",
+      "table": "MakeOverRequestOLD",
+      "approxRows": 922
+    },
+    {
+      "schema": "dbo",
+      "table": "MakeOverSupplyLocation",
+      "approxRows": 80
+    },
+    {
+      "schema": "dbo",
+      "table": "MakeOverSupplyLocationCenterCatagory",
+      "approxRows": 281
+    },
+    {
+      "schema": "dbo",
+      "table": "MakeOverSupplyLocationCenterCatagoryThreshold",
+      "approxRows": 0
+    },
+    {
+      "schema": "dbo",
+      "table": "MakeOverTransactions",
+      "approxRows": 795
+    },
+    {
+      "schema": "dbo",
+      "table": "MappedPersonnel",
+      "approxRows": 69248
+    },
+    {
+      "schema": "dbo",
+      "table": "OldCenter",
+      "approxRows": 29334
+    },
+    {
+      "schema": "dbo",
+      "table": "PayedContinusPayment",
+      "approxRows": 319123803
+    },
+    {
+      "schema": "dbo",
+      "table": "PayedMakeOvers",
+      "approxRows": 35150087
+    },
+    {
+      "schema": "dbo",
+      "table": "PayedTransaction",
+      "approxRows": 771
+    },
+    {
+      "schema": "dbo",
+      "table": "PermitKindCenterCatagory",
+      "approxRows": 55
+    },
+    {
+      "schema": "dbo",
+      "table": "Person",
+      "approxRows": 25430194
+    },
+    {
+      "schema": "dbo",
+      "table": "PersonAssessment",
+      "approxRows": 1125888
+    },
+    {
+      "schema": "dbo",
+      "table": "PersonComments",
+      "approxRows": 0
+    },
+    {
+      "schema": "dbo",
+      "table": "PersonDetail",
+      "approxRows": 0
+    },
+    {
+      "schema": "dbo",
+      "table": "PersonDocumentCategories",
+      "approxRows": 44
+    },
+    {
+      "schema": "dbo",
+      "table": "PersonDocuments",
+      "approxRows": 4312874
+    },
+    {
+      "schema": "dbo",
+      "table": "PersonEduSpecification",
+      "approxRows": 2745228
+    },
+    {
+      "schema": "dbo",
+      "table": "PersonHealthServiceUsed",
+      "approxRows": 0
+    },
+    {
+      "schema": "dbo",
+      "table": "PersonIllness",
+      "approxRows": 212282
+    },
+    {
+      "schema": "dbo",
+      "table": "PersonIncomeSource",
+      "approxRows": 8
+    },
+    {
+      "schema": "dbo",
+      "table": "PersonJobSpecification",
+      "approxRows": 3005599
+    },
+    {
+      "schema": "dbo",
+      "table": "PersonJobState",
+      "approxRows": 5
+    },
+    {
+      "schema": "dbo",
+      "table": "Personnel",
+      "approxRows": 69248
+    },
+    {
+      "schema": "dbo",
+      "table": "PersonnelInsurance",
+      "approxRows": 0
+    },
+    {
+      "schema": "dbo",
+      "table": "PersonPicture",
+      "approxRows": 1767342
+    },
+    {
+      "schema": "dbo",
+      "table": "PersonRegistrationReason",
+      "approxRows": 48
+    },
+    {
+      "schema": "dbo",
+      "table": "PersonTransaction",
+      "approxRows": 0
+    },
+    {
+      "schema": "dbo",
+      "table": "Province",
+      "approxRows": 33
+    },
+    {
+      "schema": "dbo",
+      "table": "ShoppingCenterAssessments",
+      "approxRows": 8724
+    },
+    {
+      "schema": "dbo",
+      "table": "ShoppingCenterCatagories",
+      "approxRows": 9
+    },
+    {
+      "schema": "dbo",
+      "table": "ShoppingCenters",
+      "approxRows": 9605
+    },
+    {
+      "schema": "dbo",
+      "table": "SupplyLocation",
+      "approxRows": 69
+    },
+    {
+      "schema": "dbo",
+      "table": "TransferContinusPaymentFolder",
+      "approxRows": 180084
+    }
+  ],
+  "calculateAndRelatedProcs": []
+}

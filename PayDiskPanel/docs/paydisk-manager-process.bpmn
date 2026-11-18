@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  id="Definitions_PayDiskManager"
+  targetNamespace="http://paydisk.local/bpmn"
+  exporter="PayDiskPanel"
+  exporterVersion="1.0">
+
+  <bpmn:collaboration id="Collaboration_PayDisk">
+    <bpmn:participant id="Participant_PayDisk" name="PayDiskPanel (پنل جدید ستاد)" processRef="Process_PayDisk" />
+    <bpmn:participant id="Participant_Armaghan" name="Armaghan (سامانه موجود)" processRef="Process_Armaghan" />
+    <bpmn:participant id="Participant_Finance" name="واحد مالی (مشاهده‌گر / ادامه پرداخت)" processRef="Process_Finance" />
+    <bpmn:participant id="Participant_SQL" name="AmarDB @ 10.1.0.157 (primary; DB_Mostamary = replica)" processRef="Process_SQL" />
+
+    <bpmn:messageFlow id="MF_1" name="درخواست یارانه / Register+Calculate" sourceRef="Task_PD_RunYarane" targetRef="Task_AR_RegisterCalc" />
+    <bpmn:messageFlow id="MF_2" name="لیست افراد / CSV (Key2)" sourceRef="Task_AR_PersonList" targetRef="Task_PD_MarkFinance" />
+    <bpmn:messageFlow id="MF_3" name="تحویل به مالی + لینک تراکنش" sourceRef="Task_PD_MarkFinance" targetRef="Task_FIN_Continue" />
+    <bpmn:messageFlow id="MF_4" name="وضعیت / مشاهده تاریخچه" sourceRef="Task_FIN_ViewStatus" targetRef="Task_PD_History" />
+    <bpmn:messageFlow id="MF_5" name="EXEC Calculate* (whitelist)" sourceRef="Task_PD_RunMostamari" targetRef="Task_SQL_Exec" />
+    <bpmn:messageFlow id="MF_6" name="نتیجه محاسبه مستمری" sourceRef="Task_SQL_Exec" targetRef="Task_PD_Excel" />
+    <bpmn:messageFlow id="MF_7" name="اختیاری: CalculateMarakezYarane" sourceRef="Task_AR_RegisterCalc" targetRef="Task_SQL_Yarane" />
+  </bpmn:collaboration>
+
+  <!-- ========== PayDiskPanel ========== -->
+  <bpmn:process id="Process_PayDisk" name="PayDiskPanel" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_PD">
+      <bpmn:lane id="Lane_PD_Ops" name="اپراتور ستاد (۵ نفر)">
+        <bpmn:flowNodeRef>Start_PD</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_PD_Login</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_PD_Request</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_PD_Type</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_PD_RunMostamari</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_PD_Excel</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_PD_Download</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_PD_RunYarane</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_PD_MarkFinance</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_PD_History</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_PD_Logs</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_PD_Mostamari</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_PD_Yarane</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_PD_Join</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+
+    <bpmn:startEvent id="Start_PD" name="شروع ماه / نیاز به دیسکت">
+      <bpmn:outgoing>Flow_PD_1</bpmn:outgoing>
+    </bpmn:startEvent>
+
+    <bpmn:task id="Task_PD_Login" name="ورود به پنل داخلی (فقط اینترانت ستاد)">
+      <bpmn:incoming>Flow_PD_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_PD_2</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_PD_Request" name="درخواست نوع دیسکت (~۳۸–۴۰ نوع)">
+      <bpmn:incoming>Flow_PD_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_PD_3</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:exclusiveGateway id="Gateway_PD_Type" name="مستمری یا یارانه؟" default="Flow_PD_Yarane">
+      <bpmn:incoming>Flow_PD_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_PD_Mostamari</bpmn:outgoing>
+      <bpmn:outgoing>Flow_PD_Yarane</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:task id="Task_PD_RunMostamari" name="Worker: اجرای اسکریپت/SP مستمری">
+      <bpmn:incoming>Flow_PD_Mostamari</bpmn:incoming>
+      <bpmn:outgoing>Flow_PD_4</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_PD_Excel" name="آماده‌سازی فایل اکسل پرداخت به افراد">
+      <bpmn:incoming>Flow_PD_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_PD_5</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_PD_Download" name="دانلود اکسل توسط اپراتور">
+      <bpmn:incoming>Flow_PD_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_PD_6</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:endEvent id="End_PD_Mostamari" name="دیسکت مستمری آماده">
+      <bpmn:incoming>Flow_PD_6</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:task id="Task_PD_RunYarane" name="Worker: درخواست محاسبه یارانه مراکز">
+      <bpmn:incoming>Flow_PD_Yarane</bpmn:incoming>
+      <bpmn:outgoing>Flow_PD_7</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_PD_MarkFinance" name="ثبت وضعیت «تحویل به مالی» + لینک ارمغان">
+      <bpmn:incoming>Flow_PD_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_PD_8</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:endEvent id="End_PD_Yarane" name="یارانه به مالی واگذار شد">
+      <bpmn:incoming>Flow_PD_8</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:task id="Task_PD_History" name="Grid تاریخچه: چه کسی / چه زمانی / وضعیت فایل">
+      <bpmn:incoming>Flow_PD_HistIn</bpmn:incoming>
+      <bpmn:outgoing>Flow_PD_Hist</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_PD_Logs" name="بررسی لاگ خطا در صورت مشکل فایل">
+      <bpmn:incoming>Flow_PD_Hist</bpmn:incoming>
+      <bpmn:outgoing>Flow_PD_Hist2</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:exclusiveGateway id="Gateway_PD_Join" name="پاسخگویی به حوزه‌ها">
+      <bpmn:incoming>Flow_PD_Hist2</bpmn:incoming>
+      <bpmn:outgoing>Flow_PD_HistIn</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:sequenceFlow id="Flow_PD_1" sourceRef="Start_PD" targetRef="Task_PD_Login" />
+    <bpmn:sequenceFlow id="Flow_PD_2" sourceRef="Task_PD_Login" targetRef="Task_PD_Request" />
+    <bpmn:sequenceFlow id="Flow_PD_3" sourceRef="Task_PD_Request" targetRef="Gateway_PD_Type" />
+    <bpmn:sequenceFlow id="Flow_PD_Mostamari" name="مستمری → حساب افراد" sourceRef="Gateway_PD_Type" targetRef="Task_PD_RunMostamari" />
+    <bpmn:sequenceFlow id="Flow_PD_Yarane" name="یارانه → حساب مراکز" sourceRef="Gateway_PD_Type" targetRef="Task_PD_RunYarane" />
+    <bpmn:sequenceFlow id="Flow_PD_4" sourceRef="Task_PD_RunMostamari" targetRef="Task_PD_Excel" />
+    <bpmn:sequenceFlow id="Flow_PD_5" sourceRef="Task_PD_Excel" targetRef="Task_PD_Download" />
+    <bpmn:sequenceFlow id="Flow_PD_6" sourceRef="Task_PD_Download" targetRef="End_PD_Mostamari" />
+    <bpmn:sequenceFlow id="Flow_PD_7" sourceRef="Task_PD_RunYarane" targetRef="Task_PD_MarkFinance" />
+    <bpmn:sequenceFlow id="Flow_PD_8" sourceRef="Task_PD_MarkFinance" targetRef="End_PD_Yarane" />
+    <bpmn:sequenceFlow id="Flow_PD_Hist" sourceRef="Task_PD_History" targetRef="Task_PD_Logs" />
+    <bpmn:sequenceFlow id="Flow_PD_Hist2" sourceRef="Task_PD_Logs" targetRef="Gateway_PD_Join" />
+    <bpmn:sequenceFlow id="Flow_PD_HistIn" sourceRef="Gateway_PD_Join" targetRef="Task_PD_History" />
+  </bpmn:process>
+
+  <!-- ========== Armaghan ========== -->
+  <bpmn:process id="Process_Armaghan" name="Armaghan" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_AR">
+      <bpmn:lane id="Lane_AR" name="MakeOver / Diskette API">
+        <bpmn:flowNodeRef>Start_AR</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AR_RegisterCalc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AR_PersonList</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AR_OptionalDisk</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_AR</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+
+    <bpmn:startEvent id="Start_AR" name="دریافت دستور از PayDisk">
+      <bpmn:outgoing>Flow_AR_1</bpmn:outgoing>
+    </bpmn:startEvent>
+
+    <bpmn:task id="Task_AR_RegisterCalc" name="تراکنش ماهانه + محاسبه (Register / Calculate یا UI ... )">
+      <bpmn:incoming>Flow_AR_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_AR_2</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_AR_PersonList" name="تهیه لیست افراد (GetListMakeover → Key2 CSV)">
+      <bpmn:incoming>Flow_AR_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_AR_3</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_AR_OptionalDisk" name="دیسکت بانک (GetMakeOver → Key3) — معمولاً خارج از پنل جدید">
+      <bpmn:incoming>Flow_AR_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_AR_4</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:endEvent id="End_AR" name="داده یارانه در ارمغان آماده">
+      <bpmn:incoming>Flow_AR_4</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:sequenceFlow id="Flow_AR_1" sourceRef="Start_AR" targetRef="Task_AR_RegisterCalc" />
+    <bpmn:sequenceFlow id="Flow_AR_2" sourceRef="Task_AR_RegisterCalc" targetRef="Task_AR_PersonList" />
+    <bpmn:sequenceFlow id="Flow_AR_3" sourceRef="Task_AR_PersonList" targetRef="Task_AR_OptionalDisk" />
+    <bpmn:sequenceFlow id="Flow_AR_4" sourceRef="Task_AR_OptionalDisk" targetRef="End_AR" />
+  </bpmn:process>
+
+  <!-- ========== Finance ========== -->
+  <bpmn:process id="Process_Finance" name="Finance" isExecutable="false">
+    <bpmn:startEvent id="Start_FIN" name="اطلاع تحویل یارانه">
+      <bpmn:outgoing>Flow_FIN_1</bpmn:outgoing>
+    </bpmn:startEvent>
+
+    <bpmn:task id="Task_FIN_ViewStatus" name="مشاهده وضعیت در PayDisk (نقش finance_viewer)">
+      <bpmn:incoming>Flow_FIN_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_FIN_2</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_FIN_Continue" name="ادامه فرآیند در سامانه اختصاصی مالی / ارمغان">
+      <bpmn:incoming>Flow_FIN_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_FIN_3</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:endEvent id="End_FIN" name="پرداخت مراکز انجام شد">
+      <bpmn:incoming>Flow_FIN_3</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:sequenceFlow id="Flow_FIN_1" sourceRef="Start_FIN" targetRef="Task_FIN_ViewStatus" />
+    <bpmn:sequenceFlow id="Flow_FIN_2" sourceRef="Task_FIN_ViewStatus" targetRef="Task_FIN_Continue" />
+    <bpmn:sequenceFlow id="Flow_FIN_3" sourceRef="Task_FIN_Continue" targetRef="End_FIN" />
+  </bpmn:process>
+
+  <!-- ========== SQL ========== -->
+  <bpmn:process id="Process_SQL" name="SQL" isExecutable="false">
+    <bpmn:startEvent id="Start_SQL" name="فراخوانی از Worker">
+      <bpmn:outgoing>Flow_SQL_1</bpmn:outgoing>
+    </bpmn:startEvent>
+
+    <bpmn:task id="Task_SQL_Exec" name="SP مستمری: CalculateTransaction / HaghParastari / Emdad / …">
+      <bpmn:incoming>Flow_SQL_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_SQL_2</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_SQL_Yarane" name="اختیاری: CalculateMarakezYarane(@TrId, @SupplyLocationId)">
+      <bpmn:incoming>Flow_SQL_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_SQL_3</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:endEvent id="End_SQL" name="محاسبه در DB تمام">
+      <bpmn:incoming>Flow_SQL_3</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:sequenceFlow id="Flow_SQL_1" sourceRef="Start_SQL" targetRef="Task_SQL_Exec" />
+    <bpmn:sequenceFlow id="Flow_SQL_2" sourceRef="Task_SQL_Exec" targetRef="Task_SQL_Yarane" />
+    <bpmn:sequenceFlow id="Flow_SQL_3" sourceRef="Task_SQL_Yarane" targetRef="End_SQL" />
+  </bpmn:process>
+
+  <!-- ========== Diagram ========== -->
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_PayDisk">
+
+      <!-- Pools -->
+      <bpmndi:BPMNShape id="Shape_Participant_PayDisk" bpmnElement="Participant_PayDisk" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="1180" height="320" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_PD_Ops" bpmnElement="Lane_PD_Ops" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="1150" height="320" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Shape_Participant_Armaghan" bpmnElement="Participant_Armaghan" isHorizontal="true">
+        <dc:Bounds x="160" y="440" width="1180" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_AR" bpmnElement="Lane_AR" isHorizontal="true">
+        <dc:Bounds x="190" y="440" width="1150" height="200" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Shape_Participant_Finance" bpmnElement="Participant_Finance" isHorizontal="true">
+        <dc:Bounds x="160" y="680" width="1180" height="160" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Shape_Participant_SQL" bpmnElement="Participant_SQL" isHorizontal="true">
+        <dc:Bounds x="160" y="880" width="1180" height="160" />
+      </bpmndi:BPMNShape>
+
+      <!-- PayDisk nodes -->
+      <bpmndi:BPMNShape id="Shape_Start_PD" bpmnElement="Start_PD">
+        <dc:Bounds x="232" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PD_Login" bpmnElement="Task_PD_Login">
+        <dc:Bounds x="300" y="180" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PD_Request" bpmnElement="Task_PD_Request">
+        <dc:Bounds x="450" y="180" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_PD_Type" bpmnElement="Gateway_PD_Type" isMarkerVisible="true">
+        <dc:Bounds x="620" y="195" width="50" height="50" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Shape_Task_PD_RunMostamari" bpmnElement="Task_PD_RunMostamari">
+        <dc:Bounds x="710" y="120" width="140" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PD_Excel" bpmnElement="Task_PD_Excel">
+        <dc:Bounds x="880" y="120" width="130" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PD_Download" bpmnElement="Task_PD_Download">
+        <dc:Bounds x="1040" y="120" width="120" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_PD_Mostamari" bpmnElement="End_PD_Mostamari">
+        <dc:Bounds x="1202" y="137" width="36" height="36" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Shape_Task_PD_RunYarane" bpmnElement="Task_PD_RunYarane">
+        <dc:Bounds x="710" y="280" width="140" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PD_MarkFinance" bpmnElement="Task_PD_MarkFinance">
+        <dc:Bounds x="900" y="280" width="160" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_PD_Yarane" bpmnElement="End_PD_Yarane">
+        <dc:Bounds x="1122" y="297" width="36" height="36" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Shape_Task_PD_History" bpmnElement="Task_PD_History">
+        <dc:Bounds x="300" y="300" width="140" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PD_Logs" bpmnElement="Task_PD_Logs">
+        <dc:Bounds x="460" y="300" width="130" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_PD_Join" bpmnElement="Gateway_PD_Join" isMarkerVisible="true">
+        <dc:Bounds x="240" y="310" width="40" height="40" />
+      </bpmndi:BPMNShape>
+
+      <!-- Armaghan nodes -->
+      <bpmndi:BPMNShape id="Shape_Start_AR" bpmnElement="Start_AR">
+        <dc:Bounds x="232" y="512" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_AR_RegisterCalc" bpmnElement="Task_AR_RegisterCalc">
+        <dc:Bounds x="320" y="490" width="180" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_AR_PersonList" bpmnElement="Task_AR_PersonList">
+        <dc:Bounds x="540" y="490" width="180" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_AR_OptionalDisk" bpmnElement="Task_AR_OptionalDisk">
+        <dc:Bounds x="760" y="490" width="200" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_AR" bpmnElement="End_AR">
+        <dc:Bounds x="1012" y="512" width="36" height="36" />
+      </bpmndi:BPMNShape>
+
+      <!-- Finance nodes -->
+      <bpmndi:BPMNShape id="Shape_Start_FIN" bpmnElement="Start_FIN">
+        <dc:Bounds x="232" y="732" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_FIN_ViewStatus" bpmnElement="Task_FIN_ViewStatus">
+        <dc:Bounds x="320" y="710" width="180" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_FIN_Continue" bpmnElement="Task_FIN_Continue">
+        <dc:Bounds x="560" y="710" width="200" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_FIN" bpmnElement="End_FIN">
+        <dc:Bounds x="822" y="732" width="36" height="36" />
+      </bpmndi:BPMNShape>
+
+      <!-- SQL nodes -->
+      <bpmndi:BPMNShape id="Shape_Start_SQL" bpmnElement="Start_SQL">
+        <dc:Bounds x="232" y="932" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_SQL_Exec" bpmnElement="Task_SQL_Exec">
+        <dc:Bounds x="320" y="910" width="220" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_SQL_Yarane" bpmnElement="Task_SQL_Yarane">
+        <dc:Bounds x="580" y="910" width="220" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_SQL" bpmnElement="End_SQL">
+        <dc:Bounds x="852" y="932" width="36" height="36" />
+      </bpmndi:BPMNShape>
+
+      <!-- Sequence flows PayDisk -->
+      <bpmndi:BPMNEdge id="Edge_Flow_PD_1" bpmnElement="Flow_PD_1">
+        <di:waypoint x="268" y="220" />
+        <di:waypoint x="300" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PD_2" bpmnElement="Flow_PD_2">
+        <di:waypoint x="420" y="220" />
+        <di:waypoint x="450" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PD_3" bpmnElement="Flow_PD_3">
+        <di:waypoint x="580" y="220" />
+        <di:waypoint x="620" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PD_Mostamari" bpmnElement="Flow_PD_Mostamari">
+        <di:waypoint x="645" y="195" />
+        <di:waypoint x="645" y="155" />
+        <di:waypoint x="710" y="155" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PD_Yarane" bpmnElement="Flow_PD_Yarane">
+        <di:waypoint x="645" y="245" />
+        <di:waypoint x="645" y="315" />
+        <di:waypoint x="710" y="315" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PD_4" bpmnElement="Flow_PD_4">
+        <di:waypoint x="850" y="155" />
+        <di:waypoint x="880" y="155" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PD_5" bpmnElement="Flow_PD_5">
+        <di:waypoint x="1010" y="155" />
+        <di:waypoint x="1040" y="155" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PD_6" bpmnElement="Flow_PD_6">
+        <di:waypoint x="1160" y="155" />
+        <di:waypoint x="1202" y="155" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PD_7" bpmnElement="Flow_PD_7">
+        <di:waypoint x="850" y="315" />
+        <di:waypoint x="900" y="315" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PD_8" bpmnElement="Flow_PD_8">
+        <di:waypoint x="1060" y="315" />
+        <di:waypoint x="1122" y="315" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PD_Hist" bpmnElement="Flow_PD_Hist">
+        <di:waypoint x="440" y="335" />
+        <di:waypoint x="460" y="335" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PD_Hist2" bpmnElement="Flow_PD_Hist2">
+        <di:waypoint x="460" y="335" />
+        <di:waypoint x="280" y="335" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PD_HistIn" bpmnElement="Flow_PD_HistIn">
+        <di:waypoint x="280" y="330" />
+        <di:waypoint x="300" y="335" />
+      </bpmndi:BPMNEdge>
+
+      <!-- Armaghan flows -->
+      <bpmndi:BPMNEdge id="Edge_Flow_AR_1" bpmnElement="Flow_AR_1">
+        <di:waypoint x="268" y="530" />
+        <di:waypoint x="320" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AR_2" bpmnElement="Flow_AR_2">
+        <di:waypoint x="500" y="530" />
+        <di:waypoint x="540" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AR_3" bpmnElement="Flow_AR_3">
+        <di:waypoint x="720" y="530" />
+        <di:waypoint x="760" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AR_4" bpmnElement="Flow_AR_4">
+        <di:waypoint x="960" y="530" />
+        <di:waypoint x="1012" y="530" />
+      </bpmndi:BPMNEdge>
+
+      <!-- Finance flows -->
+      <bpmndi:BPMNEdge id="Edge_Flow_FIN_1" bpmnElement="Flow_FIN_1">
+        <di:waypoint x="268" y="750" />
+        <di:waypoint x="320" y="750" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_FIN_2" bpmnElement="Flow_FIN_2">
+        <di:waypoint x="500" y="750" />
+        <di:waypoint x="560" y="750" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_FIN_3" bpmnElement="Flow_FIN_3">
+        <di:waypoint x="760" y="750" />
+        <di:waypoint x="822" y="750" />
+      </bpmndi:BPMNEdge>
+
+      <!-- SQL flows -->
+      <bpmndi:BPMNEdge id="Edge_Flow_SQL_1" bpmnElement="Flow_SQL_1">
+        <di:waypoint x="268" y="950" />
+        <di:waypoint x="320" y="950" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_SQL_2" bpmnElement="Flow_SQL_2">
+        <di:waypoint x="540" y="950" />
+        <di:waypoint x="580" y="950" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_SQL_3" bpmnElement="Flow_SQL_3">
+        <di:waypoint x="800" y="950" />
+        <di:waypoint x="852" y="950" />
+      </bpmndi:BPMNEdge>
+
+      <!-- Message flows -->
+      <bpmndi:BPMNEdge id="Edge_MF_1" bpmnElement="MF_1">
+        <di:waypoint x="780" y="350" />
+        <di:waypoint x="780" y="420" />
+        <di:waypoint x="410" y="420" />
+        <di:waypoint x="410" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MF_2" bpmnElement="MF_2">
+        <di:waypoint x="630" y="490" />
+        <di:waypoint x="630" y="400" />
+        <di:waypoint x="980" y="400" />
+        <di:waypoint x="980" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MF_3" bpmnElement="MF_3">
+        <di:waypoint x="980" y="350" />
+        <di:waypoint x="980" y="660" />
+        <di:waypoint x="660" y="660" />
+        <di:waypoint x="660" y="710" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MF_4" bpmnElement="MF_4">
+        <di:waypoint x="410" y="710" />
+        <di:waypoint x="410" y="420" />
+        <di:waypoint x="370" y="420" />
+        <di:waypoint x="370" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MF_5" bpmnElement="MF_5">
+        <di:waypoint x="780" y="190" />
+        <di:waypoint x="780" y="860" />
+        <di:waypoint x="430" y="860" />
+        <di:waypoint x="430" y="910" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MF_6" bpmnElement="MF_6">
+        <di:waypoint x="430" y="910" />
+        <di:waypoint x="430" y="860" />
+        <di:waypoint x="945" y="860" />
+        <di:waypoint x="945" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MF_7" bpmnElement="MF_7">
+        <di:waypoint x="410" y="570" />
+        <di:waypoint x="410" y="860" />
+        <di:waypoint x="690" y="860" />
+        <di:waypoint x="690" y="910" />
+      </bpmndi:BPMNEdge>
+
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

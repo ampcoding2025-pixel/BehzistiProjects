@@ -1,0 +1,1307 @@
+[
+  {
+    "schema": "dbo",
+    "table": "AmbiliopyCenter",
+    "approxRows": 2301
+  },
+  {
+    "schema": "dbo",
+    "table": "AmbiliopyPrimeVisit",
+    "approxRows": 35205185
+  },
+  {
+    "schema": "dbo",
+    "table": "AmbiliopySpecificVisit",
+    "approxRows": 1126842
+  },
+  {
+    "schema": "dbo",
+    "table": "AmbiliopyYears",
+    "approxRows": 19
+  },
+  {
+    "schema": "dbo",
+    "table": "Application",
+    "approxRows": 15
+  },
+  {
+    "schema": "dbo",
+    "table": "AsibEsteghals",
+    "approxRows": 220
+  },
+  {
+    "schema": "dbo",
+    "table": "AsibPersons",
+    "approxRows": 183170
+  },
+  {
+    "schema": "dbo",
+    "table": "AsibReportActionCategories",
+    "approxRows": 5
+  },
+  {
+    "schema": "dbo",
+    "table": "AsibReportActions",
+    "approxRows": 21
+  },
+  {
+    "schema": "dbo",
+    "table": "AsibReportCenterDocuments",
+    "approxRows": 2
+  },
+  {
+    "schema": "dbo",
+    "table": "AsibReportCenters",
+    "approxRows": 111
+  },
+  {
+    "schema": "dbo",
+    "table": "AsibReportCenterTypes",
+    "approxRows": 233
+  },
+  {
+    "schema": "dbo",
+    "table": "AsibReportDocuments",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "AsibReports",
+    "approxRows": 79329
+  },
+  {
+    "schema": "dbo",
+    "table": "AsibReportTypes",
+    "approxRows": 101665
+  },
+  {
+    "schema": "dbo",
+    "table": "AsibSourceDoneActions",
+    "approxRows": 1287403
+  },
+  {
+    "schema": "dbo",
+    "table": "AsibSources",
+    "approxRows": 5
+  },
+  {
+    "schema": "dbo",
+    "table": "AsibSourceTypeMapping",
+    "approxRows": 67
+  },
+  {
+    "schema": "dbo",
+    "table": "AsibTypes",
+    "approxRows": 30
+  },
+  {
+    "schema": "dbo",
+    "table": "Associations",
+    "approxRows": 170934
+  },
+  {
+    "schema": "dbo",
+    "table": "AsyncExecResults",
+    "approxRows": 1171
+  },
+  {
+    "schema": "dbo",
+    "table": "Bank",
+    "approxRows": 36
+  },
+  {
+    "schema": "dbo",
+    "table": "Beneficents",
+    "approxRows": 65939
+  },
+  {
+    "schema": "dbo",
+    "table": "BuildingAssessments",
+    "approxRows": 1476406
+  },
+  {
+    "schema": "dbo",
+    "table": "CardPayment",
+    "approxRows": 830720
+  },
+  {
+    "schema": "dbo",
+    "table": "CardPaymentCenterBudjets",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "CardPaymentCenterBudjetTransfers",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "CardPaymentProvinceBudjets",
+    "approxRows": 3
+  },
+  {
+    "schema": "dbo",
+    "table": "CardPaymentProvinceBudjetTransfers",
+    "approxRows": 1
+  },
+  {
+    "schema": "dbo",
+    "table": "CardPaymentReason",
+    "approxRows": 8
+  },
+  {
+    "schema": "dbo",
+    "table": "CardPaymentsBudjets",
+    "approxRows": 1
+  },
+  {
+    "schema": "dbo",
+    "table": "CardPaymentsSupplyLocationBudjets",
+    "approxRows": 1
+  },
+  {
+    "schema": "dbo",
+    "table": "CardPaymentSupplyLocations",
+    "approxRows": 1
+  },
+  {
+    "schema": "dbo",
+    "table": "CartableActionItems",
+    "approxRows": 26132216
+  },
+  {
+    "schema": "dbo",
+    "table": "Catagory",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "Center",
+    "approxRows": 67775
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterAccount",
+    "approxRows": 16171
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterCatagory",
+    "approxRows": 20
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterCategoryQuestionarySchema",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterDocumentCategories",
+    "approxRows": 28
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterDocuments",
+    "approxRows": 371065
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterJob",
+    "approxRows": 78
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterOwningType",
+    "approxRows": 2
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterPersonnel",
+    "approxRows": 5018
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterRequestActionTypes",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterRequestDocuments",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterRequesters",
+    "approxRows": 2
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterRequests",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterSelfAssessmentItems",
+    "approxRows": 74
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterSelfAssessmentRegisteredItems",
+    "approxRows": 175824
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterSelfAssessmentRegistereds",
+    "approxRows": 2376
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterSelfAssessments",
+    "approxRows": 1
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterSelfAssessmentValidSubCategories",
+    "approxRows": 1
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterSubCatagory",
+    "approxRows": 199
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterType",
+    "approxRows": 9
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterUnit",
+    "approxRows": 18
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterWarn",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterWastageCategories",
+    "approxRows": 2
+  },
+  {
+    "schema": "dbo",
+    "table": "CenterWastages",
+    "approxRows": 11714
+  },
+  {
+    "schema": "dbo",
+    "table": "City",
+    "approxRows": 488
+  },
+  {
+    "schema": "dbo",
+    "table": "CommisionPage",
+    "approxRows": 2797425
+  },
+  {
+    "schema": "dbo",
+    "table": "CommisionPageCodes",
+    "approxRows": 19743164
+  },
+  {
+    "schema": "dbo",
+    "table": "ComplaintCategories",
+    "approxRows": 5
+  },
+  {
+    "schema": "dbo",
+    "table": "Complaints",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "ContinusNegativePayment",
+    "approxRows": 67
+  },
+  {
+    "schema": "dbo",
+    "table": "ContinusNegativePaymentFireRequest",
+    "approxRows": 1752
+  },
+  {
+    "schema": "dbo",
+    "table": "ContinusNegativePaymentRequest",
+    "approxRows": 1488
+  },
+  {
+    "schema": "dbo",
+    "table": "ContinusPayment",
+    "approxRows": 2187421
+  },
+  {
+    "schema": "dbo",
+    "table": "ContinusPaymentCityThreshold",
+    "approxRows": 5426
+  },
+  {
+    "schema": "dbo",
+    "table": "ContinusPaymentDefenition",
+    "approxRows": 418
+  },
+  {
+    "schema": "dbo",
+    "table": "ContinusPaymentFireRequest",
+    "approxRows": 1285068
+  },
+  {
+    "schema": "dbo",
+    "table": "ContinusPaymentHistory",
+    "approxRows": 1241295
+  },
+  {
+    "schema": "dbo",
+    "table": "ContinusPaymentProvinceSupplyLocationThresholds",
+    "approxRows": 489
+  },
+  {
+    "schema": "dbo",
+    "table": "ContinusPaymentProvinceThreshold",
+    "approxRows": 32
+  },
+  {
+    "schema": "dbo",
+    "table": "ContinusPaymentRequest",
+    "approxRows": 2901191
+  },
+  {
+    "schema": "dbo",
+    "table": "ContinusPaymentSupplyLocation",
+    "approxRows": 43
+  },
+  {
+    "schema": "dbo",
+    "table": "ContractCategories",
+    "approxRows": 80
+  },
+  {
+    "schema": "dbo",
+    "table": "ContractCategoryValidSubCategory",
+    "approxRows": 104
+  },
+  {
+    "schema": "dbo",
+    "table": "ContractCategoryValidTypes",
+    "approxRows": 192
+  },
+  {
+    "schema": "dbo",
+    "table": "ContractComments",
+    "approxRows": 2
+  },
+  {
+    "schema": "dbo",
+    "table": "ContractDocuments",
+    "approxRows": 99568
+  },
+  {
+    "schema": "dbo",
+    "table": "ContractIssues",
+    "approxRows": 114303
+  },
+  {
+    "schema": "dbo",
+    "table": "Contractors",
+    "approxRows": 7106
+  },
+  {
+    "schema": "dbo",
+    "table": "Contracts",
+    "approxRows": 54384
+  },
+  {
+    "schema": "dbo",
+    "table": "CordInjury",
+    "approxRows": 42786
+  },
+  {
+    "schema": "dbo",
+    "table": "CordInjuryLocationDetail",
+    "approxRows": 59
+  },
+  {
+    "schema": "dbo",
+    "table": "CordInjuryLoction",
+    "approxRows": 3
+  },
+  {
+    "schema": "dbo",
+    "table": "CordInjuryProblem",
+    "approxRows": 19
+  },
+  {
+    "schema": "dbo",
+    "table": "CordInjuryProblemDetail",
+    "approxRows": 175651
+  },
+  {
+    "schema": "dbo",
+    "table": "CordInjuryState",
+    "approxRows": 6
+  },
+  {
+    "schema": "dbo",
+    "table": "CordInjuryStockNeed",
+    "approxRows": 4
+  },
+  {
+    "schema": "dbo",
+    "table": "CordInjuryStockNeedDetail",
+    "approxRows": 53775
+  },
+  {
+    "schema": "dbo",
+    "table": "CordInjuryTeromaticBehalf",
+    "approxRows": 6
+  },
+  {
+    "schema": "dbo",
+    "table": "CordInjuryUnTeromaticBehalf",
+    "approxRows": 8
+  },
+  {
+    "schema": "dbo",
+    "table": "CordInjuryValidateDisability",
+    "approxRows": 1
+  },
+  {
+    "schema": "dbo",
+    "table": "CustomeRoleMap",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "CustomeRoles",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "DevoteAims",
+    "approxRows": 9
+  },
+  {
+    "schema": "dbo",
+    "table": "Devotes",
+    "approxRows": 1532
+  },
+  {
+    "schema": "dbo",
+    "table": "DevoteUseTypes",
+    "approxRows": 8
+  },
+  {
+    "schema": "dbo",
+    "table": "DisabilityKind",
+    "approxRows": 6
+  },
+  {
+    "schema": "dbo",
+    "table": "DisabilityState",
+    "approxRows": 5
+  },
+  {
+    "schema": "dbo",
+    "table": "DiseaseSpecification",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "DiseaseSpecificationDetail",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "DiseaseType",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "Divisions",
+    "approxRows": 1132
+  },
+  {
+    "schema": "dbo",
+    "table": "EducationGradeGroups",
+    "approxRows": 8
+  },
+  {
+    "schema": "dbo",
+    "table": "EducationGrades",
+    "approxRows": 287
+  },
+  {
+    "schema": "dbo",
+    "table": "EducationGradeSubGroups",
+    "approxRows": 70
+  },
+  {
+    "schema": "dbo",
+    "table": "EducationMajors",
+    "approxRows": 5459
+  },
+  {
+    "schema": "dbo",
+    "table": "ElecronicPercasePaymentCenterBalances",
+    "approxRows": 9014
+  },
+  {
+    "schema": "dbo",
+    "table": "ElecronicPercasePaymentCountyBalances",
+    "approxRows": 5946
+  },
+  {
+    "schema": "dbo",
+    "table": "ElecronicPercasePaymentProvinceBalances",
+    "approxRows": 1353
+  },
+  {
+    "schema": "dbo",
+    "table": "Family",
+    "approxRows": 3553171
+  },
+  {
+    "schema": "dbo",
+    "table": "FamilyContact",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "FamilyMember",
+    "approxRows": 7070510
+  },
+  {
+    "schema": "dbo",
+    "table": "FamilyRelation",
+    "approxRows": 13
+  },
+  {
+    "schema": "dbo",
+    "table": "FeedBack",
+    "approxRows": 472
+  },
+  {
+    "schema": "dbo",
+    "table": "FellowGroups",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "FinalResultTable",
+    "approxRows": 287215
+  },
+  {
+    "schema": "dbo",
+    "table": "FirePaymentReason",
+    "approxRows": 23
+  },
+  {
+    "schema": "dbo",
+    "table": "FireRequest",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "FollowVisits",
+    "approxRows": 129950
+  },
+  {
+    "schema": "dbo",
+    "table": "GeneticScreeningResults",
+    "approxRows": 40340
+  },
+  {
+    "schema": "dbo",
+    "table": "GeneticScreenings",
+    "approxRows": 32399
+  },
+  {
+    "schema": "dbo",
+    "table": "HelpBehalf",
+    "approxRows": 196
+  },
+  {
+    "schema": "dbo",
+    "table": "HomeBuildingType",
+    "approxRows": 5
+  },
+  {
+    "schema": "dbo",
+    "table": "HomeGeographicalLocationType",
+    "approxRows": 9
+  },
+  {
+    "schema": "dbo",
+    "table": "HomePreparation",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "HomePreparationItem",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "HomeSpecification",
+    "approxRows": 3057098
+  },
+  {
+    "schema": "dbo",
+    "table": "HomeType",
+    "approxRows": 11
+  },
+  {
+    "schema": "dbo",
+    "table": "IBN_AccountNumber",
+    "approxRows": 1584038
+  },
+  {
+    "schema": "dbo",
+    "table": "IBNAccountNumber14050505",
+    "approxRows": 1759384
+  },
+  {
+    "schema": "dbo",
+    "table": "ICFCodes",
+    "approxRows": 1495
+  },
+  {
+    "schema": "dbo",
+    "table": "Illness",
+    "approxRows": 38
+  },
+  {
+    "schema": "dbo",
+    "table": "Instructions",
+    "approxRows": 53
+  },
+  {
+    "schema": "dbo",
+    "table": "InstructionTags",
+    "approxRows": 2
+  },
+  {
+    "schema": "dbo",
+    "table": "Insurance",
+    "approxRows": 3432615
+  },
+  {
+    "schema": "dbo",
+    "table": "InsuranceKind",
+    "approxRows": 15
+  },
+  {
+    "schema": "dbo",
+    "table": "InsuranceRegistrationReason",
+    "approxRows": 7
+  },
+  {
+    "schema": "dbo",
+    "table": "InsuranceSupplyLocation",
+    "approxRows": 3
+  },
+  {
+    "schema": "dbo",
+    "table": "Introducer",
+    "approxRows": 18
+  },
+  {
+    "schema": "dbo",
+    "table": "Issuers",
+    "approxRows": 23605
+  },
+  {
+    "schema": "dbo",
+    "table": "khadamat100",
+    "approxRows": 1911865
+  },
+  {
+    "schema": "dbo",
+    "table": "Log",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOver",
+    "approxRows": 1220211
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverActivity",
+    "approxRows": 119
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverCenterThresholds",
+    "approxRows": 2677
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverFireReasons",
+    "approxRows": 3
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverFireRequests",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverProvinceThreshold",
+    "approxRows": 1439
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverRequest",
+    "approxRows": 1365872
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverRequestOLD",
+    "approxRows": 922
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverSupplyLocation",
+    "approxRows": 80
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverSupplyLocationCenterCatagory",
+    "approxRows": 281
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverSupplyLocationCenterCatagoryThreshold",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverTransactions",
+    "approxRows": 795
+  },
+  {
+    "schema": "dbo",
+    "table": "MappedPersonnel",
+    "approxRows": 69248
+  },
+  {
+    "schema": "dbo",
+    "table": "MarriedStatus",
+    "approxRows": 6
+  },
+  {
+    "schema": "dbo",
+    "table": "Maskans",
+    "approxRows": 13177
+  },
+  {
+    "schema": "dbo",
+    "table": "MSreplication_objects",
+    "approxRows": 753
+  },
+  {
+    "schema": "dbo",
+    "table": "MSreplication_subscriptions",
+    "approxRows": 1
+  },
+  {
+    "schema": "dbo",
+    "table": "MSsavedforeignkeycolumns",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "MSsavedforeignkeyextendedproperties",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "MSsavedforeignkeys",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "MSsnapshotdeliveryprogress",
+    "approxRows": 3579
+  },
+  {
+    "schema": "dbo",
+    "table": "MSsubscription_agents",
+    "approxRows": 1
+  },
+  {
+    "schema": "dbo",
+    "table": "MSsubscription_properties",
+    "approxRows": 1
+  },
+  {
+    "schema": "dbo",
+    "table": "NeededFolders",
+    "approxRows": 191
+  },
+  {
+    "schema": "dbo",
+    "table": "NegativePaymentReason",
+    "approxRows": 2
+  },
+  {
+    "schema": "dbo",
+    "table": "News",
+    "approxRows": 189
+  },
+  {
+    "schema": "dbo",
+    "table": "OldCenter",
+    "approxRows": 29334
+  },
+  {
+    "schema": "dbo",
+    "table": "Orderer",
+    "approxRows": 10
+  },
+  {
+    "schema": "dbo",
+    "table": "PayedContinusPayment",
+    "approxRows": 319123803
+  },
+  {
+    "schema": "dbo",
+    "table": "PayedMakeOvers",
+    "approxRows": 35150087
+  },
+  {
+    "schema": "dbo",
+    "table": "PayedTransaction",
+    "approxRows": 771
+  },
+  {
+    "schema": "dbo",
+    "table": "PerCasePayment",
+    "approxRows": 13723324
+  },
+  {
+    "schema": "dbo",
+    "table": "PercaseRequests",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "PermitCatagory",
+    "approxRows": 3
+  },
+  {
+    "schema": "dbo",
+    "table": "PermitKind",
+    "approxRows": 5
+  },
+  {
+    "schema": "dbo",
+    "table": "PermitKindCenterCatagory",
+    "approxRows": 55
+  },
+  {
+    "schema": "dbo",
+    "table": "PermitSpecification",
+    "approxRows": 50485
+  },
+  {
+    "schema": "dbo",
+    "table": "Person",
+    "approxRows": 25430194
+  },
+  {
+    "schema": "dbo",
+    "table": "PersonAssessment",
+    "approxRows": 1125888
+  },
+  {
+    "schema": "dbo",
+    "table": "PersonComments",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "PersonDetail",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "PersonDocumentCategories",
+    "approxRows": 44
+  },
+  {
+    "schema": "dbo",
+    "table": "PersonDocuments",
+    "approxRows": 4312874
+  },
+  {
+    "schema": "dbo",
+    "table": "PersonEduSpecification",
+    "approxRows": 2745228
+  },
+  {
+    "schema": "dbo",
+    "table": "PersonHealthServiceUsed",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "PersonIllness",
+    "approxRows": 212282
+  },
+  {
+    "schema": "dbo",
+    "table": "PersonIncomeSource",
+    "approxRows": 8
+  },
+  {
+    "schema": "dbo",
+    "table": "PersonJobSpecification",
+    "approxRows": 3005599
+  },
+  {
+    "schema": "dbo",
+    "table": "PersonJobState",
+    "approxRows": 5
+  },
+  {
+    "schema": "dbo",
+    "table": "Personnel",
+    "approxRows": 69248
+  },
+  {
+    "schema": "dbo",
+    "table": "PersonnelInsurance",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "PersonPicture",
+    "approxRows": 1767342
+  },
+  {
+    "schema": "dbo",
+    "table": "PersonRegistrationReason",
+    "approxRows": 48
+  },
+  {
+    "schema": "dbo",
+    "table": "PersonTransaction",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "PreparationItem",
+    "approxRows": 21
+  },
+  {
+    "schema": "dbo",
+    "table": "PreparationItemCatagory",
+    "approxRows": 6
+  },
+  {
+    "schema": "dbo",
+    "table": "Province",
+    "approxRows": 33
+  },
+  {
+    "schema": "dbo",
+    "table": "QuestionarySchemas",
+    "approxRows": 5
+  },
+  {
+    "schema": "dbo",
+    "table": "QuestionCategories",
+    "approxRows": 3
+  },
+  {
+    "schema": "dbo",
+    "table": "Questions",
+    "approxRows": 22
+  },
+  {
+    "schema": "dbo",
+    "table": "QuestionsOfSchemata",
+    "approxRows": 25
+  },
+  {
+    "schema": "dbo",
+    "table": "RefahRepli",
+    "approxRows": 6267851
+  },
+  {
+    "schema": "dbo",
+    "table": "RegistrationReason",
+    "approxRows": 32
+  },
+  {
+    "schema": "dbo",
+    "table": "RehabilationFolderTransfer",
+    "approxRows": 1340788
+  },
+  {
+    "schema": "dbo",
+    "table": "Rehabilitation",
+    "approxRows": 2246720
+  },
+  {
+    "schema": "dbo",
+    "table": "RehabilitationDetail",
+    "approxRows": 2597716
+  },
+  {
+    "schema": "dbo",
+    "table": "RehabilitationRegistrationReason",
+    "approxRows": 16
+  },
+  {
+    "schema": "dbo",
+    "table": "Role",
+    "approxRows": 765
+  },
+  {
+    "schema": "dbo",
+    "table": "RoleSecurity",
+    "approxRows": 2855
+  },
+  {
+    "schema": "dbo",
+    "table": "SecurityKey",
+    "approxRows": 1102
+  },
+  {
+    "schema": "dbo",
+    "table": "SecurityKeyCatagory",
+    "approxRows": 59
+  },
+  {
+    "schema": "dbo",
+    "table": "SelfTokenRequests",
+    "approxRows": 725099
+  },
+  {
+    "schema": "dbo",
+    "table": "Service",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "ServiceCatagroy",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "ShoppingCenterAssessments",
+    "approxRows": 8724
+  },
+  {
+    "schema": "dbo",
+    "table": "ShoppingCenterCatagories",
+    "approxRows": 9
+  },
+  {
+    "schema": "dbo",
+    "table": "ShoppingCenters",
+    "approxRows": 9605
+  },
+  {
+    "schema": "dbo",
+    "table": "SocialFolder",
+    "approxRows": 987119
+  },
+  {
+    "schema": "dbo",
+    "table": "SocialFolderKind",
+    "approxRows": 4
+  },
+  {
+    "schema": "dbo",
+    "table": "SocialFolderReport",
+    "approxRows": 275058
+  },
+  {
+    "schema": "dbo",
+    "table": "SocialNahvepaziresh",
+    "approxRows": 14
+  },
+  {
+    "schema": "dbo",
+    "table": "SocialReceptionReason",
+    "approxRows": 66
+  },
+  {
+    "schema": "dbo",
+    "table": "SocialReceptionType",
+    "approxRows": 5
+  },
+  {
+    "schema": "dbo",
+    "table": "SocialRegistrationKind",
+    "approxRows": 3
+  },
+  {
+    "schema": "dbo",
+    "table": "SocialTransfers",
+    "approxRows": 201865
+  },
+  {
+    "schema": "dbo",
+    "table": "SpecificationCategories",
+    "approxRows": 18
+  },
+  {
+    "schema": "dbo",
+    "table": "SpecificationSubCategories",
+    "approxRows": 186
+  },
+  {
+    "schema": "dbo",
+    "table": "SpecificVisitIllnesses",
+    "approxRows": 121912
+  },
+  {
+    "schema": "dbo",
+    "table": "SpecificVisitProblems",
+    "approxRows": 730128
+  },
+  {
+    "schema": "dbo",
+    "table": "StaffIdentifications",
+    "approxRows": 186388
+  },
+  {
+    "schema": "dbo",
+    "table": "Staffs",
+    "approxRows": 146919
+  },
+  {
+    "schema": "dbo",
+    "table": "Stock",
+    "approxRows": 570
+  },
+  {
+    "schema": "dbo",
+    "table": "StockCatagory",
+    "approxRows": 28
+  },
+  {
+    "schema": "dbo",
+    "table": "StockRequestDetails",
+    "approxRows": 5473762
+  },
+  {
+    "schema": "dbo",
+    "table": "StockRequests",
+    "approxRows": 1470301
+  },
+  {
+    "schema": "dbo",
+    "table": "StockUnit",
+    "approxRows": 8
+  },
+  {
+    "schema": "dbo",
+    "table": "StockUsed",
+    "approxRows": 16929230
+  },
+  {
+    "schema": "dbo",
+    "table": "Students",
+    "approxRows": 8535
+  },
+  {
+    "schema": "dbo",
+    "table": "SubDivisions",
+    "approxRows": 4015
+  },
+  {
+    "schema": "dbo",
+    "table": "SupplyLocation",
+    "approxRows": 69
+  },
+  {
+    "schema": "dbo",
+    "table": "sysdiagrams",
+    "approxRows": 23
+  },
+  {
+    "schema": "dbo",
+    "table": "TagItems",
+    "approxRows": 9
+  },
+  {
+    "schema": "dbo",
+    "table": "TokenDefenitions",
+    "approxRows": 28
+  },
+  {
+    "schema": "dbo",
+    "table": "Tokens",
+    "approxRows": 3288219
+  },
+  {
+    "schema": "dbo",
+    "table": "TokenUsages",
+    "approxRows": 3214433
+  },
+  {
+    "schema": "dbo",
+    "table": "TransferContinusPaymentFolder",
+    "approxRows": 180084
+  },
+  {
+    "schema": "dbo",
+    "table": "UniversityDepartments",
+    "approxRows": 2943
+  },
+  {
+    "schema": "dbo",
+    "table": "UniversityMaghtaGroupReshtes",
+    "approxRows": 1217
+  },
+  {
+    "schema": "dbo",
+    "table": "UniversityMaghtaGroups",
+    "approxRows": 7
+  },
+  {
+    "schema": "dbo",
+    "table": "UniversityMaghtas",
+    "approxRows": 8
+  },
+  {
+    "schema": "dbo",
+    "table": "UniversityTypes",
+    "approxRows": 11
+  },
+  {
+    "schema": "dbo",
+    "table": "User",
+    "approxRows": 69353
+  },
+  {
+    "schema": "dbo",
+    "table": "UserApps",
+    "approxRows": 158726
+  },
+  {
+    "schema": "dbo",
+    "table": "UserRole",
+    "approxRows": 2824756
+  },
+  {
+    "schema": "dbo",
+    "table": "WarnType",
+    "approxRows": 0
+  }
+]

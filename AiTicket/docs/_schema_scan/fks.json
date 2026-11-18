@@ -1,0 +1,2792 @@
+[
+    {
+        "from_schema":  "dbo",
+        "from_table":  "AccessLevel",
+        "from_column":  "FeatureId",
+        "to_schema":  "dbo",
+        "to_table":  "Feature",
+        "to_column":  "FeatureId",
+        "fk_name":  "FK_AccessLevel_Feature"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "AccessLevel",
+        "from_column":  "RoleId",
+        "to_schema":  "dbo",
+        "to_table":  "Role",
+        "to_column":  "RoleId",
+        "fk_name":  "FK_AccessLevel_Role"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Agent",
+        "from_column":  "AgentExpertiseFieldId",
+        "to_schema":  "dbo",
+        "to_table":  "AgentExpertiseField",
+        "to_column":  "AgentExpertiseFieldId",
+        "fk_name":  "FK_Agent_AgentExpertiseField"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Agent",
+        "from_column":  "AgentSocialClassId",
+        "to_schema":  "dbo",
+        "to_table":  "AgentSocialClass",
+        "to_column":  "AgentSocialClassId",
+        "fk_name":  "FK_Agent_AgentSocialClass"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Agent",
+        "from_column":  "AreaId",
+        "to_schema":  "dbo",
+        "to_table":  "Area",
+        "to_column":  "AreaId",
+        "fk_name":  "FK_Agent_Area"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Agent",
+        "from_column":  "DistrictId",
+        "to_schema":  "dbo",
+        "to_table":  "District",
+        "to_column":  "DistrictId",
+        "fk_name":  "FK_Agent_District"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Agent",
+        "from_column":  "EducationTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "EducationType",
+        "to_column":  "EducationTypeId",
+        "fk_name":  "FK_Agent_EducationType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Agent",
+        "from_column":  "GenderId",
+        "to_schema":  "dbo",
+        "to_table":  "Gender",
+        "to_column":  "GenderId",
+        "fk_name":  "FK_Agent_Gender"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Agent",
+        "from_column":  "RegionId",
+        "to_schema":  "dbo",
+        "to_table":  "Region",
+        "to_column":  "RegionId",
+        "fk_name":  "FK_Agent_Region"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "AgentGift",
+        "from_column":  "AgentId",
+        "to_schema":  "dbo",
+        "to_table":  "Agent",
+        "to_column":  "AgentId",
+        "fk_name":  "FK_AgentGift_Agent"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "AgentGift",
+        "from_column":  "AgentGiftTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "AgentGiftType",
+        "to_column":  "AgentGiftTypeId",
+        "fk_name":  "FK_AgentGift_AgentGiftType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "AgentGrade",
+        "from_column":  "AgentId",
+        "to_schema":  "dbo",
+        "to_table":  "Agent",
+        "to_column":  "AgentId",
+        "fk_name":  "FK_AgentGrade_Agent"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "AgentGrade",
+        "from_column":  "AgentGradeTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "AgentGradeType",
+        "to_column":  "AgentGradeTypeId",
+        "fk_name":  "FK_AgentGrade_AgentGradeType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "AgentGroup",
+        "from_column":  "WorkspaceId",
+        "to_schema":  "dbo",
+        "to_table":  "Workspace",
+        "to_column":  "WorkspaceId",
+        "fk_name":  "FK_AgentGroup_Workspace"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "AgentGroupMembership",
+        "from_column":  "AgentId",
+        "to_schema":  "dbo",
+        "to_table":  "Agent",
+        "to_column":  "AgentId",
+        "fk_name":  "FK_AgentGroupMembership_Agent"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "AgentGroupMembership",
+        "from_column":  "AgentGroupId",
+        "to_schema":  "dbo",
+        "to_table":  "AgentGroup",
+        "to_column":  "AgentGroupId",
+        "fk_name":  "FK_AgentGroupMembership_AgentGroup"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "AgentGroupMembership",
+        "from_column":  "AgentStatusId",
+        "to_schema":  "dbo",
+        "to_table":  "AgentStatus",
+        "to_column":  "AgentStatusId",
+        "fk_name":  "FK_AgentGroupMembership_AgentStatus"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Area",
+        "from_column":  "DepartmentId",
+        "to_schema":  "dbo",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId",
+        "fk_name":  "FK_Area_Department"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Area",
+        "from_column":  "RegionId",
+        "to_schema":  "dbo",
+        "to_table":  "Region",
+        "to_column":  "RegionId",
+        "fk_name":  "FK_Area_Region"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Area",
+        "from_column":  "SegmentId",
+        "to_schema":  "dbo",
+        "to_table":  "Segment",
+        "to_column":  "SegmentId",
+        "fk_name":  "FK_Area_Segment"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "AttachmentVisite",
+        "from_column":  "CookieId",
+        "to_schema":  "dbo",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId",
+        "fk_name":  "FK_AttachmentVisite_Cookie"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "AttachmentVisite",
+        "from_column":  "CookieStatusId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId",
+        "fk_name":  "FK_AttachmentVisite_CookieStatus"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "AttachmentVisite",
+        "from_column":  "RoleId",
+        "to_schema":  "dbo",
+        "to_table":  "Role",
+        "to_column":  "RoleId",
+        "fk_name":  "FK_AttachmentVisite_Role"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "AttachmentVisite",
+        "from_column":  "UserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_AttachmentVisite_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CallLog",
+        "from_column":  "UserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_CallLog_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CallLog",
+        "from_column":  "WorkspaceId",
+        "to_schema":  "dbo",
+        "to_table":  "Workspace",
+        "to_column":  "WorkspaceId",
+        "fk_name":  "FK_CallLog_Workspace"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CallRecord",
+        "from_column":  "CookieId",
+        "to_schema":  "dbo",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId",
+        "fk_name":  "FK_CallRecord_Cookie"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CallRecord",
+        "from_column":  "CookieFlowId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFlow",
+        "to_column":  "CookieFlowId",
+        "fk_name":  "FK_CallRecord_CookieFlow"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CallRecord",
+        "from_column":  "CookiePursuitId",
+        "to_schema":  "dbo",
+        "to_table":  "CookiePursuit",
+        "to_column":  "CookiePursuitId",
+        "fk_name":  "FK_CallRecord_CookiePursuit"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CallRecord",
+        "from_column":  "UserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_CallRecord_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "CookieId",
+        "to_schema":  "dbo",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId",
+        "fk_name":  "FK_Cartable_Cookie"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "CookieCauseId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieCause",
+        "to_column":  "CookieCauseId",
+        "fk_name":  "FK_Cartable_CookieCause"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "CookieChannelId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieChannel",
+        "to_column":  "CookieChannelId",
+        "fk_name":  "FK_Cartable_CookieChannel"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "CartableFieldTypeId1",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId",
+        "fk_name":  "FK_Cartable_CookieFieldType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "CartableFieldTypeId2",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId",
+        "fk_name":  "FK_Cartable_CookieFieldType1"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "CartableFieldTypeId3",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId",
+        "fk_name":  "FK_Cartable_CookieFieldType2"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "CartableFieldTypeId4",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId",
+        "fk_name":  "FK_Cartable_CookieFieldType3"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "CartableFieldTypeId5",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId",
+        "fk_name":  "FK_Cartable_CookieFieldType4"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "CookieFlowId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFlow",
+        "to_column":  "CookieFlowId",
+        "fk_name":  "FK_Cartable_CookieFlow"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "PreCookieFlowId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFlow",
+        "to_column":  "CookieFlowId",
+        "fk_name":  "FK_Cartable_CookieFlow_Pre"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "CookieStatusId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId",
+        "fk_name":  "FK_Cartable_CookieStatus"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "PreCookieStatusId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId",
+        "fk_name":  "FK_Cartable_CookieStatus_Pre"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "PreCookieStatusId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId",
+        "fk_name":  "FK_Cartable_PreCookieStatus"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "CookieTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId",
+        "fk_name":  "FK_Cartable_CookieType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "DepartmentId",
+        "to_schema":  "dbo",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId",
+        "fk_name":  "FK_Cartable_Department"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "FlowId",
+        "to_schema":  "dbo",
+        "to_table":  "Flow",
+        "to_column":  "FlowId",
+        "fk_name":  "FK_Cartable_Flow"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "AgentPersonnelId",
+        "to_schema":  "dbo",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId",
+        "fk_name":  "FK_Cartable_Personnel_AgentId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "ExecuterPersonnelId",
+        "to_schema":  "dbo",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId",
+        "fk_name":  "FK_Cartable_Personnel_ExecuterId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "CartableUserRoleId",
+        "to_schema":  "dbo",
+        "to_table":  "Role",
+        "to_column":  "RoleId",
+        "fk_name":  "FK_Cartable_Role"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "SubjectId",
+        "to_schema":  "dbo",
+        "to_table":  "Subject",
+        "to_column":  "SubjectId",
+        "fk_name":  "FK_Cartable_Subject"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "SubjectClassId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectClass",
+        "to_column":  "SubjectClassId",
+        "fk_name":  "FK_Cartable_SubjectClass"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "SubjectGroupId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectGroup",
+        "to_column":  "SubjectGroupId",
+        "fk_name":  "FK_Cartable_SubjectGroup"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "SubjectNatureId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectNature",
+        "to_column":  "SubjectNatureId",
+        "fk_name":  "FK_Cartable_SubjectNature"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "SubjectPriorityId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectPriority",
+        "to_column":  "SubjectPriorityId",
+        "fk_name":  "FK_Cartable_SubjectPriority"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "CartableUserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_Cartable_UserInfo_CartableUser"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "CartableVisitedUserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_Cartable_UserInfo_Visited"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "ReferToUserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_cartable_ReferToUserId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "UserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_Cartable_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cartable",
+        "from_column":  "ZoneId",
+        "to_schema":  "dbo",
+        "to_table":  "Zone",
+        "to_column":  "ZoneId",
+        "fk_name":  "FK_Cartable_Zone"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CenterCategory",
+        "from_column":  "ParentId",
+        "to_schema":  "dbo",
+        "to_table":  "CenterCategory",
+        "to_column":  "CenterCategoryId",
+        "fk_name":  "FK_CenterCategory_CenterCategory"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "ContractorContractDepartment",
+        "from_column":  "DepartmentId",
+        "to_schema":  "dbo",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId",
+        "fk_name":  "FK_ContractorContractDepartment_Department"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "AgentId",
+        "to_schema":  "dbo",
+        "to_table":  "Agent",
+        "to_column":  "AgentId",
+        "fk_name":  "FK_Cookie_AgentId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "EventId",
+        "to_schema":  "dbo",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId",
+        "fk_name":  "FK_Cookie_Cookie_Event"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "ReferringCookieId",
+        "to_schema":  "dbo",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId",
+        "fk_name":  "FK_Cookie_Cookie_Referring"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "CookieCauseId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieCause",
+        "to_column":  "CookieCauseId",
+        "fk_name":  "FK_Cookie_CookieCause"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "CookieChannelId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieChannel",
+        "to_column":  "CookieChannelId",
+        "fk_name":  "FK_Cookie_CookieChannel"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "CookieFieldTypeId1",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId",
+        "fk_name":  "FK_Cookie_CookieFieldType_1"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "CookieFieldTypeId2",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId",
+        "fk_name":  "FK_Cookie_CookieFieldType_2"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "CookieFieldTypeId3",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId",
+        "fk_name":  "FK_Cookie_CookieFieldType_3"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "CookieFieldTypeId4",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId",
+        "fk_name":  "FK_Cookie_CookieFieldType_4"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "CookieFieldTypeId5",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId",
+        "fk_name":  "FK_Cookie_CookieFieldType_5"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "CookieStatusId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId",
+        "fk_name":  "FK_Cookie_CookieStatus"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "CookieTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId",
+        "fk_name":  "FK_Cookie_CookieType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "DepartmentId",
+        "to_schema":  "dbo",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId",
+        "fk_name":  "FK_Cookie_Department"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "PhoneBookDepartmentId",
+        "to_schema":  "dbo",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId",
+        "fk_name":  "FK_cookie_PhoneBookDepartmentId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "FlowId",
+        "to_schema":  "dbo",
+        "to_table":  "Flow",
+        "to_column":  "FlowId",
+        "fk_name":  "FK_Cookie_Flow"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "GiftId",
+        "to_schema":  "dbo",
+        "to_table":  "Gift",
+        "to_column":  "GiftId",
+        "fk_name":  "FK__Cookie__GiftId__35A7EF71"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "GiftTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "GiftType",
+        "to_column":  "GiftTypeId",
+        "fk_name":  "FK__Cookie__GiftType__369C13AA"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "AgentPersonnelId",
+        "to_schema":  "dbo",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId",
+        "fk_name":  "FK_Cookie_Personnel_AgentId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "ExecuterPersonnelId",
+        "to_schema":  "dbo",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId",
+        "fk_name":  "FK_Cookie_Personnel_ExecuterId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "CookieUserRoleId",
+        "to_schema":  "dbo",
+        "to_table":  "Role",
+        "to_column":  "RoleId",
+        "fk_name":  "FK_Cookie_Role_User"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "SubjectId",
+        "to_schema":  "dbo",
+        "to_table":  "Subject",
+        "to_column":  "SubjectId",
+        "fk_name":  "FK_Cookie_Subject"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "SubjectClassId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectClass",
+        "to_column":  "SubjectClassId",
+        "fk_name":  "FK_Cookie_SubjectClass"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "SubjectGroupId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectGroup",
+        "to_column":  "SubjectGroupId",
+        "fk_name":  "FK_Cookie_SubjectGroup"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "SubjectNatureId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectNature",
+        "to_column":  "SubjectNatureId",
+        "fk_name":  "FK_Cookie_SubjectNature"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "SubjectPriorityId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectPriority",
+        "to_column":  "SubjectPriorityId",
+        "fk_name":  "FK_Cookie_SubjectPriority"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "CookieUserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_Cookie_UserInfo_CookieUser"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "CookieVisitedUserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_Cookie_UserInfo_Visited"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "UserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_Cookie_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Cookie",
+        "from_column":  "ZoneId",
+        "to_schema":  "dbo",
+        "to_table":  "Zone",
+        "to_column":  "ZoneId",
+        "fk_name":  "FK_Cookie_Zone"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieCause",
+        "from_column":  "CookieTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId",
+        "fk_name":  "FK_CookieCause_CookieType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieChannel",
+        "from_column":  "CookieTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId",
+        "fk_name":  "FK_CookieChannel_CookieType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieComment",
+        "from_column":  "CookieId",
+        "to_schema":  "dbo",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId",
+        "fk_name":  "FK_CookieComment_Cookie_CookieId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieComment",
+        "from_column":  "CookieFlowId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFlow",
+        "to_column":  "CookieFlowId",
+        "fk_name":  "FK_CookieComment_CookieFlow"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieComment",
+        "from_column":  "RoleId",
+        "to_schema":  "dbo",
+        "to_table":  "Role",
+        "to_column":  "RoleId",
+        "fk_name":  "FK_CookieComment_Role"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieComment",
+        "from_column":  "UserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_CookieComment_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieCommentDisAgree",
+        "from_column":  "AgentId",
+        "to_schema":  "dbo",
+        "to_table":  "Agent",
+        "to_column":  "AgentId",
+        "fk_name":  "FK_CookieCommentDisAgree_AgentId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieCommentDisAgree",
+        "from_column":  "CookieId",
+        "to_schema":  "dbo",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId",
+        "fk_name":  "FK_CookieCommentDisAgree_Cookie"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieCommentDisAgree",
+        "from_column":  "CookieFlowId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFlow",
+        "to_column":  "CookieFlowId",
+        "fk_name":  "FK_CookieCommentDisAgree_CookieFlow"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieCommentDisAgree",
+        "from_column":  "UserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_CookieCommentDisAgree_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFieldType",
+        "from_column":  "CookieTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId",
+        "fk_name":  "FK_CookieFieldType_CookieType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieId",
+        "to_schema":  "dbo",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId",
+        "fk_name":  "FK_CookieFlow_Cookie"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieCauseId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieCause",
+        "to_column":  "CookieCauseId",
+        "fk_name":  "FK_CookieFlow_CookieCause"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieChannelId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieChannel",
+        "to_column":  "CookieChannelId",
+        "fk_name":  "FK_CookieFlow_CookieChannel"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieFlowFieldTypeId1",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId",
+        "fk_name":  "FK_CookieFlow_CookieFieldType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieFlowFieldTypeId2",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId",
+        "fk_name":  "FK_CookieFlow_CookieFieldType1"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieFlowFieldTypeId3",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId",
+        "fk_name":  "FK_CookieFlow_CookieFieldType2"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieFlowFieldTypeId4",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId",
+        "fk_name":  "FK_CookieFlow_CookieFieldType3"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieFlowFieldTypeId5",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId",
+        "fk_name":  "FK_CookieFlow_CookieFieldType4"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "PreCookieFlowId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFlow",
+        "to_column":  "CookieFlowId",
+        "fk_name":  "FK_CookieFlow_CookieFlow"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieStatusId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId",
+        "fk_name":  "FK_CookieFlow_CookieStatus"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "PreCookieStatusId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId",
+        "fk_name":  "FK_CookieFlow_CookieStatus_Pre"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "PreCookieStatusId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId",
+        "fk_name":  "FK_CookieFlow_PreCookieStatus"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId",
+        "fk_name":  "FK_CookieFlow_CookieType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "DepartmentId",
+        "to_schema":  "dbo",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId",
+        "fk_name":  "FK_CookieFlow_Department"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "FlowId",
+        "to_schema":  "dbo",
+        "to_table":  "Flow",
+        "to_column":  "FlowId",
+        "fk_name":  "FK_CookieFlow_Flow"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "AgentPersonnelId",
+        "to_schema":  "dbo",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId",
+        "fk_name":  "FK_CookieFlow_Personnel_AgentId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "ExecuterPersonnelId",
+        "to_schema":  "dbo",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId",
+        "fk_name":  "FK_CookieFlow_Personnel_ExecuterId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieFlowUserRoleId",
+        "to_schema":  "dbo",
+        "to_table":  "Role",
+        "to_column":  "RoleId",
+        "fk_name":  "FK_CookieFlow_Role"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "SubjectId",
+        "to_schema":  "dbo",
+        "to_table":  "Subject",
+        "to_column":  "SubjectId",
+        "fk_name":  "FK_CookieFlow_Subject"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "SubjectClassId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectClass",
+        "to_column":  "SubjectClassId",
+        "fk_name":  "FK_CookieFlow_SubjectClass"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "SubjectGroupId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectGroup",
+        "to_column":  "SubjectGroupId",
+        "fk_name":  "FK_CookieFlow_SubjectGroup"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "SubjectNatureId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectNature",
+        "to_column":  "SubjectNatureId",
+        "fk_name":  "FK_CookieFlow_SubjectNature"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "SubjectPriorityId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectPriority",
+        "to_column":  "SubjectPriorityId",
+        "fk_name":  "FK_CookieFlow_SubjectPriority"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieFlowUserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_CookieFlow_UserInfo_CookieFlowUser"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieFlowVisitedUserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_CookieFlow_UserInfo_Visited"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "ReferToUserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_ccookieFlow_ReferToUserId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "UserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_CookieFlow_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieFlow",
+        "from_column":  "ZoneId",
+        "to_schema":  "dbo",
+        "to_table":  "Zone",
+        "to_column":  "ZoneId",
+        "fk_name":  "FK_CookieFlow_Zone"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieHint",
+        "from_column":  "CookieId",
+        "to_schema":  "dbo",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId",
+        "fk_name":  "FK_CookieHint_Cookie_CookieId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieHint",
+        "from_column":  "ViaCookieId",
+        "to_schema":  "dbo",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId",
+        "fk_name":  "FK_CookieHint_Cookie_ViaCookieId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieHint",
+        "from_column":  "CookieFlowId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFlow",
+        "to_column":  "CookieFlowId",
+        "fk_name":  "FK_CookieHint_CookieFlow"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieHint",
+        "from_column":  "CookieHintTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieHintType",
+        "to_column":  "CookieHintTypeId",
+        "fk_name":  "FK_CookieHint_CookieHintType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieHint",
+        "from_column":  "RoleId",
+        "to_schema":  "dbo",
+        "to_table":  "Role",
+        "to_column":  "RoleId",
+        "fk_name":  "FK_CookieHint_Role"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieHint",
+        "from_column":  "UserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_CookieHint_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieLog",
+        "from_column":  "CookieId",
+        "to_schema":  "dbo",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId",
+        "fk_name":  "FK_CookieLog_CookieLog"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieLog",
+        "from_column":  "DepartmentId",
+        "to_schema":  "dbo",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId",
+        "fk_name":  "FK_CookieLog_Department"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieLog",
+        "from_column":  "FlowId",
+        "to_schema":  "dbo",
+        "to_table":  "Flow",
+        "to_column":  "FlowId",
+        "fk_name":  "FK_CookieLog_Flow"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieLog",
+        "from_column":  "AgentPersonnelId",
+        "to_schema":  "dbo",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId",
+        "fk_name":  "FK_CookieLog_Personnel_AgentId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieLog",
+        "from_column":  "ExecuterPersonnelId",
+        "to_schema":  "dbo",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId",
+        "fk_name":  "FK_CookieLog_Personnel_ExecuterId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieLog",
+        "from_column":  "CookieLogUserRoleId",
+        "to_schema":  "dbo",
+        "to_table":  "Role",
+        "to_column":  "RoleId",
+        "fk_name":  "FK_CookieLog_Role_User"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieLog",
+        "from_column":  "SubjectId",
+        "to_schema":  "dbo",
+        "to_table":  "Subject",
+        "to_column":  "SubjectId",
+        "fk_name":  "FK_CookieLog_Subject"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieLog",
+        "from_column":  "SubjectClassId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectClass",
+        "to_column":  "SubjectClassId",
+        "fk_name":  "FK_CookieLog_SubjectClass"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieLog",
+        "from_column":  "SubjectGroupId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectGroup",
+        "to_column":  "SubjectGroupId",
+        "fk_name":  "FK_CookieLog_SubjectGroup"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieLog",
+        "from_column":  "SubjectNatureId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectNature",
+        "to_column":  "SubjectNatureId",
+        "fk_name":  "FK_CookieLog_SubjectNature"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieLog",
+        "from_column":  "SubjectPriorityId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectPriority",
+        "to_column":  "SubjectPriorityId",
+        "fk_name":  "FK_CookieLog_SubjectPriority"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieLog",
+        "from_column":  "CookieLogUserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_CookieLog_UserInfo_CookieLogUser"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieLog",
+        "from_column":  "UserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_CookieLog_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieLog",
+        "from_column":  "ZoneId",
+        "to_schema":  "dbo",
+        "to_table":  "Zone",
+        "to_column":  "ZoneId",
+        "fk_name":  "FK_CookieLog_Zone"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookiePursuit",
+        "from_column":  "CookieId",
+        "to_schema":  "dbo",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId",
+        "fk_name":  "FK_CookiePursuit_Cookie_CookieId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookiePursuit",
+        "from_column":  "ViaCookieId",
+        "to_schema":  "dbo",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId",
+        "fk_name":  "FK_CookiePursuit_Cookie_ViaCookieId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookiePursuit",
+        "from_column":  "CookieChannelId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieChannel",
+        "to_column":  "CookieChannelId",
+        "fk_name":  "FK_CookiePursuit_CookieChannel"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookiePursuit",
+        "from_column":  "CookieFlowId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFlow",
+        "to_column":  "CookieFlowId",
+        "fk_name":  "FK_CookiePursuit_CookieFlow"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookiePursuit",
+        "from_column":  "RoleId",
+        "to_schema":  "dbo",
+        "to_table":  "Role",
+        "to_column":  "RoleId",
+        "fk_name":  "FK_CookiePursuit_Role"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookiePursuit",
+        "from_column":  "UserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_CookiePursuit_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieShare",
+        "from_column":  "CookieId",
+        "to_schema":  "dbo",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId",
+        "fk_name":  "FK_CookieShare_Cookie_CookieId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieShare",
+        "from_column":  "CookieFlowId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFlow",
+        "to_column":  "CookieFlowId",
+        "fk_name":  "FK_CookieShare_CookieFlow"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieShare",
+        "from_column":  "RoleId",
+        "to_schema":  "dbo",
+        "to_table":  "Role",
+        "to_column":  "RoleId",
+        "fk_name":  "FK_CookieShare_Role"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieShare",
+        "from_column":  "UserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_CookieShare_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieStatus",
+        "from_column":  "CookieStatusGroupId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieStatusGroup",
+        "to_column":  "CookieStatusGroupId",
+        "fk_name":  "FK_CookieStatus_CookieStatusGroup"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieStatus",
+        "from_column":  "CookieTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId",
+        "fk_name":  "FK_CookieStatus_CookieType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieStatusAttachmentStep",
+        "from_column":  "CookieStatusId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId",
+        "fk_name":  "FK_CookieStatusAttachmentStep_CookieStatus"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieStatusGroup",
+        "from_column":  "CookieTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId",
+        "fk_name":  "FK_CookieStatusGroup_CookieType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieType",
+        "from_column":  "WorkspaceId",
+        "to_schema":  "dbo",
+        "to_table":  "Workspace",
+        "to_column":  "WorkspaceId",
+        "fk_name":  "FK_CookieType_Workspace"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieUserNotification",
+        "from_column":  "AgentId",
+        "to_schema":  "dbo",
+        "to_table":  "Agent",
+        "to_column":  "AgentId",
+        "fk_name":  "FK_CookieUserNotification_Agent"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieUserNotification",
+        "from_column":  "CookieId",
+        "to_schema":  "dbo",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId",
+        "fk_name":  "FK_CookieUserNotification_Cookie"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "CookieUserNotification",
+        "from_column":  "UserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_CookieUserNotification_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "DefaultUserSms",
+        "from_column":  "SubjectClassMemberId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectClassMember",
+        "to_column":  "SubjectClassMemberId",
+        "fk_name":  "FK_DefaultUserSms_SubjectClassMember"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "DefaultUserSms",
+        "from_column":  "UserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_DefaultUserSms_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "DefaultUserSms",
+        "from_column":  "UserGroupId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfoGroup",
+        "to_column":  "UserGroupId",
+        "fk_name":  "FK_DefaultUserSms_UserInfoGroup"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Department",
+        "from_column":  "AreaId",
+        "to_schema":  "dbo",
+        "to_table":  "Area",
+        "to_column":  "AreaId",
+        "fk_name":  "FK_Department_AreaId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Department",
+        "from_column":  "DepartmentTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "DepartmentType",
+        "to_column":  "DepartmentTypeId",
+        "fk_name":  "FK_Department_DepartmentType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Department",
+        "from_column":  "FlowId",
+        "to_schema":  "dbo",
+        "to_table":  "Flow",
+        "to_column":  "FlowId",
+        "fk_name":  "FK_Department_FlowId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Department",
+        "from_column":  "RegionId",
+        "to_schema":  "dbo",
+        "to_table":  "Region",
+        "to_column":  "RegionId",
+        "fk_name":  "FK__Departmen__Regio__52EE3995"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "DepartmentChart",
+        "from_column":  "DepartmentId",
+        "to_schema":  "dbo",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId",
+        "fk_name":  "FK_DepartmentChart_Department"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "DepartmentChart",
+        "from_column":  "ParentDepartmentId",
+        "to_schema":  "dbo",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId",
+        "fk_name":  "FK_DepartmentChart_Department1"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "DepartmentChart",
+        "from_column":  "WorkspaceId",
+        "to_schema":  "dbo",
+        "to_table":  "Workspace",
+        "to_column":  "WorkspaceId",
+        "fk_name":  "FK_DepartmentChart_Workspace"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "DepartmentType",
+        "from_column":  "WorkspaceId",
+        "to_schema":  "dbo",
+        "to_table":  "Workspace",
+        "to_column":  "WorkspaceId",
+        "fk_name":  "FK_DepartmentType_WorkspaceId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "District",
+        "from_column":  "RegionId",
+        "to_schema":  "dbo",
+        "to_table":  "Region",
+        "to_column":  "RegionId",
+        "fk_name":  "FK_District_Region"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Equip",
+        "from_column":  "DepartmentId",
+        "to_schema":  "dbo",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId",
+        "fk_name":  "FK_Equip_Department"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Equip",
+        "from_column":  "ShiftTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "ShiftType",
+        "to_column":  "ShiftTypeId",
+        "fk_name":  "FK_Equip_ShiftType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Equip",
+        "from_column":  "VehicleId",
+        "to_schema":  "dbo",
+        "to_table":  "Vehicle",
+        "to_column":  "VehicleId",
+        "fk_name":  "FK_Equip_Vehicle"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "EquipMember",
+        "from_column":  "EquipId",
+        "to_schema":  "dbo",
+        "to_table":  "Equip",
+        "to_column":  "EquipId",
+        "fk_name":  "FK_EquipMember_Equip"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "EquipMember",
+        "from_column":  "JobId",
+        "to_schema":  "dbo",
+        "to_table":  "Job",
+        "to_column":  "JobId",
+        "fk_name":  "FK_EquipMember_Job"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "EquipMember",
+        "from_column":  "PersonnelId",
+        "to_schema":  "dbo",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId",
+        "fk_name":  "FK_EquipMember_Personnel"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Executer",
+        "from_column":  "DepartmentId",
+        "to_schema":  "dbo",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId",
+        "fk_name":  "FK_Executer_Department"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Executer",
+        "from_column":  "ExecuterTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "ExecuterType",
+        "to_column":  "ExecuterTypeId",
+        "fk_name":  "FK_Executer_ExecuterType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Feature",
+        "from_column":  "FeatureTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "FeatureType",
+        "to_column":  "FeatureTypeId",
+        "fk_name":  "FK_Feature_FeatureType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Feature",
+        "from_column":  "SubSystemId",
+        "to_schema":  "dbo",
+        "to_table":  "SubSystem",
+        "to_column":  "SubSystemId",
+        "fk_name":  "FK_Feature_SubSystem"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Feature",
+        "from_column":  "TargetSubSystemId",
+        "to_schema":  "dbo",
+        "to_table":  "SubSystem",
+        "to_column":  "SubSystemId",
+        "fk_name":  "FK_Feature_TargetSubSystem"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "FeedbackStatus",
+        "from_column":  "CookieStatusId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId",
+        "fk_name":  "FK_FeedbackStatus_CookieStatus"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "FeedbackStatus",
+        "from_column":  "CookieTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId",
+        "fk_name":  "FK_FeedbackStatus_CookieType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "FeedbackStatus",
+        "from_column":  "RoleId",
+        "to_schema":  "dbo",
+        "to_table":  "Role",
+        "to_column":  "RoleId",
+        "fk_name":  "FK_FeedbackStatus_Role"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Flow",
+        "from_column":  "CookieTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId",
+        "fk_name":  "FK_Flow_CookieType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Flow",
+        "from_column":  "DepartmentTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "DepartmentType",
+        "to_column":  "DepartmentTypeId",
+        "fk_name":  "FK_Flow_DepartmentType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "FlowNode",
+        "from_column":  "CookieHintTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieHintType",
+        "to_column":  "CookieHintTypeId",
+        "fk_name":  "FK_FlowNode_CookieHintType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "FlowNode",
+        "from_column":  "CookieStatusId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId",
+        "fk_name":  "FK_FlowNode_CookieStatus"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "FlowNode",
+        "from_column":  "NextCookieStatusId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId",
+        "fk_name":  "FK_FlowNode_CookieStatus_Next"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "FlowNode",
+        "from_column":  "FlowId",
+        "to_schema":  "dbo",
+        "to_table":  "Flow",
+        "to_column":  "FlowId",
+        "fk_name":  "FK_FlowNode_Flow"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "FlowNode",
+        "from_column":  "RoleId",
+        "to_schema":  "dbo",
+        "to_table":  "Role",
+        "to_column":  "RoleId",
+        "fk_name":  "FK_FlowNode_Role"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "FlowNodeCause",
+        "from_column":  "CookieCauseId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieCause",
+        "to_column":  "CookieCauseId",
+        "fk_name":  "FK_FlowNodeCause_CookieCause"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "FlowNodeCause",
+        "from_column":  "FlowNodeId",
+        "to_schema":  "dbo",
+        "to_table":  "FlowNode",
+        "to_column":  "FlowNodeId",
+        "fk_name":  "FK_FlowNodeCause_FlowNode"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Gift",
+        "from_column":  "GiftTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "GiftType",
+        "to_column":  "GiftTypeId",
+        "fk_name":  "FK_Gift_GiftType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Inbox",
+        "from_column":  "SentboxId",
+        "to_schema":  "dbo",
+        "to_table":  "Sentbox",
+        "to_column":  "SentboxId",
+        "fk_name":  "FK_Inbox_Sentbox"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Inform",
+        "from_column":  "InformerAgentId",
+        "to_schema":  "dbo",
+        "to_table":  "Agent",
+        "to_column":  "AgentId",
+        "fk_name":  "FK_Inform_Agent"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Inform",
+        "from_column":  "InformerAgentGroupId",
+        "to_schema":  "dbo",
+        "to_table":  "AgentGroup",
+        "to_column":  "AgentGroupId",
+        "fk_name":  "FK_Inform_AgentGroup"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Inform",
+        "from_column":  "InformerSocialClassId",
+        "to_schema":  "dbo",
+        "to_table":  "AgentSocialClass",
+        "to_column":  "AgentSocialClassId",
+        "fk_name":  "FK_Inform_AgentSocialClass"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Inform",
+        "from_column":  "AreaId",
+        "to_schema":  "dbo",
+        "to_table":  "Area",
+        "to_column":  "AreaId",
+        "fk_name":  "FK_Inform_Area"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Inform",
+        "from_column":  "InformerAreaId",
+        "to_schema":  "dbo",
+        "to_table":  "Area",
+        "to_column":  "AreaId",
+        "fk_name":  "FK_Inform_Area_Informer"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Inform",
+        "from_column":  "CenterCategoryId",
+        "to_schema":  "dbo",
+        "to_table":  "CenterCategory",
+        "to_column":  "CenterCategoryId",
+        "fk_name":  "FK__Inform__CenterCa__53E25DCE"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Inform",
+        "from_column":  "CookieId",
+        "to_schema":  "dbo",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId",
+        "fk_name":  "FK_Inform_Cookie"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Inform",
+        "from_column":  "DepartmentIdPlaceOccur",
+        "to_schema":  "dbo",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId",
+        "fk_name":  "FK_Inform_DepartmentPlaceOccur"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Inform",
+        "from_column":  "DistrinctId",
+        "to_schema":  "dbo",
+        "to_table":  "District",
+        "to_column":  "DistrictId",
+        "fk_name":  "FK_Inform_District"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Inform",
+        "from_column":  "InformerDistrinctId",
+        "to_schema":  "dbo",
+        "to_table":  "District",
+        "to_column":  "DistrictId",
+        "fk_name":  "FK_Inform_District_Informer"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Inform",
+        "from_column":  "InformerEducationTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "EducationType",
+        "to_column":  "EducationTypeId",
+        "fk_name":  "FK_Inform_EducationType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Inform",
+        "from_column":  "InformerGenderId",
+        "to_schema":  "dbo",
+        "to_table":  "Gender",
+        "to_column":  "GenderId",
+        "fk_name":  "FK_Inform_Gender"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Inform",
+        "from_column":  "InformerRegionId",
+        "to_schema":  "dbo",
+        "to_table":  "Region",
+        "to_column":  "RegionId",
+        "fk_name":  "FK_Inform_Region_Informer"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Inform",
+        "from_column":  "RegionId",
+        "to_schema":  "dbo",
+        "to_table":  "Region",
+        "to_column":  "RegionId",
+        "fk_name":  "FK_Inform_Region"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Inform",
+        "from_column":  "SegmentId",
+        "to_schema":  "dbo",
+        "to_table":  "Segment",
+        "to_column":  "SegmentId",
+        "fk_name":  "FK_Inform_Segment"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "InformerVisitorLog",
+        "from_column":  "CookieId",
+        "to_schema":  "dbo",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId",
+        "fk_name":  "FK_InformerVisitorLog_Cookie"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "InformerVisitorLog",
+        "from_column":  "UserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_InformerVisitorLog_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "InformLog",
+        "from_column":  "InformLogerAgentId",
+        "to_schema":  "dbo",
+        "to_table":  "Agent",
+        "to_column":  "AgentId",
+        "fk_name":  "FK_InformLog_Agent"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "InformLog",
+        "from_column":  "InformLogerAgentGroupId",
+        "to_schema":  "dbo",
+        "to_table":  "AgentGroup",
+        "to_column":  "AgentGroupId",
+        "fk_name":  "FK_InformLog_AgentGroup"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "InformLog",
+        "from_column":  "InformLogerSocialClassId",
+        "to_schema":  "dbo",
+        "to_table":  "AgentSocialClass",
+        "to_column":  "AgentSocialClassId",
+        "fk_name":  "FK_InformLog_AgentSocialClass"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "InformLog",
+        "from_column":  "AreaId",
+        "to_schema":  "dbo",
+        "to_table":  "Area",
+        "to_column":  "AreaId",
+        "fk_name":  "FK_InformLog_Area"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "InformLog",
+        "from_column":  "InformLogerAreaId",
+        "to_schema":  "dbo",
+        "to_table":  "Area",
+        "to_column":  "AreaId",
+        "fk_name":  "FK_InformLog_Area_InformLoger"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "InformLog",
+        "from_column":  "CookieId",
+        "to_schema":  "dbo",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId",
+        "fk_name":  "FK_InformLog_Cookie"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "InformLog",
+        "from_column":  "DistrinctId",
+        "to_schema":  "dbo",
+        "to_table":  "District",
+        "to_column":  "DistrictId",
+        "fk_name":  "FK_InformLog_District"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "InformLog",
+        "from_column":  "InformLogerDistrinctId",
+        "to_schema":  "dbo",
+        "to_table":  "District",
+        "to_column":  "DistrictId",
+        "fk_name":  "FK_InformLog_District_InformLoger"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "InformLog",
+        "from_column":  "InformLogerEducationTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "EducationType",
+        "to_column":  "EducationTypeId",
+        "fk_name":  "FK_InformLog_EducationType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "InformLog",
+        "from_column":  "InformLogerGenderId",
+        "to_schema":  "dbo",
+        "to_table":  "Gender",
+        "to_column":  "GenderId",
+        "fk_name":  "FK_InformLog_Gender"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "InformLog",
+        "from_column":  "InformId",
+        "to_schema":  "dbo",
+        "to_table":  "Inform",
+        "to_column":  "InformId",
+        "fk_name":  "FK_InformLog_Inform"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "InformLog",
+        "from_column":  "InformLogerRegionId",
+        "to_schema":  "dbo",
+        "to_table":  "Region",
+        "to_column":  "RegionId",
+        "fk_name":  "FK_InformLog_Region_InformLoger"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "InformLog",
+        "from_column":  "RegionId",
+        "to_schema":  "dbo",
+        "to_table":  "Region",
+        "to_column":  "RegionId",
+        "fk_name":  "FK_InformLog_Region"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "InformLog",
+        "from_column":  "SegmentId",
+        "to_schema":  "dbo",
+        "to_table":  "Segment",
+        "to_column":  "SegmentId",
+        "fk_name":  "FK_InformLog_Segment"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Library",
+        "from_column":  "LibraryParentId",
+        "to_schema":  "dbo",
+        "to_table":  "Library",
+        "to_column":  "LibraryId",
+        "fk_name":  "FK_Library_Library"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "MeetingMember",
+        "from_column":  "CookieId",
+        "to_schema":  "dbo",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId",
+        "fk_name":  "FK_MeetingMember_Cookie"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "MeetingMember",
+        "from_column":  "MayorMeetingId",
+        "to_schema":  "dbo",
+        "to_table":  "MayorMeeting",
+        "to_column":  "MayorMeetingId",
+        "fk_name":  "FK_MeetingMember_MayorMeeting"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Message",
+        "from_column":  "MessageSenderUserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_Message_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "MessageReceiver",
+        "from_column":  "MessageReceiverAgentId",
+        "to_schema":  "dbo",
+        "to_table":  "Agent",
+        "to_column":  "AgentId",
+        "fk_name":  "FK_MessageReceiver_Agent"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "MessageReceiver",
+        "from_column":  "MessageId",
+        "to_schema":  "dbo",
+        "to_table":  "Message",
+        "to_column":  "MessageId",
+        "fk_name":  "FK_MessageReceiver_MessageId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "MessageReceiver",
+        "from_column":  "MessageReceiverUserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_MessageReceiver_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "MessageViewerLog",
+        "from_column":  "AgentId",
+        "to_schema":  "dbo",
+        "to_table":  "Agent",
+        "to_column":  "AgentId",
+        "fk_name":  "FK_MessageViewerLog_Agent"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "MessageViewerLog",
+        "from_column":  "MessageId",
+        "to_schema":  "dbo",
+        "to_table":  "Message",
+        "to_column":  "MessageId",
+        "fk_name":  "FK_MessageViewerLog_Message"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "MessageViewerLog",
+        "from_column":  "UserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_MessageViewerLog_UserInfo1"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Mission",
+        "from_column":  "AreaId",
+        "to_schema":  "dbo",
+        "to_table":  "Area",
+        "to_column":  "AreaId",
+        "fk_name":  "FK_Mission_Area"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Mission",
+        "from_column":  "CookieId",
+        "to_schema":  "dbo",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId",
+        "fk_name":  "FK_Mission_Cookie"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Mission",
+        "from_column":  "DistrictId",
+        "to_schema":  "dbo",
+        "to_table":  "District",
+        "to_column":  "DistrictId",
+        "fk_name":  "FK_Mission_District"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Mission",
+        "from_column":  "RegionId",
+        "to_schema":  "dbo",
+        "to_table":  "Region",
+        "to_column":  "RegionId",
+        "fk_name":  "FK_Mission_Region"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "MissionLog",
+        "from_column":  "AreaId",
+        "to_schema":  "dbo",
+        "to_table":  "Area",
+        "to_column":  "AreaId",
+        "fk_name":  "FK_MissionLog_Area"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "MissionLog",
+        "from_column":  "CookieId",
+        "to_schema":  "dbo",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId",
+        "fk_name":  "FK_MissionLog_Cookie"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "MissionLog",
+        "from_column":  "DistrictId",
+        "to_schema":  "dbo",
+        "to_table":  "District",
+        "to_column":  "DistrictId",
+        "fk_name":  "FK_MissionLog_District"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "MissionLog",
+        "from_column":  "RegionId",
+        "to_schema":  "dbo",
+        "to_table":  "Region",
+        "to_column":  "RegionId",
+        "fk_name":  "FK_MissionLog_Region"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "NotificationSentbox",
+        "from_column":  "RoleId",
+        "to_schema":  "dbo",
+        "to_table":  "Role",
+        "to_column":  "RoleId",
+        "fk_name":  "FK_NotificationSentbox_Role"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "NotificationSentbox",
+        "from_column":  "UserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_NotificationSentbox_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "NotificationSentbox",
+        "from_column":  "WorkspaceId",
+        "to_schema":  "dbo",
+        "to_table":  "Workspace",
+        "to_column":  "WorkspaceId",
+        "fk_name":  "FK_NotificationSentbox_Workspace"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Personnel",
+        "from_column":  "DepartmentId",
+        "to_schema":  "dbo",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId",
+        "fk_name":  "FK_Personnel_Department"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Personnel",
+        "from_column":  "EducationTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "EducationType",
+        "to_column":  "EducationTypeId",
+        "fk_name":  "FK_Personnel_Personnel"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Personnel",
+        "from_column":  "GenderId",
+        "to_schema":  "dbo",
+        "to_table":  "Gender",
+        "to_column":  "GenderId",
+        "fk_name":  "FK_Personnel_Gender"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Personnel",
+        "from_column":  "JobId",
+        "to_schema":  "dbo",
+        "to_table":  "Job",
+        "to_column":  "JobId",
+        "fk_name":  "FK_Personnel_Job"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Personnel",
+        "from_column":  "MaritalStatusId",
+        "to_schema":  "dbo",
+        "to_table":  "MaritalStatus",
+        "to_column":  "MaritalStatusId",
+        "fk_name":  "FK_Personnel_MaritalStatus"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Personnel",
+        "from_column":  "SupervisorId",
+        "to_schema":  "dbo",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId",
+        "fk_name":  "FK_Personnel_Personnel_Supervisor"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Region",
+        "from_column":  "DepartmentId",
+        "to_schema":  "dbo",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId",
+        "fk_name":  "FK_Region_Department"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "ReportResult",
+        "from_column":  "RoleId",
+        "to_schema":  "dbo",
+        "to_table":  "Role",
+        "to_column":  "RoleId",
+        "fk_name":  "FK_ReportResult_Role"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "ReportResult",
+        "from_column":  "UserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_ReportResult_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Role",
+        "from_column":  "WorkspaceId",
+        "to_schema":  "dbo",
+        "to_table":  "Workspace",
+        "to_column":  "WorkspaceId",
+        "fk_name":  "FK_Role_Workspace"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "RoleMember",
+        "from_column":  "RoleId",
+        "to_schema":  "dbo",
+        "to_table":  "Role",
+        "to_column":  "RoleId",
+        "fk_name":  "FK_RoleMember_Role"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "RoleMember",
+        "from_column":  "RoleMemberId",
+        "to_schema":  "dbo",
+        "to_table":  "RoleMember",
+        "to_column":  "RoleMemberId",
+        "fk_name":  "FK_RoleMember_RoleMember"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "RoleMember",
+        "from_column":  "UserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_RoleMember_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "RoleMemberAccess",
+        "from_column":  "CookieChannelId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieChannel",
+        "to_column":  "CookieChannelId",
+        "fk_name":  "FK_RoleMemberAccess_CookieChannel"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "RoleMemberAccess",
+        "from_column":  "ChangedDepartmentId",
+        "to_schema":  "dbo",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId",
+        "fk_name":  "FK__RoleMembe__Chang__7BF04F28"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "RoleMemberAccess",
+        "from_column":  "DepartmentId",
+        "to_schema":  "dbo",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId",
+        "fk_name":  "FK_RoleMemberAccess_Department"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "RoleMemberAccess",
+        "from_column":  "RoleMemberId",
+        "to_schema":  "dbo",
+        "to_table":  "RoleMember",
+        "to_column":  "RoleMemberId",
+        "fk_name":  "FK_RoleMemberAccess_RoleMember"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "RoleStatusReports",
+        "from_column":  "RoleId",
+        "to_schema":  "dbo",
+        "to_table":  "Role",
+        "to_column":  "RoleId",
+        "fk_name":  "FK_RoleStatusReports_Role"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Segment",
+        "from_column":  "WorkspaceId",
+        "to_schema":  "dbo",
+        "to_table":  "Workspace",
+        "to_column":  "WorkspaceId",
+        "fk_name":  "FK_Segment_Workspace"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Subject",
+        "from_column":  "CookieTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId",
+        "fk_name":  "FK_Subject_CookieType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Subject",
+        "from_column":  "SubjectGroupId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectGroup",
+        "to_column":  "SubjectGroupId",
+        "fk_name":  "FK_Subject_SubjectGroup"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Subject",
+        "from_column":  "SubjectNatureId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectNature",
+        "to_column":  "SubjectNatureId",
+        "fk_name":  "FK_Subject_SubjectNature"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Subject",
+        "from_column":  "ZoneId",
+        "to_schema":  "dbo",
+        "to_table":  "Zone",
+        "to_column":  "ZoneId",
+        "fk_name":  "FK_Subject_Zone"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "SubjectChild",
+        "from_column":  "SubjectId",
+        "to_schema":  "dbo",
+        "to_table":  "Subject",
+        "to_column":  "SubjectId",
+        "fk_name":  "FK_SubjectChild_Subject"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "SubjectClass",
+        "from_column":  "CookieTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId",
+        "fk_name":  "FK_SubjectClass_CookieType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "SubjectClassMember",
+        "from_column":  "SubjectClassMemberCookieFieldTypeId1",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId",
+        "fk_name":  "FK_SubjectClassMember_CookieFieldType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "SubjectClassMember",
+        "from_column":  "SubjectClassMemberCookieFieldTypeId2",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId",
+        "fk_name":  "FK_SubjectClassMember_CookieFieldType1"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "SubjectClassMember",
+        "from_column":  "SubjectClassMemberCookieFieldTypeId3",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId",
+        "fk_name":  "FK_SubjectClassMember_CookieFieldType2"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "SubjectClassMember",
+        "from_column":  "SubjectClassMemberCookieFieldTypeId4",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId",
+        "fk_name":  "FK_SubjectClassMember_CookieFieldType3"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "SubjectClassMember",
+        "from_column":  "SubjectClassMemberCookieFieldTypeId5",
+        "to_schema":  "dbo",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId",
+        "fk_name":  "FK_SubjectClassMember_CookieFieldType4"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "SubjectClassMember",
+        "from_column":  "DepartmentId",
+        "to_schema":  "dbo",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId",
+        "fk_name":  "FK_SubjectClassMember_Department"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "SubjectClassMember",
+        "from_column":  "DepartmentTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "DepartmentType",
+        "to_column":  "DepartmentTypeId",
+        "fk_name":  "FK_SubjectClassMember_DepartmentType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "SubjectClassMember",
+        "from_column":  "FlowId",
+        "to_schema":  "dbo",
+        "to_table":  "Flow",
+        "to_column":  "FlowId",
+        "fk_name":  "FK_SubjectClassMember_Flow"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "SubjectClassMember",
+        "from_column":  "SubjectId",
+        "to_schema":  "dbo",
+        "to_table":  "Subject",
+        "to_column":  "SubjectId",
+        "fk_name":  "FK_SubjectClassMember_Subject"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "SubjectClassMember",
+        "from_column":  "SubjectClassId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectClass",
+        "to_column":  "SubjectClassId",
+        "fk_name":  "FK_SubjectClassMember_SubjectClass"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "SubjectClassMember",
+        "from_column":  "SubjectIndexId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectIndex",
+        "to_column":  "SubjectIndexId",
+        "fk_name":  "FK_SubjectClassMember_SubjectIndex"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "SubjectClassMember",
+        "from_column":  "SubjectPriorityId",
+        "to_schema":  "dbo",
+        "to_table":  "SubjectPriority",
+        "to_column":  "SubjectPriorityId",
+        "fk_name":  "FK_SubjectClassMember_SubjectPriority"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "SubjectGroup",
+        "from_column":  "CookieTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId",
+        "fk_name":  "FK_SubjectGroup_CookieType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "SubjectNature",
+        "from_column":  "CookieTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId",
+        "fk_name":  "FK_SubjectNature_CookieType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "SubjectPriority",
+        "from_column":  "CookieTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId",
+        "fk_name":  "FK_SubjectPriority_CookieType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "SubSystem",
+        "from_column":  "TotalSystemId",
+        "to_schema":  "dbo",
+        "to_table":  "TotalSystem",
+        "to_column":  "TotalSystemId",
+        "fk_name":  "FK_SubSystem_TotalSystem"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "TerminalStatus",
+        "from_column":  "CookieStatusId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId",
+        "fk_name":  "FK_TerminalStatus_CookieStatus"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "TrackUserApp",
+        "from_column":  "UserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_TrackUserApp_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "TrackUsers",
+        "from_column":  "CookieChannelId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieChannel",
+        "to_column":  "CookieChannelId",
+        "fk_name":  "FK_TrackUsers_CookieChannelId"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "TrackUsers",
+        "from_column":  "TrackUserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_TrackUsers_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "UserDevice",
+        "from_column":  "AgentId",
+        "to_schema":  "dbo",
+        "to_table":  "Agent",
+        "to_column":  "AgentId",
+        "fk_name":  "FK_UserDevice_Agent"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "UserDevice",
+        "from_column":  "GenderId",
+        "to_schema":  "dbo",
+        "to_table":  "Gender",
+        "to_column":  "GenderId",
+        "fk_name":  "FK_UserDevice_Gender"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "UserInfo",
+        "from_column":  "PersonnelId",
+        "to_schema":  "dbo",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId",
+        "fk_name":  "FK_UserInfo_Personnel"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "UserInfo",
+        "from_column":  "UserGroupId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfoGroup",
+        "to_column":  "UserGroupId",
+        "fk_name":  "FK_UserInfo_UserInfoGroup"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Vehicle",
+        "from_column":  "DepartmentId",
+        "to_schema":  "dbo",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId",
+        "fk_name":  "FK_Vehicle_Department"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Vehicle",
+        "from_column":  "VehicleTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "VehicleType",
+        "to_column":  "VehicleTypeId",
+        "fk_name":  "FK_Vehicle_VehicleType"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "WorkspaceMember",
+        "from_column":  "UserId",
+        "to_schema":  "dbo",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId",
+        "fk_name":  "FK_WorkspaceMember_UserInfo"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "WorkspaceMember",
+        "from_column":  "WorkspaceId",
+        "to_schema":  "dbo",
+        "to_table":  "Workspace",
+        "to_column":  "WorkspaceId",
+        "fk_name":  "FK_WorkspaceMember_Workspace"
+    },
+    {
+        "from_schema":  "dbo",
+        "from_table":  "Zone",
+        "from_column":  "CookieTypeId",
+        "to_schema":  "dbo",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId",
+        "fk_name":  "FK_Zone_CookieType"
+    }
+]

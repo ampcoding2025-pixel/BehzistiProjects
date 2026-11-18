@@ -1,0 +1,1694 @@
+[
+    {
+        "from_table":  "AccessLevel",
+        "from_column":  "RoleId",
+        "to_table":  "Role",
+        "to_column":  "RoleId"
+    },
+    {
+        "from_table":  "Agent",
+        "from_column":  "AgentExpertiseFieldId",
+        "to_table":  "AgentExpertiseField",
+        "to_column":  "AgentExpertiseFieldId"
+    },
+    {
+        "from_table":  "Agent",
+        "from_column":  "AgentSocialClassId",
+        "to_table":  "AgentSocialClass",
+        "to_column":  "AgentSocialClassId"
+    },
+    {
+        "from_table":  "Agent",
+        "from_column":  "AreaId",
+        "to_table":  "Area",
+        "to_column":  "AreaId"
+    },
+    {
+        "from_table":  "Agent",
+        "from_column":  "DistrictId",
+        "to_table":  "District",
+        "to_column":  "DistrictId"
+    },
+    {
+        "from_table":  "Agent",
+        "from_column":  "EducationTypeId",
+        "to_table":  "EducationType",
+        "to_column":  "EducationTypeId"
+    },
+    {
+        "from_table":  "Agent",
+        "from_column":  "GenderId",
+        "to_table":  "Gender",
+        "to_column":  "GenderId"
+    },
+    {
+        "from_table":  "Agent",
+        "from_column":  "RegionId",
+        "to_table":  "Region",
+        "to_column":  "RegionId"
+    },
+    {
+        "from_table":  "AgentGift",
+        "from_column":  "AgentId",
+        "to_table":  "Agent",
+        "to_column":  "AgentId"
+    },
+    {
+        "from_table":  "AgentGrade",
+        "from_column":  "AgentId",
+        "to_table":  "Agent",
+        "to_column":  "AgentId"
+    },
+    {
+        "from_table":  "AgentGroup",
+        "from_column":  "WorkspaceId",
+        "to_table":  "Workspace",
+        "to_column":  "WorkspaceId"
+    },
+    {
+        "from_table":  "AgentGroupMembership",
+        "from_column":  "AgentId",
+        "to_table":  "Agent",
+        "to_column":  "AgentId"
+    },
+    {
+        "from_table":  "Area",
+        "from_column":  "DepartmentId",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId"
+    },
+    {
+        "from_table":  "Area",
+        "from_column":  "RegionId",
+        "to_table":  "Region",
+        "to_column":  "RegionId"
+    },
+    {
+        "from_table":  "Area",
+        "from_column":  "SegmentId",
+        "to_table":  "Segment",
+        "to_column":  "SegmentId"
+    },
+    {
+        "from_table":  "AttachmentVisite",
+        "from_column":  "CookieId",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId"
+    },
+    {
+        "from_table":  "AttachmentVisite",
+        "from_column":  "CookieStatusId",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId"
+    },
+    {
+        "from_table":  "AttachmentVisite",
+        "from_column":  "RoleId",
+        "to_table":  "Role",
+        "to_column":  "RoleId"
+    },
+    {
+        "from_table":  "AttachmentVisite",
+        "from_column":  "UserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "CallLog",
+        "from_column":  "UserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "CallLog",
+        "from_column":  "WorkspaceId",
+        "to_table":  "Workspace",
+        "to_column":  "WorkspaceId"
+    },
+    {
+        "from_table":  "CallRecord",
+        "from_column":  "CookieId",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId"
+    },
+    {
+        "from_table":  "CallRecord",
+        "from_column":  "CookieFlowId",
+        "to_table":  "CookieFlow",
+        "to_column":  "CookieFlowId"
+    },
+    {
+        "from_table":  "CallRecord",
+        "from_column":  "CookiePursuitId",
+        "to_table":  "CookiePursuit",
+        "to_column":  "CookiePursuitId"
+    },
+    {
+        "from_table":  "CallRecord",
+        "from_column":  "UserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "CookieId",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "CookieCauseId",
+        "to_table":  "CookieCause",
+        "to_column":  "CookieCauseId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "CookieChannelId",
+        "to_table":  "CookieChannel",
+        "to_column":  "CookieChannelId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "CartableFieldTypeId1",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "CartableFieldTypeId2",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "CartableFieldTypeId3",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "CartableFieldTypeId4",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "CartableFieldTypeId5",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "CookieFlowId",
+        "to_table":  "CookieFlow",
+        "to_column":  "CookieFlowId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "PreCookieFlowId",
+        "to_table":  "CookieFlow",
+        "to_column":  "CookieFlowId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "CookieStatusId",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "PreCookieStatusId",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "PreCookieStatusId",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "CookieTypeId",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "DepartmentId",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "FlowId",
+        "to_table":  "Flow",
+        "to_column":  "FlowId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "AgentPersonnelId",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "ExecuterPersonnelId",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "CartableUserRoleId",
+        "to_table":  "Role",
+        "to_column":  "RoleId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "SubjectId",
+        "to_table":  "Subject",
+        "to_column":  "SubjectId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "SubjectClassId",
+        "to_table":  "SubjectClass",
+        "to_column":  "SubjectClassId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "SubjectGroupId",
+        "to_table":  "SubjectGroup",
+        "to_column":  "SubjectGroupId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "SubjectNatureId",
+        "to_table":  "SubjectNature",
+        "to_column":  "SubjectNatureId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "SubjectPriorityId",
+        "to_table":  "SubjectPriority",
+        "to_column":  "SubjectPriorityId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "CartableUserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "CartableVisitedUserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "ReferToUserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "UserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "Cartable",
+        "from_column":  "ZoneId",
+        "to_table":  "Zone",
+        "to_column":  "ZoneId"
+    },
+    {
+        "from_table":  "ContractorContractDepartment",
+        "from_column":  "DepartmentId",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "AgentId",
+        "to_table":  "Agent",
+        "to_column":  "AgentId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "EventId",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "ReferringCookieId",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "CookieCauseId",
+        "to_table":  "CookieCause",
+        "to_column":  "CookieCauseId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "CookieChannelId",
+        "to_table":  "CookieChannel",
+        "to_column":  "CookieChannelId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "CookieFieldTypeId1",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "CookieFieldTypeId2",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "CookieFieldTypeId3",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "CookieFieldTypeId4",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "CookieFieldTypeId5",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "CookieStatusId",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "CookieTypeId",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "DepartmentId",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "PhoneBookDepartmentId",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "FlowId",
+        "to_table":  "Flow",
+        "to_column":  "FlowId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "GiftId",
+        "to_table":  "Gift",
+        "to_column":  "GiftId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "GiftTypeId",
+        "to_table":  "GiftType",
+        "to_column":  "GiftTypeId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "AgentPersonnelId",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "ExecuterPersonnelId",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "CookieUserRoleId",
+        "to_table":  "Role",
+        "to_column":  "RoleId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "SubjectId",
+        "to_table":  "Subject",
+        "to_column":  "SubjectId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "SubjectClassId",
+        "to_table":  "SubjectClass",
+        "to_column":  "SubjectClassId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "SubjectGroupId",
+        "to_table":  "SubjectGroup",
+        "to_column":  "SubjectGroupId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "SubjectNatureId",
+        "to_table":  "SubjectNature",
+        "to_column":  "SubjectNatureId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "SubjectPriorityId",
+        "to_table":  "SubjectPriority",
+        "to_column":  "SubjectPriorityId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "CookieUserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "CookieVisitedUserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "UserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "Cookie",
+        "from_column":  "ZoneId",
+        "to_table":  "Zone",
+        "to_column":  "ZoneId"
+    },
+    {
+        "from_table":  "CookieCause",
+        "from_column":  "CookieTypeId",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId"
+    },
+    {
+        "from_table":  "CookieChannel",
+        "from_column":  "CookieTypeId",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId"
+    },
+    {
+        "from_table":  "CookieComment",
+        "from_column":  "CookieId",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId"
+    },
+    {
+        "from_table":  "CookieComment",
+        "from_column":  "CookieFlowId",
+        "to_table":  "CookieFlow",
+        "to_column":  "CookieFlowId"
+    },
+    {
+        "from_table":  "CookieComment",
+        "from_column":  "RoleId",
+        "to_table":  "Role",
+        "to_column":  "RoleId"
+    },
+    {
+        "from_table":  "CookieComment",
+        "from_column":  "UserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "CookieCommentDisAgree",
+        "from_column":  "AgentId",
+        "to_table":  "Agent",
+        "to_column":  "AgentId"
+    },
+    {
+        "from_table":  "CookieCommentDisAgree",
+        "from_column":  "CookieId",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId"
+    },
+    {
+        "from_table":  "CookieCommentDisAgree",
+        "from_column":  "CookieFlowId",
+        "to_table":  "CookieFlow",
+        "to_column":  "CookieFlowId"
+    },
+    {
+        "from_table":  "CookieCommentDisAgree",
+        "from_column":  "UserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "CookieFieldType",
+        "from_column":  "CookieTypeId",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieId",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieCauseId",
+        "to_table":  "CookieCause",
+        "to_column":  "CookieCauseId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieChannelId",
+        "to_table":  "CookieChannel",
+        "to_column":  "CookieChannelId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieFlowFieldTypeId1",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieFlowFieldTypeId2",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieFlowFieldTypeId3",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieFlowFieldTypeId4",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieFlowFieldTypeId5",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "PreCookieFlowId",
+        "to_table":  "CookieFlow",
+        "to_column":  "CookieFlowId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieStatusId",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "PreCookieStatusId",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "PreCookieStatusId",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieTypeId",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "DepartmentId",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "FlowId",
+        "to_table":  "Flow",
+        "to_column":  "FlowId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "AgentPersonnelId",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "ExecuterPersonnelId",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieFlowUserRoleId",
+        "to_table":  "Role",
+        "to_column":  "RoleId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "SubjectId",
+        "to_table":  "Subject",
+        "to_column":  "SubjectId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "SubjectClassId",
+        "to_table":  "SubjectClass",
+        "to_column":  "SubjectClassId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "SubjectGroupId",
+        "to_table":  "SubjectGroup",
+        "to_column":  "SubjectGroupId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "SubjectNatureId",
+        "to_table":  "SubjectNature",
+        "to_column":  "SubjectNatureId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "SubjectPriorityId",
+        "to_table":  "SubjectPriority",
+        "to_column":  "SubjectPriorityId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieFlowUserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "CookieFlowVisitedUserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "ReferToUserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "UserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "CookieFlow",
+        "from_column":  "ZoneId",
+        "to_table":  "Zone",
+        "to_column":  "ZoneId"
+    },
+    {
+        "from_table":  "CookieHint",
+        "from_column":  "CookieId",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId"
+    },
+    {
+        "from_table":  "CookieHint",
+        "from_column":  "ViaCookieId",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId"
+    },
+    {
+        "from_table":  "CookieHint",
+        "from_column":  "CookieFlowId",
+        "to_table":  "CookieFlow",
+        "to_column":  "CookieFlowId"
+    },
+    {
+        "from_table":  "CookieHint",
+        "from_column":  "CookieHintTypeId",
+        "to_table":  "CookieHintType",
+        "to_column":  "CookieHintTypeId"
+    },
+    {
+        "from_table":  "CookieHint",
+        "from_column":  "RoleId",
+        "to_table":  "Role",
+        "to_column":  "RoleId"
+    },
+    {
+        "from_table":  "CookieHint",
+        "from_column":  "UserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "CookieLog",
+        "from_column":  "CookieId",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId"
+    },
+    {
+        "from_table":  "CookieLog",
+        "from_column":  "DepartmentId",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId"
+    },
+    {
+        "from_table":  "CookieLog",
+        "from_column":  "FlowId",
+        "to_table":  "Flow",
+        "to_column":  "FlowId"
+    },
+    {
+        "from_table":  "CookieLog",
+        "from_column":  "AgentPersonnelId",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId"
+    },
+    {
+        "from_table":  "CookieLog",
+        "from_column":  "ExecuterPersonnelId",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId"
+    },
+    {
+        "from_table":  "CookieLog",
+        "from_column":  "CookieLogUserRoleId",
+        "to_table":  "Role",
+        "to_column":  "RoleId"
+    },
+    {
+        "from_table":  "CookieLog",
+        "from_column":  "SubjectId",
+        "to_table":  "Subject",
+        "to_column":  "SubjectId"
+    },
+    {
+        "from_table":  "CookieLog",
+        "from_column":  "SubjectClassId",
+        "to_table":  "SubjectClass",
+        "to_column":  "SubjectClassId"
+    },
+    {
+        "from_table":  "CookieLog",
+        "from_column":  "SubjectGroupId",
+        "to_table":  "SubjectGroup",
+        "to_column":  "SubjectGroupId"
+    },
+    {
+        "from_table":  "CookieLog",
+        "from_column":  "SubjectNatureId",
+        "to_table":  "SubjectNature",
+        "to_column":  "SubjectNatureId"
+    },
+    {
+        "from_table":  "CookieLog",
+        "from_column":  "SubjectPriorityId",
+        "to_table":  "SubjectPriority",
+        "to_column":  "SubjectPriorityId"
+    },
+    {
+        "from_table":  "CookieLog",
+        "from_column":  "CookieLogUserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "CookieLog",
+        "from_column":  "UserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "CookieLog",
+        "from_column":  "ZoneId",
+        "to_table":  "Zone",
+        "to_column":  "ZoneId"
+    },
+    {
+        "from_table":  "CookiePursuit",
+        "from_column":  "CookieId",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId"
+    },
+    {
+        "from_table":  "CookiePursuit",
+        "from_column":  "ViaCookieId",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId"
+    },
+    {
+        "from_table":  "CookiePursuit",
+        "from_column":  "CookieChannelId",
+        "to_table":  "CookieChannel",
+        "to_column":  "CookieChannelId"
+    },
+    {
+        "from_table":  "CookiePursuit",
+        "from_column":  "CookieFlowId",
+        "to_table":  "CookieFlow",
+        "to_column":  "CookieFlowId"
+    },
+    {
+        "from_table":  "CookiePursuit",
+        "from_column":  "RoleId",
+        "to_table":  "Role",
+        "to_column":  "RoleId"
+    },
+    {
+        "from_table":  "CookiePursuit",
+        "from_column":  "UserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "CookieShare",
+        "from_column":  "CookieId",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId"
+    },
+    {
+        "from_table":  "CookieShare",
+        "from_column":  "CookieFlowId",
+        "to_table":  "CookieFlow",
+        "to_column":  "CookieFlowId"
+    },
+    {
+        "from_table":  "CookieShare",
+        "from_column":  "RoleId",
+        "to_table":  "Role",
+        "to_column":  "RoleId"
+    },
+    {
+        "from_table":  "CookieShare",
+        "from_column":  "UserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "CookieStatus",
+        "from_column":  "CookieStatusGroupId",
+        "to_table":  "CookieStatusGroup",
+        "to_column":  "CookieStatusGroupId"
+    },
+    {
+        "from_table":  "CookieStatus",
+        "from_column":  "CookieTypeId",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId"
+    },
+    {
+        "from_table":  "CookieStatusAttachmentStep",
+        "from_column":  "CookieStatusId",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId"
+    },
+    {
+        "from_table":  "CookieStatusGroup",
+        "from_column":  "CookieTypeId",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId"
+    },
+    {
+        "from_table":  "CookieType",
+        "from_column":  "WorkspaceId",
+        "to_table":  "Workspace",
+        "to_column":  "WorkspaceId"
+    },
+    {
+        "from_table":  "CookieUserNotification",
+        "from_column":  "AgentId",
+        "to_table":  "Agent",
+        "to_column":  "AgentId"
+    },
+    {
+        "from_table":  "CookieUserNotification",
+        "from_column":  "CookieId",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId"
+    },
+    {
+        "from_table":  "CookieUserNotification",
+        "from_column":  "UserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "DefaultUserSms",
+        "from_column":  "SubjectClassMemberId",
+        "to_table":  "SubjectClassMember",
+        "to_column":  "SubjectClassMemberId"
+    },
+    {
+        "from_table":  "DefaultUserSms",
+        "from_column":  "UserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "Department",
+        "from_column":  "AreaId",
+        "to_table":  "Area",
+        "to_column":  "AreaId"
+    },
+    {
+        "from_table":  "Department",
+        "from_column":  "DepartmentTypeId",
+        "to_table":  "DepartmentType",
+        "to_column":  "DepartmentTypeId"
+    },
+    {
+        "from_table":  "Department",
+        "from_column":  "FlowId",
+        "to_table":  "Flow",
+        "to_column":  "FlowId"
+    },
+    {
+        "from_table":  "Department",
+        "from_column":  "RegionId",
+        "to_table":  "Region",
+        "to_column":  "RegionId"
+    },
+    {
+        "from_table":  "DepartmentChart",
+        "from_column":  "DepartmentId",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId"
+    },
+    {
+        "from_table":  "DepartmentChart",
+        "from_column":  "ParentDepartmentId",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId"
+    },
+    {
+        "from_table":  "DepartmentChart",
+        "from_column":  "WorkspaceId",
+        "to_table":  "Workspace",
+        "to_column":  "WorkspaceId"
+    },
+    {
+        "from_table":  "DepartmentType",
+        "from_column":  "WorkspaceId",
+        "to_table":  "Workspace",
+        "to_column":  "WorkspaceId"
+    },
+    {
+        "from_table":  "District",
+        "from_column":  "RegionId",
+        "to_table":  "Region",
+        "to_column":  "RegionId"
+    },
+    {
+        "from_table":  "Equip",
+        "from_column":  "DepartmentId",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId"
+    },
+    {
+        "from_table":  "EquipMember",
+        "from_column":  "PersonnelId",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId"
+    },
+    {
+        "from_table":  "Executer",
+        "from_column":  "DepartmentId",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId"
+    },
+    {
+        "from_table":  "FeedbackStatus",
+        "from_column":  "CookieStatusId",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId"
+    },
+    {
+        "from_table":  "FeedbackStatus",
+        "from_column":  "CookieTypeId",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId"
+    },
+    {
+        "from_table":  "FeedbackStatus",
+        "from_column":  "RoleId",
+        "to_table":  "Role",
+        "to_column":  "RoleId"
+    },
+    {
+        "from_table":  "Flow",
+        "from_column":  "CookieTypeId",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId"
+    },
+    {
+        "from_table":  "Flow",
+        "from_column":  "DepartmentTypeId",
+        "to_table":  "DepartmentType",
+        "to_column":  "DepartmentTypeId"
+    },
+    {
+        "from_table":  "FlowNode",
+        "from_column":  "CookieHintTypeId",
+        "to_table":  "CookieHintType",
+        "to_column":  "CookieHintTypeId"
+    },
+    {
+        "from_table":  "FlowNode",
+        "from_column":  "CookieStatusId",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId"
+    },
+    {
+        "from_table":  "FlowNode",
+        "from_column":  "NextCookieStatusId",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId"
+    },
+    {
+        "from_table":  "FlowNode",
+        "from_column":  "FlowId",
+        "to_table":  "Flow",
+        "to_column":  "FlowId"
+    },
+    {
+        "from_table":  "FlowNode",
+        "from_column":  "RoleId",
+        "to_table":  "Role",
+        "to_column":  "RoleId"
+    },
+    {
+        "from_table":  "FlowNodeCause",
+        "from_column":  "CookieCauseId",
+        "to_table":  "CookieCause",
+        "to_column":  "CookieCauseId"
+    },
+    {
+        "from_table":  "FlowNodeCause",
+        "from_column":  "FlowNodeId",
+        "to_table":  "FlowNode",
+        "to_column":  "FlowNodeId"
+    },
+    {
+        "from_table":  "Gift",
+        "from_column":  "GiftTypeId",
+        "to_table":  "GiftType",
+        "to_column":  "GiftTypeId"
+    },
+    {
+        "from_table":  "Inbox",
+        "from_column":  "SentboxId",
+        "to_table":  "Sentbox",
+        "to_column":  "SentboxId"
+    },
+    {
+        "from_table":  "Inform",
+        "from_column":  "InformerAgentId",
+        "to_table":  "Agent",
+        "to_column":  "AgentId"
+    },
+    {
+        "from_table":  "Inform",
+        "from_column":  "InformerAgentGroupId",
+        "to_table":  "AgentGroup",
+        "to_column":  "AgentGroupId"
+    },
+    {
+        "from_table":  "Inform",
+        "from_column":  "InformerSocialClassId",
+        "to_table":  "AgentSocialClass",
+        "to_column":  "AgentSocialClassId"
+    },
+    {
+        "from_table":  "Inform",
+        "from_column":  "AreaId",
+        "to_table":  "Area",
+        "to_column":  "AreaId"
+    },
+    {
+        "from_table":  "Inform",
+        "from_column":  "InformerAreaId",
+        "to_table":  "Area",
+        "to_column":  "AreaId"
+    },
+    {
+        "from_table":  "Inform",
+        "from_column":  "CenterCategoryId",
+        "to_table":  "CenterCategory",
+        "to_column":  "CenterCategoryId"
+    },
+    {
+        "from_table":  "Inform",
+        "from_column":  "CookieId",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId"
+    },
+    {
+        "from_table":  "Inform",
+        "from_column":  "DepartmentIdPlaceOccur",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId"
+    },
+    {
+        "from_table":  "Inform",
+        "from_column":  "DistrinctId",
+        "to_table":  "District",
+        "to_column":  "DistrictId"
+    },
+    {
+        "from_table":  "Inform",
+        "from_column":  "InformerDistrinctId",
+        "to_table":  "District",
+        "to_column":  "DistrictId"
+    },
+    {
+        "from_table":  "Inform",
+        "from_column":  "InformerEducationTypeId",
+        "to_table":  "EducationType",
+        "to_column":  "EducationTypeId"
+    },
+    {
+        "from_table":  "Inform",
+        "from_column":  "InformerGenderId",
+        "to_table":  "Gender",
+        "to_column":  "GenderId"
+    },
+    {
+        "from_table":  "Inform",
+        "from_column":  "InformerRegionId",
+        "to_table":  "Region",
+        "to_column":  "RegionId"
+    },
+    {
+        "from_table":  "Inform",
+        "from_column":  "RegionId",
+        "to_table":  "Region",
+        "to_column":  "RegionId"
+    },
+    {
+        "from_table":  "Inform",
+        "from_column":  "SegmentId",
+        "to_table":  "Segment",
+        "to_column":  "SegmentId"
+    },
+    {
+        "from_table":  "InformerVisitorLog",
+        "from_column":  "CookieId",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId"
+    },
+    {
+        "from_table":  "InformerVisitorLog",
+        "from_column":  "UserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "InformLog",
+        "from_column":  "InformLogerAgentId",
+        "to_table":  "Agent",
+        "to_column":  "AgentId"
+    },
+    {
+        "from_table":  "InformLog",
+        "from_column":  "AreaId",
+        "to_table":  "Area",
+        "to_column":  "AreaId"
+    },
+    {
+        "from_table":  "InformLog",
+        "from_column":  "InformLogerAreaId",
+        "to_table":  "Area",
+        "to_column":  "AreaId"
+    },
+    {
+        "from_table":  "InformLog",
+        "from_column":  "CookieId",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId"
+    },
+    {
+        "from_table":  "InformLog",
+        "from_column":  "InformId",
+        "to_table":  "Inform",
+        "to_column":  "InformId"
+    },
+    {
+        "from_table":  "InformLog",
+        "from_column":  "InformLogerRegionId",
+        "to_table":  "Region",
+        "to_column":  "RegionId"
+    },
+    {
+        "from_table":  "InformLog",
+        "from_column":  "RegionId",
+        "to_table":  "Region",
+        "to_column":  "RegionId"
+    },
+    {
+        "from_table":  "InformLog",
+        "from_column":  "SegmentId",
+        "to_table":  "Segment",
+        "to_column":  "SegmentId"
+    },
+    {
+        "from_table":  "MeetingMember",
+        "from_column":  "CookieId",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId"
+    },
+    {
+        "from_table":  "Message",
+        "from_column":  "MessageSenderUserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "MessageReceiver",
+        "from_column":  "MessageReceiverAgentId",
+        "to_table":  "Agent",
+        "to_column":  "AgentId"
+    },
+    {
+        "from_table":  "MessageReceiver",
+        "from_column":  "MessageId",
+        "to_table":  "Message",
+        "to_column":  "MessageId"
+    },
+    {
+        "from_table":  "MessageReceiver",
+        "from_column":  "MessageReceiverUserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "MessageViewerLog",
+        "from_column":  "AgentId",
+        "to_table":  "Agent",
+        "to_column":  "AgentId"
+    },
+    {
+        "from_table":  "MessageViewerLog",
+        "from_column":  "MessageId",
+        "to_table":  "Message",
+        "to_column":  "MessageId"
+    },
+    {
+        "from_table":  "MessageViewerLog",
+        "from_column":  "UserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "Mission",
+        "from_column":  "AreaId",
+        "to_table":  "Area",
+        "to_column":  "AreaId"
+    },
+    {
+        "from_table":  "Mission",
+        "from_column":  "CookieId",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId"
+    },
+    {
+        "from_table":  "Mission",
+        "from_column":  "DistrictId",
+        "to_table":  "District",
+        "to_column":  "DistrictId"
+    },
+    {
+        "from_table":  "Mission",
+        "from_column":  "RegionId",
+        "to_table":  "Region",
+        "to_column":  "RegionId"
+    },
+    {
+        "from_table":  "MissionLog",
+        "from_column":  "AreaId",
+        "to_table":  "Area",
+        "to_column":  "AreaId"
+    },
+    {
+        "from_table":  "MissionLog",
+        "from_column":  "CookieId",
+        "to_table":  "Cookie",
+        "to_column":  "CookieId"
+    },
+    {
+        "from_table":  "MissionLog",
+        "from_column":  "RegionId",
+        "to_table":  "Region",
+        "to_column":  "RegionId"
+    },
+    {
+        "from_table":  "NotificationSentbox",
+        "from_column":  "RoleId",
+        "to_table":  "Role",
+        "to_column":  "RoleId"
+    },
+    {
+        "from_table":  "NotificationSentbox",
+        "from_column":  "UserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "NotificationSentbox",
+        "from_column":  "WorkspaceId",
+        "to_table":  "Workspace",
+        "to_column":  "WorkspaceId"
+    },
+    {
+        "from_table":  "Personnel",
+        "from_column":  "DepartmentId",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId"
+    },
+    {
+        "from_table":  "Personnel",
+        "from_column":  "EducationTypeId",
+        "to_table":  "EducationType",
+        "to_column":  "EducationTypeId"
+    },
+    {
+        "from_table":  "Personnel",
+        "from_column":  "GenderId",
+        "to_table":  "Gender",
+        "to_column":  "GenderId"
+    },
+    {
+        "from_table":  "Personnel",
+        "from_column":  "JobId",
+        "to_table":  "Job",
+        "to_column":  "JobId"
+    },
+    {
+        "from_table":  "Personnel",
+        "from_column":  "MaritalStatusId",
+        "to_table":  "MaritalStatus",
+        "to_column":  "MaritalStatusId"
+    },
+    {
+        "from_table":  "Personnel",
+        "from_column":  "SupervisorId",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId"
+    },
+    {
+        "from_table":  "Region",
+        "from_column":  "DepartmentId",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId"
+    },
+    {
+        "from_table":  "ReportResult",
+        "from_column":  "RoleId",
+        "to_table":  "Role",
+        "to_column":  "RoleId"
+    },
+    {
+        "from_table":  "ReportResult",
+        "from_column":  "UserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "Role",
+        "from_column":  "WorkspaceId",
+        "to_table":  "Workspace",
+        "to_column":  "WorkspaceId"
+    },
+    {
+        "from_table":  "RoleMember",
+        "from_column":  "RoleId",
+        "to_table":  "Role",
+        "to_column":  "RoleId"
+    },
+    {
+        "from_table":  "RoleMember",
+        "from_column":  "UserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "RoleMemberAccess",
+        "from_column":  "CookieChannelId",
+        "to_table":  "CookieChannel",
+        "to_column":  "CookieChannelId"
+    },
+    {
+        "from_table":  "RoleMemberAccess",
+        "from_column":  "ChangedDepartmentId",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId"
+    },
+    {
+        "from_table":  "RoleMemberAccess",
+        "from_column":  "DepartmentId",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId"
+    },
+    {
+        "from_table":  "RoleMemberAccess",
+        "from_column":  "RoleMemberId",
+        "to_table":  "RoleMember",
+        "to_column":  "RoleMemberId"
+    },
+    {
+        "from_table":  "RoleStatusReports",
+        "from_column":  "RoleId",
+        "to_table":  "Role",
+        "to_column":  "RoleId"
+    },
+    {
+        "from_table":  "Segment",
+        "from_column":  "WorkspaceId",
+        "to_table":  "Workspace",
+        "to_column":  "WorkspaceId"
+    },
+    {
+        "from_table":  "Subject",
+        "from_column":  "CookieTypeId",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId"
+    },
+    {
+        "from_table":  "Subject",
+        "from_column":  "SubjectGroupId",
+        "to_table":  "SubjectGroup",
+        "to_column":  "SubjectGroupId"
+    },
+    {
+        "from_table":  "Subject",
+        "from_column":  "SubjectNatureId",
+        "to_table":  "SubjectNature",
+        "to_column":  "SubjectNatureId"
+    },
+    {
+        "from_table":  "Subject",
+        "from_column":  "ZoneId",
+        "to_table":  "Zone",
+        "to_column":  "ZoneId"
+    },
+    {
+        "from_table":  "SubjectChild",
+        "from_column":  "SubjectId",
+        "to_table":  "Subject",
+        "to_column":  "SubjectId"
+    },
+    {
+        "from_table":  "SubjectClass",
+        "from_column":  "CookieTypeId",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId"
+    },
+    {
+        "from_table":  "SubjectClassMember",
+        "from_column":  "SubjectClassMemberCookieFieldTypeId1",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId"
+    },
+    {
+        "from_table":  "SubjectClassMember",
+        "from_column":  "SubjectClassMemberCookieFieldTypeId2",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId"
+    },
+    {
+        "from_table":  "SubjectClassMember",
+        "from_column":  "SubjectClassMemberCookieFieldTypeId3",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId"
+    },
+    {
+        "from_table":  "SubjectClassMember",
+        "from_column":  "SubjectClassMemberCookieFieldTypeId4",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId"
+    },
+    {
+        "from_table":  "SubjectClassMember",
+        "from_column":  "SubjectClassMemberCookieFieldTypeId5",
+        "to_table":  "CookieFieldType",
+        "to_column":  "CookieFieldTypeId"
+    },
+    {
+        "from_table":  "SubjectClassMember",
+        "from_column":  "DepartmentId",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId"
+    },
+    {
+        "from_table":  "SubjectClassMember",
+        "from_column":  "DepartmentTypeId",
+        "to_table":  "DepartmentType",
+        "to_column":  "DepartmentTypeId"
+    },
+    {
+        "from_table":  "SubjectClassMember",
+        "from_column":  "FlowId",
+        "to_table":  "Flow",
+        "to_column":  "FlowId"
+    },
+    {
+        "from_table":  "SubjectClassMember",
+        "from_column":  "SubjectId",
+        "to_table":  "Subject",
+        "to_column":  "SubjectId"
+    },
+    {
+        "from_table":  "SubjectClassMember",
+        "from_column":  "SubjectClassId",
+        "to_table":  "SubjectClass",
+        "to_column":  "SubjectClassId"
+    },
+    {
+        "from_table":  "SubjectClassMember",
+        "from_column":  "SubjectIndexId",
+        "to_table":  "SubjectIndex",
+        "to_column":  "SubjectIndexId"
+    },
+    {
+        "from_table":  "SubjectClassMember",
+        "from_column":  "SubjectPriorityId",
+        "to_table":  "SubjectPriority",
+        "to_column":  "SubjectPriorityId"
+    },
+    {
+        "from_table":  "SubjectGroup",
+        "from_column":  "CookieTypeId",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId"
+    },
+    {
+        "from_table":  "SubjectNature",
+        "from_column":  "CookieTypeId",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId"
+    },
+    {
+        "from_table":  "SubjectPriority",
+        "from_column":  "CookieTypeId",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId"
+    },
+    {
+        "from_table":  "TerminalStatus",
+        "from_column":  "CookieStatusId",
+        "to_table":  "CookieStatus",
+        "to_column":  "CookieStatusId"
+    },
+    {
+        "from_table":  "TrackUserApp",
+        "from_column":  "UserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "TrackUsers",
+        "from_column":  "CookieChannelId",
+        "to_table":  "CookieChannel",
+        "to_column":  "CookieChannelId"
+    },
+    {
+        "from_table":  "TrackUsers",
+        "from_column":  "TrackUserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "UserDevice",
+        "from_column":  "AgentId",
+        "to_table":  "Agent",
+        "to_column":  "AgentId"
+    },
+    {
+        "from_table":  "UserInfo",
+        "from_column":  "PersonnelId",
+        "to_table":  "Personnel",
+        "to_column":  "PersonnelId"
+    },
+    {
+        "from_table":  "UserInfo",
+        "from_column":  "UserGroupId",
+        "to_table":  "UserInfoGroup",
+        "to_column":  "UserGroupId"
+    },
+    {
+        "from_table":  "Vehicle",
+        "from_column":  "DepartmentId",
+        "to_table":  "Department",
+        "to_column":  "DepartmentId"
+    },
+    {
+        "from_table":  "WorkspaceMember",
+        "from_column":  "UserId",
+        "to_table":  "UserInfo",
+        "to_column":  "UserId"
+    },
+    {
+        "from_table":  "WorkspaceMember",
+        "from_column":  "WorkspaceId",
+        "to_table":  "Workspace",
+        "to_column":  "WorkspaceId"
+    },
+    {
+        "from_table":  "Zone",
+        "from_column":  "CookieTypeId",
+        "to_table":  "CookieType",
+        "to_column":  "CookieTypeId"
+    }
+]

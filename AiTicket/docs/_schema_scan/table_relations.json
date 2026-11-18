@@ -1,0 +1,1374 @@
+[
+    {
+        "table":  "AccessLevel",
+        "rows":  1786,
+        "empty":  false,
+        "out_fks":  "FeatureId-\u003eFeature.FeatureId; RoleId-\u003eRole.RoleId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "AccessLevelLog",
+        "rows":  1226,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Agent",
+        "rows":  69517,
+        "empty":  false,
+        "out_fks":  "AgentExpertiseFieldId-\u003eAgentExpertiseField.AgentExpertiseFieldId; AgentSocialClassId-\u003eAgentSocialClass.AgentSocialClassId; AreaId-\u003eArea.AreaId; DistrictId-\u003eDistrict.DistrictId; EducationTypeId-\u003eEducationType.EducationTypeId; GenderId-\u003eGender.GenderId; RegionId-\u003eRegion.RegionId",
+        "in_fks":  "AgentGift.AgentId; AgentGrade.AgentId; AgentGroupMembership.AgentId; Cookie.AgentId; CookieCommentDisAgree.AgentId; CookieUserNotification.AgentId; Inform.InformerAgentId; InformLog.InformLogerAgentId; MessageReceiver.MessageReceiverAgentId; MessageViewerLog.AgentId; UserDevice.AgentId"
+    },
+    {
+        "table":  "AgentExpertiseField",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  "Agent.AgentExpertiseFieldId"
+    },
+    {
+        "table":  "AgentExpertiseFieldLog",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "AgentGift",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "AgentId-\u003eAgent.AgentId; AgentGiftTypeId-\u003eAgentGiftType.AgentGiftTypeId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "AgentGiftLog",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "AgentGiftType",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  "AgentGift.AgentGiftTypeId"
+    },
+    {
+        "table":  "AgentGiftTypeLog",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "AgentGrade",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "AgentId-\u003eAgent.AgentId; AgentGradeTypeId-\u003eAgentGradeType.AgentGradeTypeId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "AgentGradeLog",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "AgentGradeType",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  "AgentGrade.AgentGradeTypeId"
+    },
+    {
+        "table":  "AgentGradeTypeLog",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "AgentGroup",
+        "rows":  4,
+        "empty":  false,
+        "out_fks":  "WorkspaceId-\u003eWorkspace.WorkspaceId",
+        "in_fks":  "AgentGroupMembership.AgentGroupId; Inform.InformerAgentGroupId; InformLog.InformLogerAgentGroupId"
+    },
+    {
+        "table":  "AgentGroupLog",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "AgentGroupMembership",
+        "rows":  50112,
+        "empty":  false,
+        "out_fks":  "AgentId-\u003eAgent.AgentId; AgentGroupId-\u003eAgentGroup.AgentGroupId; AgentStatusId-\u003eAgentStatus.AgentStatusId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "AgentGroupMembershipLog",
+        "rows":  6,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "AgentLog",
+        "rows":  73567,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "AgentSocialClass",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  "Agent.AgentSocialClassId; Inform.InformerSocialClassId; InformLog.InformLogerSocialClassId"
+    },
+    {
+        "table":  "AgentSocialClassLog",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "AgentStatus",
+        "rows":  5,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  "AgentGroupMembership.AgentStatusId"
+    },
+    {
+        "table":  "AgentStatusLog",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "AppVersion",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Area",
+        "rows":  477,
+        "empty":  false,
+        "out_fks":  "DepartmentId-\u003eDepartment.DepartmentId; RegionId-\u003eRegion.RegionId; SegmentId-\u003eSegment.SegmentId",
+        "in_fks":  "Agent.AreaId; Department.AreaId; Inform.AreaId; Inform.InformerAreaId; InformLog.AreaId; InformLog.InformLogerAreaId; Mission.AreaId; MissionLog.AreaId"
+    },
+    {
+        "table":  "AreaLog",
+        "rows":  2209,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "AttachmentVisite",
+        "rows":  75721,
+        "empty":  false,
+        "out_fks":  "CookieId-\u003eCookie.CookieId; CookieStatusId-\u003eCookieStatus.CookieStatusId; RoleId-\u003eRole.RoleId; UserId-\u003eUserInfo.UserId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "BuildingStep",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Calandar",
+        "rows":  372,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CallLog",
+        "rows":  11,
+        "empty":  false,
+        "out_fks":  "UserId-\u003eUserInfo.UserId; WorkspaceId-\u003eWorkspace.WorkspaceId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CallLogLog",
+        "rows":  605598,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CallReceived",
+        "rows":  81214,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CallReceivedType",
+        "rows":  5,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CallRecord",
+        "rows":  31974,
+        "empty":  false,
+        "out_fks":  "CookieId-\u003eCookie.CookieId; CookieFlowId-\u003eCookieFlow.CookieFlowId; CookiePursuitId-\u003eCookiePursuit.CookiePursuitId; UserId-\u003eUserInfo.UserId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Cartable",
+        "rows":  30122,
+        "empty":  false,
+        "out_fks":  "CookieId-\u003eCookie.CookieId; CookieCauseId-\u003eCookieCause.CookieCauseId; CookieChannelId-\u003eCookieChannel.CookieChannelId; CartableFieldTypeId1-\u003eCookieFieldType.CookieFieldTypeId; CartableFieldTypeId2-\u003eCookieFieldType.CookieFieldTypeId; CartableFieldTypeId3-\u003eCookieFieldType.CookieFieldTypeId; CartableFieldTypeId4-\u003eCookieFieldType.CookieFieldTypeId; CartableFieldTypeId5-\u003eCookieFieldType.CookieFieldTypeId; CookieFlowId-\u003eCookieFlow.CookieFlowId; PreCookieFlowId-\u003eCookieFlow.CookieFlowId; CookieStatusId-\u003eCookieStatus.CookieStatusId; PreCookieStatusId-\u003eCookieStatus.CookieStatusId; PreCookieStatusId-\u003eCookieStatus.CookieStatusId; CookieTypeId-\u003eCookieType.CookieTypeId; DepartmentId-\u003eDepartment.DepartmentId; FlowId-\u003eFlow.FlowId; AgentPersonnelId-\u003ePersonnel.PersonnelId; ExecuterPersonnelId-\u003ePersonnel.PersonnelId; CartableUserRoleId-\u003eRole.RoleId; SubjectId-\u003eSubject.SubjectId; SubjectClassId-\u003eSubjectClass.SubjectClassId; SubjectGroupId-\u003eSubjectGroup.SubjectGroupId; SubjectNatureId-\u003eSubjectNature.SubjectNatureId; SubjectPriorityId-\u003eSubjectPriority.SubjectPriorityId; CartableUserId-\u003eUserInfo.UserId; CartableVisitedUserId-\u003eUserInfo.UserId; ReferToUserId-\u003eUserInfo.UserId; UserId-\u003eUserInfo.UserId; ZoneId-\u003eZone.ZoneId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CenterCategory",
+        "rows":  19,
+        "empty":  false,
+        "out_fks":  "ParentId-\u003eCenterCategory.CenterCategoryId",
+        "in_fks":  "CenterCategory.ParentId; Inform.CenterCategoryId"
+    },
+    {
+        "table":  "ChatMessage",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "ChatRoom",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "ChatUser",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CheckList",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CheckListFlowNode",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "ChkAnswer",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "ChkGroupQuestion",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "ChkQuestion",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "ChkRecordedAnswer",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "ChkRecordedAnswerIndex",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "ContractorContract",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "ContractorContractDepartment",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "DepartmentId-\u003eDepartment.DepartmentId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Cookie",
+        "rows":  193084,
+        "empty":  false,
+        "out_fks":  "AgentId-\u003eAgent.AgentId; EventId-\u003eCookie.CookieId; ReferringCookieId-\u003eCookie.CookieId; CookieCauseId-\u003eCookieCause.CookieCauseId; CookieChannelId-\u003eCookieChannel.CookieChannelId; CookieFieldTypeId1-\u003eCookieFieldType.CookieFieldTypeId; CookieFieldTypeId2-\u003eCookieFieldType.CookieFieldTypeId; CookieFieldTypeId3-\u003eCookieFieldType.CookieFieldTypeId; CookieFieldTypeId4-\u003eCookieFieldType.CookieFieldTypeId; CookieFieldTypeId5-\u003eCookieFieldType.CookieFieldTypeId; CookieStatusId-\u003eCookieStatus.CookieStatusId; CookieTypeId-\u003eCookieType.CookieTypeId; DepartmentId-\u003eDepartment.DepartmentId; PhoneBookDepartmentId-\u003eDepartment.DepartmentId; FlowId-\u003eFlow.FlowId; GiftId-\u003eGift.GiftId; GiftTypeId-\u003eGiftType.GiftTypeId; AgentPersonnelId-\u003ePersonnel.PersonnelId; ExecuterPersonnelId-\u003ePersonnel.PersonnelId; CookieUserRoleId-\u003eRole.RoleId; SubjectId-\u003eSubject.SubjectId; SubjectClassId-\u003eSubjectClass.SubjectClassId; SubjectGroupId-\u003eSubjectGroup.SubjectGroupId; SubjectNatureId-\u003eSubjectNature.SubjectNatureId; SubjectPriorityId-\u003eSubjectPriority.SubjectPriorityId; CookieUserId-\u003eUserInfo.UserId; CookieVisitedUserId-\u003eUserInfo.UserId; UserId-\u003eUserInfo.UserId; ZoneId-\u003eZone.ZoneId",
+        "in_fks":  "AttachmentVisite.CookieId; CallRecord.CookieId; Cartable.CookieId; Cookie.EventId; Cookie.ReferringCookieId; CookieComment.CookieId; CookieCommentDisAgree.CookieId; CookieFlow.CookieId; CookieHint.CookieId; CookieHint.ViaCookieId; CookieLog.CookieId; CookiePursuit.CookieId; CookiePursuit.ViaCookieId; CookieShare.CookieId; CookieUserNotification.CookieId; Inform.CookieId; InformerVisitorLog.CookieId; InformLog.CookieId; MeetingMember.CookieId; Mission.CookieId; MissionLog.CookieId"
+    },
+    {
+        "table":  "CookieCause",
+        "rows":  1,
+        "empty":  false,
+        "out_fks":  "CookieTypeId-\u003eCookieType.CookieTypeId",
+        "in_fks":  "Cartable.CookieCauseId; Cookie.CookieCauseId; CookieFlow.CookieCauseId; FlowNodeCause.CookieCauseId"
+    },
+    {
+        "table":  "CookieCauseLog",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CookieChannel",
+        "rows":  10,
+        "empty":  false,
+        "out_fks":  "CookieTypeId-\u003eCookieType.CookieTypeId",
+        "in_fks":  "Cartable.CookieChannelId; Cookie.CookieChannelId; CookieFlow.CookieChannelId; CookiePursuit.CookieChannelId; RoleMemberAccess.CookieChannelId; TrackUsers.CookieChannelId"
+    },
+    {
+        "table":  "CookieChannelLog",
+        "rows":  7,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CookieComment",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "CookieId-\u003eCookie.CookieId; CookieFlowId-\u003eCookieFlow.CookieFlowId; RoleId-\u003eRole.RoleId; UserId-\u003eUserInfo.UserId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CookieCommentDisAgree",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "AgentId-\u003eAgent.AgentId; CookieId-\u003eCookie.CookieId; CookieFlowId-\u003eCookieFlow.CookieFlowId; UserId-\u003eUserInfo.UserId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CookieFieldType",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "CookieTypeId-\u003eCookieType.CookieTypeId",
+        "in_fks":  "Cartable.CartableFieldTypeId1; Cartable.CartableFieldTypeId2; Cartable.CartableFieldTypeId3; Cartable.CartableFieldTypeId4; Cartable.CartableFieldTypeId5; Cookie.CookieFieldTypeId1; Cookie.CookieFieldTypeId2; Cookie.CookieFieldTypeId3; Cookie.CookieFieldTypeId4; Cookie.CookieFieldTypeId5; CookieFlow.CookieFlowFieldTypeId1; CookieFlow.CookieFlowFieldTypeId2; CookieFlow.CookieFlowFieldTypeId3; CookieFlow.CookieFlowFieldTypeId4; CookieFlow.CookieFlowFieldTypeId5; SubjectClassMember.SubjectClassMemberCookieFieldTypeId1; SubjectClassMember.SubjectClassMemberCookieFieldTypeId2; SubjectClassMember.SubjectClassMemberCookieFieldTypeId3; SubjectClassMember.SubjectClassMemberCookieFieldTypeId4; SubjectClassMember.SubjectClassMemberCookieFieldTypeId5"
+    },
+    {
+        "table":  "CookieFieldTypeCollection",
+        "rows":  7,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CookieFlow",
+        "rows":  632835,
+        "empty":  false,
+        "out_fks":  "CookieId-\u003eCookie.CookieId; CookieCauseId-\u003eCookieCause.CookieCauseId; CookieChannelId-\u003eCookieChannel.CookieChannelId; CookieFlowFieldTypeId1-\u003eCookieFieldType.CookieFieldTypeId; CookieFlowFieldTypeId2-\u003eCookieFieldType.CookieFieldTypeId; CookieFlowFieldTypeId3-\u003eCookieFieldType.CookieFieldTypeId; CookieFlowFieldTypeId4-\u003eCookieFieldType.CookieFieldTypeId; CookieFlowFieldTypeId5-\u003eCookieFieldType.CookieFieldTypeId; PreCookieFlowId-\u003eCookieFlow.CookieFlowId; CookieStatusId-\u003eCookieStatus.CookieStatusId; PreCookieStatusId-\u003eCookieStatus.CookieStatusId; PreCookieStatusId-\u003eCookieStatus.CookieStatusId; CookieTypeId-\u003eCookieType.CookieTypeId; DepartmentId-\u003eDepartment.DepartmentId; FlowId-\u003eFlow.FlowId; AgentPersonnelId-\u003ePersonnel.PersonnelId; ExecuterPersonnelId-\u003ePersonnel.PersonnelId; CookieFlowUserRoleId-\u003eRole.RoleId; SubjectId-\u003eSubject.SubjectId; SubjectClassId-\u003eSubjectClass.SubjectClassId; SubjectGroupId-\u003eSubjectGroup.SubjectGroupId; SubjectNatureId-\u003eSubjectNature.SubjectNatureId; SubjectPriorityId-\u003eSubjectPriority.SubjectPriorityId; CookieFlowUserId-\u003eUserInfo.UserId; CookieFlowVisitedUserId-\u003eUserInfo.UserId; ReferToUserId-\u003eUserInfo.UserId; UserId-\u003eUserInfo.UserId; ZoneId-\u003eZone.ZoneId",
+        "in_fks":  "CallRecord.CookieFlowId; Cartable.CookieFlowId; Cartable.PreCookieFlowId; CookieComment.CookieFlowId; CookieCommentDisAgree.CookieFlowId; CookieFlow.PreCookieFlowId; CookieHint.CookieFlowId; CookiePursuit.CookieFlowId; CookieShare.CookieFlowId"
+    },
+    {
+        "table":  "CookieFlowDeleteLog",
+        "rows":  1,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CookieHint",
+        "rows":  8,
+        "empty":  false,
+        "out_fks":  "CookieId-\u003eCookie.CookieId; ViaCookieId-\u003eCookie.CookieId; CookieFlowId-\u003eCookieFlow.CookieFlowId; CookieHintTypeId-\u003eCookieHintType.CookieHintTypeId; RoleId-\u003eRole.RoleId; UserId-\u003eUserInfo.UserId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CookieHintLog",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CookieHintType",
+        "rows":  2,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  "CookieHint.CookieHintTypeId; FlowNode.CookieHintTypeId"
+    },
+    {
+        "table":  "CookieHintTypeLog",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CookieLog",
+        "rows":  668796,
+        "empty":  false,
+        "out_fks":  "CookieId-\u003eCookie.CookieId; DepartmentId-\u003eDepartment.DepartmentId; FlowId-\u003eFlow.FlowId; AgentPersonnelId-\u003ePersonnel.PersonnelId; ExecuterPersonnelId-\u003ePersonnel.PersonnelId; CookieLogUserRoleId-\u003eRole.RoleId; SubjectId-\u003eSubject.SubjectId; SubjectClassId-\u003eSubjectClass.SubjectClassId; SubjectGroupId-\u003eSubjectGroup.SubjectGroupId; SubjectNatureId-\u003eSubjectNature.SubjectNatureId; SubjectPriorityId-\u003eSubjectPriority.SubjectPriorityId; CookieLogUserId-\u003eUserInfo.UserId; UserId-\u003eUserInfo.UserId; ZoneId-\u003eZone.ZoneId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CookiePursuit",
+        "rows":  150280,
+        "empty":  false,
+        "out_fks":  "CookieId-\u003eCookie.CookieId; ViaCookieId-\u003eCookie.CookieId; CookieChannelId-\u003eCookieChannel.CookieChannelId; CookieFlowId-\u003eCookieFlow.CookieFlowId; RoleId-\u003eRole.RoleId; UserId-\u003eUserInfo.UserId",
+        "in_fks":  "CallRecord.CookiePursuitId"
+    },
+    {
+        "table":  "CookieShare",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "CookieId-\u003eCookie.CookieId; CookieFlowId-\u003eCookieFlow.CookieFlowId; RoleId-\u003eRole.RoleId; UserId-\u003eUserInfo.UserId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CookieStatus",
+        "rows":  30,
+        "empty":  false,
+        "out_fks":  "CookieStatusGroupId-\u003eCookieStatusGroup.CookieStatusGroupId; CookieTypeId-\u003eCookieType.CookieTypeId",
+        "in_fks":  "AttachmentVisite.CookieStatusId; Cartable.CookieStatusId; Cartable.PreCookieStatusId; Cartable.PreCookieStatusId; Cookie.CookieStatusId; CookieFlow.CookieStatusId; CookieFlow.PreCookieStatusId; CookieFlow.PreCookieStatusId; CookieStatusAttachmentStep.CookieStatusId; FeedbackStatus.CookieStatusId; FlowNode.CookieStatusId; FlowNode.NextCookieStatusId; TerminalStatus.CookieStatusId"
+    },
+    {
+        "table":  "CookieStatusAttachmentStep",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "CookieStatusId-\u003eCookieStatus.CookieStatusId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CookieStatusGroup",
+        "rows":  5,
+        "empty":  false,
+        "out_fks":  "CookieTypeId-\u003eCookieType.CookieTypeId",
+        "in_fks":  "CookieStatus.CookieStatusGroupId"
+    },
+    {
+        "table":  "CookieStatusGroupLog",
+        "rows":  36,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CookieStatusLog",
+        "rows":  208,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CookieSubjectChild",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CookieType",
+        "rows":  5,
+        "empty":  false,
+        "out_fks":  "WorkspaceId-\u003eWorkspace.WorkspaceId",
+        "in_fks":  "Cartable.CookieTypeId; Cookie.CookieTypeId; CookieCause.CookieTypeId; CookieChannel.CookieTypeId; CookieFieldType.CookieTypeId; CookieFlow.CookieTypeId; CookieStatus.CookieTypeId; CookieStatusGroup.CookieTypeId; FeedbackStatus.CookieTypeId; Flow.CookieTypeId; Subject.CookieTypeId; SubjectClass.CookieTypeId; SubjectGroup.CookieTypeId; SubjectNature.CookieTypeId; SubjectPriority.CookieTypeId; Zone.CookieTypeId"
+    },
+    {
+        "table":  "CookieTypeLog",
+        "rows":  3,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "CookieUserNotification",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "AgentId-\u003eAgent.AgentId; CookieId-\u003eCookie.CookieId; UserId-\u003eUserInfo.UserId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "DefaultUserSms",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "SubjectClassMemberId-\u003eSubjectClassMember.SubjectClassMemberId; UserId-\u003eUserInfo.UserId; UserGroupId-\u003eUserInfoGroup.UserGroupId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Department",
+        "rows":  1710,
+        "empty":  false,
+        "out_fks":  "AreaId-\u003eArea.AreaId; DepartmentTypeId-\u003eDepartmentType.DepartmentTypeId; FlowId-\u003eFlow.FlowId; RegionId-\u003eRegion.RegionId",
+        "in_fks":  "Area.DepartmentId; Cartable.DepartmentId; ContractorContractDepartment.DepartmentId; Cookie.DepartmentId; Cookie.PhoneBookDepartmentId; CookieFlow.DepartmentId; CookieLog.DepartmentId; DepartmentChart.DepartmentId; DepartmentChart.ParentDepartmentId; Equip.DepartmentId; Executer.DepartmentId; Inform.DepartmentIdPlaceOccur; Personnel.DepartmentId; Region.DepartmentId; RoleMemberAccess.ChangedDepartmentId; RoleMemberAccess.DepartmentId; SubjectClassMember.DepartmentId; Vehicle.DepartmentId"
+    },
+    {
+        "table":  "DepartmentChart",
+        "rows":  1710,
+        "empty":  false,
+        "out_fks":  "DepartmentId-\u003eDepartment.DepartmentId; ParentDepartmentId-\u003eDepartment.DepartmentId; WorkspaceId-\u003eWorkspace.WorkspaceId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "DepartmentChartLog",
+        "rows":  538,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "DepartmentLog",
+        "rows":  13117,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "DepartmentType",
+        "rows":  18,
+        "empty":  false,
+        "out_fks":  "WorkspaceId-\u003eWorkspace.WorkspaceId",
+        "in_fks":  "Department.DepartmentTypeId; Flow.DepartmentTypeId; SubjectClassMember.DepartmentTypeId"
+    },
+    {
+        "table":  "DepartmentTypeLog",
+        "rows":  25,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "deptemp",
+        "rows":  691,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Dictionary",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "District",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "RegionId-\u003eRegion.RegionId",
+        "in_fks":  "Agent.DistrictId; Inform.DistrinctId; Inform.InformerDistrinctId; InformLog.DistrinctId; InformLog.InformLogerDistrinctId; Mission.DistrictId; MissionLog.DistrictId"
+    },
+    {
+        "table":  "DistrictLog",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "EducationType",
+        "rows":  5,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  "Agent.EducationTypeId; Inform.InformerEducationTypeId; InformLog.InformLogerEducationTypeId; Personnel.EducationTypeId"
+    },
+    {
+        "table":  "Equip",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "DepartmentId-\u003eDepartment.DepartmentId; ShiftTypeId-\u003eShiftType.ShiftTypeId; VehicleId-\u003eVehicle.VehicleId",
+        "in_fks":  "EquipMember.EquipId"
+    },
+    {
+        "table":  "EquipMember",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "EquipId-\u003eEquip.EquipId; JobId-\u003eJob.JobId; PersonnelId-\u003ePersonnel.PersonnelId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Executer",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "DepartmentId-\u003eDepartment.DepartmentId; ExecuterTypeId-\u003eExecuterType.ExecuterTypeId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "ExecuterLog",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "ExecuterType",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  "Executer.ExecuterTypeId"
+    },
+    {
+        "table":  "ExecuterTypeLog",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "ExternalService",
+        "rows":  3,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "FAQ",
+        "rows":  5,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Feature",
+        "rows":  649,
+        "empty":  false,
+        "out_fks":  "FeatureTypeId-\u003eFeatureType.FeatureTypeId; SubSystemId-\u003eSubSystem.SubSystemId; TargetSubSystemId-\u003eSubSystem.SubSystemId",
+        "in_fks":  "AccessLevel.FeatureId"
+    },
+    {
+        "table":  "FeatureLog",
+        "rows":  11,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "FeatureType",
+        "rows":  132,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  "Feature.FeatureTypeId"
+    },
+    {
+        "table":  "FeatureTypeLog",
+        "rows":  2,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "FeedbackStatus",
+        "rows":  3,
+        "empty":  false,
+        "out_fks":  "CookieStatusId-\u003eCookieStatus.CookieStatusId; CookieTypeId-\u003eCookieType.CookieTypeId; RoleId-\u003eRole.RoleId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Flow",
+        "rows":  4,
+        "empty":  false,
+        "out_fks":  "CookieTypeId-\u003eCookieType.CookieTypeId; DepartmentTypeId-\u003eDepartmentType.DepartmentTypeId",
+        "in_fks":  "Cartable.FlowId; Cookie.FlowId; CookieFlow.FlowId; CookieLog.FlowId; Department.FlowId; FlowNode.FlowId; SubjectClassMember.FlowId"
+    },
+    {
+        "table":  "FlowLog",
+        "rows":  7,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "FlowNode",
+        "rows":  109,
+        "empty":  false,
+        "out_fks":  "CookieHintTypeId-\u003eCookieHintType.CookieHintTypeId; CookieStatusId-\u003eCookieStatus.CookieStatusId; NextCookieStatusId-\u003eCookieStatus.CookieStatusId; FlowId-\u003eFlow.FlowId; RoleId-\u003eRole.RoleId",
+        "in_fks":  "FlowNodeCause.FlowNodeId"
+    },
+    {
+        "table":  "FlowNodeCause",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "CookieCauseId-\u003eCookieCause.CookieCauseId; FlowNodeId-\u003eFlowNode.FlowNodeId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "FlowNodeCauseLog",
+        "rows":  2,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "FlowNodeLog",
+        "rows":  486,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Gender",
+        "rows":  3,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  "Agent.GenderId; Inform.InformerGenderId; InformLog.InformLogerGenderId; Personnel.GenderId; UserDevice.GenderId"
+    },
+    {
+        "table":  "GenderLog",
+        "rows":  4,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "GeneralVariable",
+        "rows":  36,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "GeneralVariableLog",
+        "rows":  17,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Gift",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "GiftTypeId-\u003eGiftType.GiftTypeId",
+        "in_fks":  "Cookie.GiftId"
+    },
+    {
+        "table":  "GiftLog",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "GiftType",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  "Cookie.GiftTypeId; Gift.GiftTypeId"
+    },
+    {
+        "table":  "GiftTypeLog",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "HttpLog",
+        "rows":  1443762,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Inbox",
+        "rows":  9736,
+        "empty":  false,
+        "out_fks":  "SentboxId-\u003eSentbox.SentboxId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Inform",
+        "rows":  193084,
+        "empty":  false,
+        "out_fks":  "InformerAgentId-\u003eAgent.AgentId; InformerAgentGroupId-\u003eAgentGroup.AgentGroupId; InformerSocialClassId-\u003eAgentSocialClass.AgentSocialClassId; AreaId-\u003eArea.AreaId; InformerAreaId-\u003eArea.AreaId; CenterCategoryId-\u003eCenterCategory.CenterCategoryId; CookieId-\u003eCookie.CookieId; DepartmentIdPlaceOccur-\u003eDepartment.DepartmentId; DistrinctId-\u003eDistrict.DistrictId; InformerDistrinctId-\u003eDistrict.DistrictId; InformerEducationTypeId-\u003eEducationType.EducationTypeId; InformerGenderId-\u003eGender.GenderId; InformerRegionId-\u003eRegion.RegionId; RegionId-\u003eRegion.RegionId; SegmentId-\u003eSegment.SegmentId",
+        "in_fks":  "InformLog.InformId"
+    },
+    {
+        "table":  "InformerVisitorLog",
+        "rows":  205186,
+        "empty":  false,
+        "out_fks":  "CookieId-\u003eCookie.CookieId; UserId-\u003eUserInfo.UserId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "InformLog",
+        "rows":  668796,
+        "empty":  false,
+        "out_fks":  "InformLogerAgentId-\u003eAgent.AgentId; InformLogerAgentGroupId-\u003eAgentGroup.AgentGroupId; InformLogerSocialClassId-\u003eAgentSocialClass.AgentSocialClassId; AreaId-\u003eArea.AreaId; InformLogerAreaId-\u003eArea.AreaId; CookieId-\u003eCookie.CookieId; DistrinctId-\u003eDistrict.DistrictId; InformLogerDistrinctId-\u003eDistrict.DistrictId; InformLogerEducationTypeId-\u003eEducationType.EducationTypeId; InformLogerGenderId-\u003eGender.GenderId; InformId-\u003eInform.InformId; InformLogerRegionId-\u003eRegion.RegionId; RegionId-\u003eRegion.RegionId; SegmentId-\u003eSegment.SegmentId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "IVRCallLog",
+        "rows":  65,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Job",
+        "rows":  25,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  "EquipMember.JobId; Personnel.JobId"
+    },
+    {
+        "table":  "JobLog",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Library",
+        "rows":  1,
+        "empty":  false,
+        "out_fks":  "LibraryParentId-\u003eLibrary.LibraryId",
+        "in_fks":  "Library.LibraryParentId"
+    },
+    {
+        "table":  "LoginLog",
+        "rows":  4176,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "MaritalStatus",
+        "rows":  2,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  "Personnel.MaritalStatusId"
+    },
+    {
+        "table":  "MaritalStatusLog",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "MayorMeeting",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  "MeetingMember.MayorMeetingId"
+    },
+    {
+        "table":  "MeetingMember",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "CookieId-\u003eCookie.CookieId; MayorMeetingId-\u003eMayorMeeting.MayorMeetingId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Message",
+        "rows":  230,
+        "empty":  false,
+        "out_fks":  "MessageSenderUserId-\u003eUserInfo.UserId",
+        "in_fks":  "MessageReceiver.MessageId; MessageViewerLog.MessageId"
+    },
+    {
+        "table":  "MessageLog",
+        "rows":  3211,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "MessageReceiver",
+        "rows":  41,
+        "empty":  false,
+        "out_fks":  "MessageReceiverAgentId-\u003eAgent.AgentId; MessageId-\u003eMessage.MessageId; MessageReceiverUserId-\u003eUserInfo.UserId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "MessageViewerLog",
+        "rows":  1167,
+        "empty":  false,
+        "out_fks":  "AgentId-\u003eAgent.AgentId; MessageId-\u003eMessage.MessageId; UserId-\u003eUserInfo.UserId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Mission",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "AreaId-\u003eArea.AreaId; CookieId-\u003eCookie.CookieId; DistrictId-\u003eDistrict.DistrictId; RegionId-\u003eRegion.RegionId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "MissionLog",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "AreaId-\u003eArea.AreaId; CookieId-\u003eCookie.CookieId; DistrictId-\u003eDistrict.DistrictId; RegionId-\u003eRegion.RegionId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "MobileGISRequests",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "NewSubj",
+        "rows":  296,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "NewSubj2",
+        "rows":  296,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "NotificationSentbox",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "RoleId-\u003eRole.RoleId; UserId-\u003eUserInfo.UserId; WorkspaceId-\u003eWorkspace.WorkspaceId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Personnel",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "DepartmentId-\u003eDepartment.DepartmentId; EducationTypeId-\u003eEducationType.EducationTypeId; GenderId-\u003eGender.GenderId; JobId-\u003eJob.JobId; MaritalStatusId-\u003eMaritalStatus.MaritalStatusId; SupervisorId-\u003ePersonnel.PersonnelId",
+        "in_fks":  "Cartable.AgentPersonnelId; Cartable.ExecuterPersonnelId; Cookie.AgentPersonnelId; Cookie.ExecuterPersonnelId; CookieFlow.AgentPersonnelId; CookieFlow.ExecuterPersonnelId; CookieLog.AgentPersonnelId; CookieLog.ExecuterPersonnelId; EquipMember.PersonnelId; Personnel.SupervisorId; UserInfo.PersonnelId"
+    },
+    {
+        "table":  "PersonnelLog",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "PursuitTemplate",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Referal",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Region",
+        "rows":  33,
+        "empty":  false,
+        "out_fks":  "DepartmentId-\u003eDepartment.DepartmentId",
+        "in_fks":  "Agent.RegionId; Area.RegionId; Department.RegionId; District.RegionId; Inform.InformerRegionId; Inform.RegionId; InformLog.InformLogerRegionId; InformLog.RegionId; Mission.RegionId; MissionLog.RegionId"
+    },
+    {
+        "table":  "RegionLog",
+        "rows":  137,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Reminder",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "ReportResult",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "RoleId-\u003eRole.RoleId; UserId-\u003eUserInfo.UserId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Role",
+        "rows":  15,
+        "empty":  false,
+        "out_fks":  "WorkspaceId-\u003eWorkspace.WorkspaceId",
+        "in_fks":  "AccessLevel.RoleId; AttachmentVisite.RoleId; Cartable.CartableUserRoleId; Cookie.CookieUserRoleId; CookieComment.RoleId; CookieFlow.CookieFlowUserRoleId; CookieHint.RoleId; CookieLog.CookieLogUserRoleId; CookiePursuit.RoleId; CookieShare.RoleId; FeedbackStatus.RoleId; FlowNode.RoleId; NotificationSentbox.RoleId; ReportResult.RoleId; RoleMember.RoleId; RoleStatusReports.RoleId"
+    },
+    {
+        "table":  "RoleLog",
+        "rows":  45,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "RoleMember",
+        "rows":  909,
+        "empty":  false,
+        "out_fks":  "RoleId-\u003eRole.RoleId; RoleMemberId-\u003eRoleMember.RoleMemberId; UserId-\u003eUserInfo.UserId",
+        "in_fks":  "RoleMember.RoleMemberId; RoleMemberAccess.RoleMemberId"
+    },
+    {
+        "table":  "RoleMemberAccess",
+        "rows":  6821,
+        "empty":  false,
+        "out_fks":  "CookieChannelId-\u003eCookieChannel.CookieChannelId; ChangedDepartmentId-\u003eDepartment.DepartmentId; DepartmentId-\u003eDepartment.DepartmentId; RoleMemberId-\u003eRoleMember.RoleMemberId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "RoleMemberAccessLog",
+        "rows":  32188,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "RoleMemberLog",
+        "rows":  2020,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "RoleStatusReports",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "RoleId-\u003eRole.RoleId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Segment",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "WorkspaceId-\u003eWorkspace.WorkspaceId",
+        "in_fks":  "Area.SegmentId; Inform.SegmentId; InformLog.SegmentId"
+    },
+    {
+        "table":  "Sentbox",
+        "rows":  208823,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  "Inbox.SentboxId"
+    },
+    {
+        "table":  "ShiftType",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  "Equip.ShiftTypeId"
+    },
+    {
+        "table":  "SmsConfirmation",
+        "rows":  5900,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "StatusMessage",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Subject",
+        "rows":  420,
+        "empty":  false,
+        "out_fks":  "CookieTypeId-\u003eCookieType.CookieTypeId; SubjectGroupId-\u003eSubjectGroup.SubjectGroupId; SubjectNatureId-\u003eSubjectNature.SubjectNatureId; ZoneId-\u003eZone.ZoneId",
+        "in_fks":  "Cartable.SubjectId; Cookie.SubjectId; CookieFlow.SubjectId; CookieLog.SubjectId; SubjectChild.SubjectId; SubjectClassMember.SubjectId"
+    },
+    {
+        "table":  "SubjectChild",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "SubjectId-\u003eSubject.SubjectId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "SubjectClass",
+        "rows":  4,
+        "empty":  false,
+        "out_fks":  "CookieTypeId-\u003eCookieType.CookieTypeId",
+        "in_fks":  "Cartable.SubjectClassId; Cookie.SubjectClassId; CookieFlow.SubjectClassId; CookieLog.SubjectClassId; SubjectClassMember.SubjectClassId"
+    },
+    {
+        "table":  "SubjectClassLog",
+        "rows":  2,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "SubjectClassMember",
+        "rows":  1289,
+        "empty":  false,
+        "out_fks":  "SubjectClassMemberCookieFieldTypeId1-\u003eCookieFieldType.CookieFieldTypeId; SubjectClassMemberCookieFieldTypeId2-\u003eCookieFieldType.CookieFieldTypeId; SubjectClassMemberCookieFieldTypeId3-\u003eCookieFieldType.CookieFieldTypeId; SubjectClassMemberCookieFieldTypeId4-\u003eCookieFieldType.CookieFieldTypeId; SubjectClassMemberCookieFieldTypeId5-\u003eCookieFieldType.CookieFieldTypeId; DepartmentId-\u003eDepartment.DepartmentId; DepartmentTypeId-\u003eDepartmentType.DepartmentTypeId; FlowId-\u003eFlow.FlowId; SubjectId-\u003eSubject.SubjectId; SubjectClassId-\u003eSubjectClass.SubjectClassId; SubjectIndexId-\u003eSubjectIndex.SubjectIndexId; SubjectPriorityId-\u003eSubjectPriority.SubjectPriorityId",
+        "in_fks":  "DefaultUserSms.SubjectClassMemberId"
+    },
+    {
+        "table":  "SubjectClassMemberLog",
+        "rows":  5102,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "SubjectClassMemberReference",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Subject-Copy-14040410",
+        "rows":  420,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "SubjectGroup",
+        "rows":  93,
+        "empty":  false,
+        "out_fks":  "CookieTypeId-\u003eCookieType.CookieTypeId",
+        "in_fks":  "Cartable.SubjectGroupId; Cookie.SubjectGroupId; CookieFlow.SubjectGroupId; CookieLog.SubjectGroupId; Subject.SubjectGroupId"
+    },
+    {
+        "table":  "SubjectGroupLog",
+        "rows":  48,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "SubjectIndex",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  "SubjectClassMember.SubjectIndexId"
+    },
+    {
+        "table":  "SubjectlLog",
+        "rows":  1694,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "SubjectNature",
+        "rows":  30,
+        "empty":  false,
+        "out_fks":  "CookieTypeId-\u003eCookieType.CookieTypeId",
+        "in_fks":  "Cartable.SubjectNatureId; Cookie.SubjectNatureId; CookieFlow.SubjectNatureId; CookieLog.SubjectNatureId; Subject.SubjectNatureId"
+    },
+    {
+        "table":  "SubjectNatureLog",
+        "rows":  3,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "SubjectPriority",
+        "rows":  3,
+        "empty":  false,
+        "out_fks":  "CookieTypeId-\u003eCookieType.CookieTypeId",
+        "in_fks":  "Cartable.SubjectPriorityId; Cookie.SubjectPriorityId; CookieFlow.SubjectPriorityId; CookieLog.SubjectPriorityId; SubjectClassMember.SubjectPriorityId"
+    },
+    {
+        "table":  "SubjectPriorityLog",
+        "rows":  6,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "SubjectReference",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "SubReport",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "SubSystem",
+        "rows":  131,
+        "empty":  false,
+        "out_fks":  "TotalSystemId-\u003eTotalSystem.TotalSystemId",
+        "in_fks":  "Feature.SubSystemId; Feature.TargetSubSystemId"
+    },
+    {
+        "table":  "SubSystemLog",
+        "rows":  422,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "TempSubject",
+        "rows":  174,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "TerminalStatus",
+        "rows":  29,
+        "empty":  false,
+        "out_fks":  "CookieStatusId-\u003eCookieStatus.CookieStatusId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "TotalSystem",
+        "rows":  10,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  "SubSystem.TotalSystemId"
+    },
+    {
+        "table":  "TotalSystemLog",
+        "rows":  484815,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "TotalSystemMenuLog",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "TrackUserApp",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "UserId-\u003eUserInfo.UserId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "TrackUsers",
+        "rows":  290545,
+        "empty":  false,
+        "out_fks":  "CookieChannelId-\u003eCookieChannel.CookieChannelId; TrackUserId-\u003eUserInfo.UserId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "UserDevice",
+        "rows":  3178,
+        "empty":  false,
+        "out_fks":  "AgentId-\u003eAgent.AgentId; GenderId-\u003eGender.GenderId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "UserInfo",
+        "rows":  1538,
+        "empty":  false,
+        "out_fks":  "PersonnelId-\u003ePersonnel.PersonnelId; UserGroupId-\u003eUserInfoGroup.UserGroupId",
+        "in_fks":  "AttachmentVisite.UserId; CallLog.UserId; CallRecord.UserId; Cartable.CartableUserId; Cartable.CartableVisitedUserId; Cartable.ReferToUserId; Cartable.UserId; Cookie.CookieUserId; Cookie.CookieVisitedUserId; Cookie.UserId; CookieComment.UserId; CookieCommentDisAgree.UserId; CookieFlow.CookieFlowUserId; CookieFlow.CookieFlowVisitedUserId; CookieFlow.ReferToUserId; CookieFlow.UserId; CookieHint.UserId; CookieLog.CookieLogUserId; CookieLog.UserId; CookiePursuit.UserId; CookieShare.UserId; CookieUserNotification.UserId; DefaultUserSms.UserId; InformerVisitorLog.UserId; Message.MessageSenderUserId; MessageReceiver.MessageReceiverUserId; MessageViewerLog.UserId; NotificationSentbox.UserId; ReportResult.UserId; RoleMember.UserId; TrackUserApp.UserId; TrackUsers.TrackUserId; WorkspaceMember.UserId"
+    },
+    {
+        "table":  "UserInfoGroup",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  "DefaultUserSms.UserGroupId; UserInfo.UserGroupId"
+    },
+    {
+        "table":  "UserInfoLog",
+        "rows":  18419,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Vehicle",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "DepartmentId-\u003eDepartment.DepartmentId; VehicleTypeId-\u003eVehicleType.VehicleTypeId",
+        "in_fks":  "Equip.VehicleId"
+    },
+    {
+        "table":  "VehicleType",
+        "rows":  0,
+        "empty":  true,
+        "out_fks":  "",
+        "in_fks":  "Vehicle.VehicleTypeId"
+    },
+    {
+        "table":  "Workspace",
+        "rows":  2,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  "AgentGroup.WorkspaceId; CallLog.WorkspaceId; CookieType.WorkspaceId; DepartmentChart.WorkspaceId; DepartmentType.WorkspaceId; NotificationSentbox.WorkspaceId; Role.WorkspaceId; Segment.WorkspaceId; WorkspaceMember.WorkspaceId"
+    },
+    {
+        "table":  "WorkspaceLog",
+        "rows":  4,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "WorkspaceMember",
+        "rows":  1533,
+        "empty":  false,
+        "out_fks":  "UserId-\u003eUserInfo.UserId; WorkspaceId-\u003eWorkspace.WorkspaceId",
+        "in_fks":  ""
+    },
+    {
+        "table":  "WorkspaceMemberLog",
+        "rows":  2,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    },
+    {
+        "table":  "Zone",
+        "rows":  8,
+        "empty":  false,
+        "out_fks":  "CookieTypeId-\u003eCookieType.CookieTypeId",
+        "in_fks":  "Cartable.ZoneId; Cookie.ZoneId; CookieFlow.ZoneId; CookieLog.ZoneId; Subject.ZoneId"
+    },
+    {
+        "table":  "ZoneLog",
+        "rows":  28,
+        "empty":  false,
+        "out_fks":  "",
+        "in_fks":  ""
+    }
+]

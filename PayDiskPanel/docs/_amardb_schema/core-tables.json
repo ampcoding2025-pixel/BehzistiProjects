@@ -1,0 +1,112 @@
+[
+  {
+    "schema": "dbo",
+    "table": "PayedContinusPayment",
+    "approxRows": 319123803
+  },
+  {
+    "schema": "dbo",
+    "table": "PayedMakeOvers",
+    "approxRows": 35150087
+  },
+  {
+    "schema": "dbo",
+    "table": "Person",
+    "approxRows": 25430194
+  },
+  {
+    "schema": "dbo",
+    "table": "IBN_AccountNumber",
+    "approxRows": 1584038
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverRequest",
+    "approxRows": 1365872
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOver",
+    "approxRows": 1220211
+  },
+  {
+    "schema": "dbo",
+    "table": "Center",
+    "approxRows": 67775
+  },
+  {
+    "schema": "dbo",
+    "table": "OldCenter",
+    "approxRows": 29334
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverCenterThresholds",
+    "approxRows": 2677
+  },
+  {
+    "schema": "dbo",
+    "table": "AmbiliopyCenter",
+    "approxRows": 2301
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverProvinceThreshold",
+    "approxRows": 1439
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverRequestOLD",
+    "approxRows": 922
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverTransactions",
+    "approxRows": 795
+  },
+  {
+    "schema": "dbo",
+    "table": "PayedTransaction",
+    "approxRows": 771
+  },
+  {
+    "schema": "dbo",
+    "table": "City",
+    "approxRows": 488
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverSupplyLocationCenterCatagory",
+    "approxRows": 281
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverActivity",
+    "approxRows": 119
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverSupplyLocation",
+    "approxRows": 80
+  },
+  {
+    "schema": "dbo",
+    "table": "Province",
+    "approxRows": 33
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverFireReasons",
+    "approxRows": 3
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverFireRequests",
+    "approxRows": 0
+  },
+  {
+    "schema": "dbo",
+    "table": "MakeOverSupplyLocationCenterCatagoryThreshold",
+    "approxRows": 0
+  }
+]

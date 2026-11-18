@@ -1,0 +1,982 @@
+[
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AccessLevel",
+        "approx_rows":  1786
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AccessLevelLog",
+        "approx_rows":  1226
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Agent",
+        "approx_rows":  69517
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AgentExpertiseField",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AgentExpertiseFieldLog",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AgentGift",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AgentGiftLog",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AgentGiftType",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AgentGiftTypeLog",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AgentGrade",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AgentGradeLog",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AgentGradeType",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AgentGradeTypeLog",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AgentGroup",
+        "approx_rows":  4
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AgentGroupLog",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AgentGroupMembership",
+        "approx_rows":  50112
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AgentGroupMembershipLog",
+        "approx_rows":  6
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AgentLog",
+        "approx_rows":  73567
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AgentSocialClass",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AgentSocialClassLog",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AgentStatus",
+        "approx_rows":  5
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AgentStatusLog",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AppVersion",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Area",
+        "approx_rows":  477
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AreaLog",
+        "approx_rows":  2209
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "AttachmentVisite",
+        "approx_rows":  75721
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "BuildingStep",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Calandar",
+        "approx_rows":  372
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CallLog",
+        "approx_rows":  11
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CallLogLog",
+        "approx_rows":  605598
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CallReceived",
+        "approx_rows":  81214
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CallReceivedType",
+        "approx_rows":  5
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CallRecord",
+        "approx_rows":  31974
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Cartable",
+        "approx_rows":  30122
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CenterCategory",
+        "approx_rows":  19
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "ChatMessage",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "ChatRoom",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "ChatUser",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CheckList",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CheckListFlowNode",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "ChkAnswer",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "ChkGroupQuestion",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "ChkQuestion",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "ChkRecordedAnswer",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "ChkRecordedAnswerIndex",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "ContractorContract",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "ContractorContractDepartment",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Cookie",
+        "approx_rows":  193084
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieCause",
+        "approx_rows":  1
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieCauseLog",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieChannel",
+        "approx_rows":  10
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieChannelLog",
+        "approx_rows":  7
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieComment",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieCommentDisAgree",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieFieldType",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieFieldTypeCollection",
+        "approx_rows":  7
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieFlow",
+        "approx_rows":  632835
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieFlowDeleteLog",
+        "approx_rows":  1
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieHint",
+        "approx_rows":  8
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieHintLog",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieHintType",
+        "approx_rows":  2
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieHintTypeLog",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieLog",
+        "approx_rows":  668796
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookiePursuit",
+        "approx_rows":  150280
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieShare",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieStatus",
+        "approx_rows":  30
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieStatusAttachmentStep",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieStatusGroup",
+        "approx_rows":  5
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieStatusGroupLog",
+        "approx_rows":  36
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieStatusLog",
+        "approx_rows":  208
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieSubjectChild",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieType",
+        "approx_rows":  5
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieTypeLog",
+        "approx_rows":  3
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "CookieUserNotification",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "DefaultUserSms",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Department",
+        "approx_rows":  1710
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "DepartmentChart",
+        "approx_rows":  1710
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "DepartmentChartLog",
+        "approx_rows":  538
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "DepartmentLog",
+        "approx_rows":  13117
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "DepartmentType",
+        "approx_rows":  18
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "DepartmentTypeLog",
+        "approx_rows":  25
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "deptemp",
+        "approx_rows":  691
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Dictionary",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "District",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "DistrictLog",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "EducationType",
+        "approx_rows":  5
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Equip",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "EquipMember",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Executer",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "ExecuterLog",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "ExecuterType",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "ExecuterTypeLog",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "ExternalService",
+        "approx_rows":  3
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "FAQ",
+        "approx_rows":  5
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Feature",
+        "approx_rows":  649
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "FeatureLog",
+        "approx_rows":  11
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "FeatureType",
+        "approx_rows":  132
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "FeatureTypeLog",
+        "approx_rows":  2
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "FeedbackStatus",
+        "approx_rows":  3
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Flow",
+        "approx_rows":  4
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "FlowLog",
+        "approx_rows":  7
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "FlowNode",
+        "approx_rows":  109
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "FlowNodeCause",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "FlowNodeCauseLog",
+        "approx_rows":  2
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "FlowNodeLog",
+        "approx_rows":  486
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Gender",
+        "approx_rows":  3
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "GenderLog",
+        "approx_rows":  4
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "GeneralVariable",
+        "approx_rows":  36
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "GeneralVariableLog",
+        "approx_rows":  17
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Gift",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "GiftLog",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "GiftType",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "GiftTypeLog",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "HttpLog",
+        "approx_rows":  1443762
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Inbox",
+        "approx_rows":  9736
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Inform",
+        "approx_rows":  193084
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "InformerVisitorLog",
+        "approx_rows":  205186
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "InformLog",
+        "approx_rows":  668796
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "IVRCallLog",
+        "approx_rows":  65
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Job",
+        "approx_rows":  25
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "JobLog",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Library",
+        "approx_rows":  1
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "LoginLog",
+        "approx_rows":  4176
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "MaritalStatus",
+        "approx_rows":  2
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "MaritalStatusLog",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "MayorMeeting",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "MeetingMember",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Message",
+        "approx_rows":  230
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "MessageLog",
+        "approx_rows":  3211
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "MessageReceiver",
+        "approx_rows":  41
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "MessageViewerLog",
+        "approx_rows":  1167
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Mission",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "MissionLog",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "MobileGISRequests",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "NewSubj",
+        "approx_rows":  296
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "NewSubj2",
+        "approx_rows":  296
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "NotificationSentbox",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Personnel",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "PersonnelLog",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "PursuitTemplate",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Referal",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Region",
+        "approx_rows":  33
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "RegionLog",
+        "approx_rows":  137
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Reminder",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "ReportResult",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Role",
+        "approx_rows":  15
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "RoleLog",
+        "approx_rows":  45
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "RoleMember",
+        "approx_rows":  909
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "RoleMemberAccess",
+        "approx_rows":  6821
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "RoleMemberAccessLog",
+        "approx_rows":  32188
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "RoleMemberLog",
+        "approx_rows":  2020
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "RoleStatusReports",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Segment",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Sentbox",
+        "approx_rows":  208823
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "ShiftType",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "SmsConfirmation",
+        "approx_rows":  5900
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "StatusMessage",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Subject",
+        "approx_rows":  420
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "SubjectChild",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "SubjectClass",
+        "approx_rows":  4
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "SubjectClassLog",
+        "approx_rows":  2
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "SubjectClassMember",
+        "approx_rows":  1289
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "SubjectClassMemberLog",
+        "approx_rows":  5102
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "SubjectClassMemberReference",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Subject-Copy-14040410",
+        "approx_rows":  420
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "SubjectGroup",
+        "approx_rows":  93
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "SubjectGroupLog",
+        "approx_rows":  48
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "SubjectIndex",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "SubjectlLog",
+        "approx_rows":  1694
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "SubjectNature",
+        "approx_rows":  30
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "SubjectNatureLog",
+        "approx_rows":  3
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "SubjectPriority",
+        "approx_rows":  3
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "SubjectPriorityLog",
+        "approx_rows":  6
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "SubjectReference",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "SubReport",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "SubSystem",
+        "approx_rows":  131
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "SubSystemLog",
+        "approx_rows":  422
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "TempSubject",
+        "approx_rows":  174
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "TerminalStatus",
+        "approx_rows":  29
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "TotalSystem",
+        "approx_rows":  10
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "TotalSystemLog",
+        "approx_rows":  484815
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "TotalSystemMenuLog",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "TrackUserApp",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "TrackUsers",
+        "approx_rows":  290545
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "UserDevice",
+        "approx_rows":  3178
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "UserInfo",
+        "approx_rows":  1538
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "UserInfoGroup",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "UserInfoLog",
+        "approx_rows":  18419
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Vehicle",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "VehicleType",
+        "approx_rows":  0
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Workspace",
+        "approx_rows":  2
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "WorkspaceLog",
+        "approx_rows":  4
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "WorkspaceMember",
+        "approx_rows":  1533
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "WorkspaceMemberLog",
+        "approx_rows":  2
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "Zone",
+        "approx_rows":  8
+    },
+    {
+        "schema_name":  "dbo",
+        "table_name":  "ZoneLog",
+        "approx_rows":  28
+    }
+]

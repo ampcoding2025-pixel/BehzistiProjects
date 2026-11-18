@@ -1,0 +1,178 @@
+[
+    {
+        "check_name":  "Cookie FK fill",
+        "n":  193086,
+        "finish_filled":  190218,
+        "deadline_filled":  0,
+        "cause_filled":  0,
+        "gift_filled":  0,
+        "gifttype_filled":  0,
+        "agent_personnel_filled":  0,
+        "executer_personnel_filled":  0,
+        "referring_filled":  410,
+        "priority_filled":  193086,
+        "critical_true":  27,
+        "pursuits_gt0":  29066,
+        "agent_filled":  22653,
+        "flow_filled":  193086,
+        "cancel_filled":  0
+    },
+    {
+        "check_name":  "Inform FK fill",
+        "n":  193086,
+        "region_filled":  193086,
+        "area_filled":  167757,
+        "district_filled":  0,
+        "segment_filled":  0,
+        "informer_agent_filled":  35856,
+        "socialclass_filled":  0,
+        "center_cat_filled":  21909
+    },
+    {
+        "check_name":  "CookieFlow fill",
+        "n":  632837,
+        "reply_citizen_filled":  23648,
+        "delay_gt0":  351029,
+        "discontent_gt0":  136768,
+        "flow_deadline_filled":  0,
+        "refer_filled":  0,
+        "agent_personnel_filled":  0,
+        "executer_personnel_filled":  0
+    },
+    {
+        "check_name":  "Cartable fill",
+        "n":  30124,
+        "deadline_filled":  0,
+        "refer_filled":  0,
+        "agent_personnel_filled":  0
+    },
+    {
+        "check_name":  "CookiePursuit fill",
+        "n":  150280,
+        "reply_filled":  0
+    },
+    {
+        "check_name":  "CallRecord fill",
+        "n":  31974
+    },
+    {
+        "check_name":  "AttachmentVisite fill",
+        "n":  75723
+    },
+    {
+        "empty_lookup":  "AgentExpertiseField",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "AgentGift",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "AgentGrade",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "AgentSocialClass",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "ChatRoom",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "CheckList",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "ChkRecordedAnswer",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "CookieComment",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "CookieFieldType",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "CookieShare",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "Dictionary",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "District",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "Equip",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "Executer",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "Gift",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "GiftType",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "MayorMeeting",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "Mission",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "NotificationSentbox",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "Personnel",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "PursuitTemplate",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "Referal",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "Reminder",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "Segment",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "StatusMessage",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "SubjectChild",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "SubjectIndex",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "SubjectReference",
+        "rows":  0
+    },
+    {
+        "empty_lookup":  "Vehicle",
+        "rows":  0
+    }
+]

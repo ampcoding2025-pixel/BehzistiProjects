@@ -1,0 +1,1092 @@
+{
+  "MakeOverTransactions": [
+    {
+      "column": "Id",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "Title",
+      "type": "nvarchar",
+      "nullable": false,
+      "maxLength": 300
+    },
+    {
+      "column": "Date",
+      "type": "date",
+      "nullable": false,
+      "maxLength": 3
+    },
+    {
+      "column": "Acceptor",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 100
+    },
+    {
+      "column": "Description",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 100
+    },
+    {
+      "column": "Registrar",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 100
+    },
+    {
+      "column": "RegistrationDateTime",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 100
+    },
+    {
+      "column": "Key1",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 100
+    },
+    {
+      "column": "Key2",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 510
+    },
+    {
+      "column": "Key3",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 510
+    }
+  ],
+  "PayedMakeOvers": [
+    {
+      "column": "Id",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "PersonId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "UserRegistrarId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "RegistrationDateTime",
+      "type": "datetime",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "MakeOverSupplyLocationId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "MakeOverActivityId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "FromDate",
+      "type": "date",
+      "nullable": false,
+      "maxLength": 3
+    },
+    {
+      "column": "CenterId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "Detail",
+      "type": "nvarchar",
+      "nullable": false,
+      "maxLength": 100
+    },
+    {
+      "column": "LocalSubsidy",
+      "type": "decimal",
+      "nullable": false,
+      "maxLength": 9
+    },
+    {
+      "column": "UniverseSubsidy",
+      "type": "decimal",
+      "nullable": false,
+      "maxLength": 9
+    },
+    {
+      "column": "IsNoName",
+      "type": "bit",
+      "nullable": false,
+      "maxLength": 1
+    },
+    {
+      "column": "IsSpecial",
+      "type": "bit",
+      "nullable": false,
+      "maxLength": 1
+    },
+    {
+      "column": "DefenitionId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "Mosharekat",
+      "type": "decimal",
+      "nullable": false,
+      "maxLength": 9
+    },
+    {
+      "column": "TransactionId",
+      "type": "int",
+      "nullable": false,
+      "maxLength": 4
+    },
+    {
+      "column": "NewUniversalSubsidy",
+      "type": "decimal",
+      "nullable": true,
+      "maxLength": 9
+    },
+    {
+      "column": "Ver",
+      "type": "int",
+      "nullable": true,
+      "maxLength": 4
+    },
+    {
+      "column": "CenterAccount",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 100
+    },
+    {
+      "column": "BankId",
+      "type": "bigint",
+      "nullable": true,
+      "maxLength": 8
+    }
+  ],
+  "MakeOverSupplyLocation": [
+    {
+      "column": "MakeOverSupplyLocationId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "MakeOverSupplyLocationTitle",
+      "type": "nvarchar",
+      "nullable": false,
+      "maxLength": 300
+    },
+    {
+      "column": "Budget",
+      "type": "money",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "MakeOverSuplyLocationKeyword",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 100
+    },
+    {
+      "column": "GroupId",
+      "type": "int",
+      "nullable": false,
+      "maxLength": 4
+    }
+  ],
+  "PayedTransaction": [
+    {
+      "column": "Id",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "Title",
+      "type": "nvarchar",
+      "nullable": false,
+      "maxLength": 100
+    },
+    {
+      "column": "UserRegistrarId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "RegistrationDate",
+      "type": "datetime",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "Description",
+      "type": "nvarchar",
+      "nullable": false,
+      "maxLength": 500
+    },
+    {
+      "column": "RelatedTo",
+      "type": "date",
+      "nullable": false,
+      "maxLength": 3
+    },
+    {
+      "column": "AcceptorUserId",
+      "type": "bigint",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "AcceptanceDateTime",
+      "type": "datetime",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "Year",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 100
+    },
+    {
+      "column": "Ky",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 200
+    },
+    {
+      "column": "CalculationToken",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 300
+    },
+    {
+      "column": "FileStreamId",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 300
+    },
+    {
+      "column": "FileName",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 300
+    },
+    {
+      "column": "ExportToken",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 300
+    },
+    {
+      "column": "bPublished",
+      "type": "bit",
+      "nullable": true,
+      "maxLength": 1
+    },
+    {
+      "column": "CalculationSupplyLocations",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 300
+    },
+    {
+      "column": "PublishDateTime",
+      "type": "datetime",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "PivotToken",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 100
+    },
+    {
+      "column": "PivotStreamId",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 200
+    },
+    {
+      "column": "ListToken",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 200
+    },
+    {
+      "column": "ListStreamId",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 200
+    }
+  ],
+  "PayedContinusPayment": [
+    {
+      "column": "Id",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "PersonId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "FamilyCount",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "SupplyLocationId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "BankId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "AccountNumber",
+      "type": "nvarchar",
+      "nullable": false,
+      "maxLength": 100
+    },
+    {
+      "column": "Money",
+      "type": "decimal",
+      "nullable": false,
+      "maxLength": 9
+    },
+    {
+      "column": "TransactionId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "Date",
+      "type": "datetime",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "CenterRegistrarId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    }
+  ],
+  "Person": [
+    {
+      "column": "ID",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "FirstName",
+      "type": "nvarchar",
+      "nullable": false,
+      "maxLength": 100
+    },
+    {
+      "column": "LastName",
+      "type": "nvarchar",
+      "nullable": false,
+      "maxLength": 100
+    },
+    {
+      "column": "SexId",
+      "type": "int",
+      "nullable": false,
+      "maxLength": 4
+    },
+    {
+      "column": "CID",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "NID",
+      "type": "nvarchar",
+      "nullable": false,
+      "maxLength": 30
+    },
+    {
+      "column": "SID",
+      "type": "nvarchar",
+      "nullable": false,
+      "maxLength": 20
+    },
+    {
+      "column": "FatherName",
+      "type": "nvarchar",
+      "nullable": false,
+      "maxLength": 500
+    },
+    {
+      "column": "BirthDateShamsi",
+      "type": "char",
+      "nullable": true,
+      "maxLength": 10
+    },
+    {
+      "column": "BirthLocationID",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "BirthRegistration",
+      "type": "nvarchar",
+      "nullable": false,
+      "maxLength": 500
+    },
+    {
+      "column": "MilitaryStatusID",
+      "type": "int",
+      "nullable": false,
+      "maxLength": 4
+    },
+    {
+      "column": "MarriedStatusID",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "BirthLocationDetail",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 500
+    },
+    {
+      "column": "EductionId",
+      "type": "int",
+      "nullable": true,
+      "maxLength": 4
+    },
+    {
+      "column": "Telephone",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 100
+    },
+    {
+      "column": "Address",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 1100
+    },
+    {
+      "column": "IsDisabled",
+      "type": "bit",
+      "nullable": true,
+      "maxLength": 1
+    },
+    {
+      "column": "CityWhereLiveId",
+      "type": "bigint",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "BirthDate",
+      "type": "date",
+      "nullable": false,
+      "maxLength": 3
+    },
+    {
+      "column": "IsIranian",
+      "type": "bit",
+      "nullable": false,
+      "maxLength": 1
+    },
+    {
+      "column": "RegistrarUserId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "RegistrationDateTime",
+      "type": "datetime",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "IsNoName",
+      "type": "bit",
+      "nullable": false,
+      "maxLength": 1
+    },
+    {
+      "column": "AcceptorUserId",
+      "type": "bigint",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "AcceptandeDateTime",
+      "type": "datetime",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "RegistrationReasonId",
+      "type": "bigint",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "IsDead",
+      "type": "bit",
+      "nullable": false,
+      "maxLength": 1
+    },
+    {
+      "column": "IsLiveInCity",
+      "type": "int",
+      "nullable": true,
+      "maxLength": 4
+    },
+    {
+      "column": "Cellphone",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 30
+    },
+    {
+      "column": "Religion",
+      "type": "int",
+      "nullable": true,
+      "maxLength": 4
+    },
+    {
+      "column": "State",
+      "type": "int",
+      "nullable": true,
+      "maxLength": 4
+    },
+    {
+      "column": "StateChangeDateTime",
+      "type": "datetime",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "StateChanger_ID",
+      "type": "bigint",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "StateChangerCenter_CenterId",
+      "type": "bigint",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "IsVerifiedBySABT",
+      "type": "bit",
+      "nullable": true,
+      "maxLength": 1
+    },
+    {
+      "column": "Password",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": -1
+    }
+  ],
+  "Center": [
+    {
+      "column": "CenterId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "CenterTitle",
+      "type": "nvarchar",
+      "nullable": false,
+      "maxLength": 300
+    },
+    {
+      "column": "IsEnabled",
+      "type": "bit",
+      "nullable": false,
+      "maxLength": 1
+    },
+    {
+      "column": "Address",
+      "type": "nvarchar",
+      "nullable": false,
+      "maxLength": 400
+    },
+    {
+      "column": "CenterCatagoryId",
+      "type": "bigint",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "Email",
+      "type": "nvarchar",
+      "nullable": false,
+      "maxLength": 100
+    },
+    {
+      "column": "CenterOwningTypeId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "PostalCode",
+      "type": "nvarchar",
+      "nullable": false,
+      "maxLength": 100
+    },
+    {
+      "column": "bSendSMS",
+      "type": "bit",
+      "nullable": false,
+      "maxLength": 1
+    },
+    {
+      "column": "Tel",
+      "type": "nvarchar",
+      "nullable": false,
+      "maxLength": 100
+    },
+    {
+      "column": "CenterTypeId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "CityID",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "ParentCenterId",
+      "type": "bigint",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "IsNonGovermental",
+      "type": "bit",
+      "nullable": false,
+      "maxLength": 1
+    },
+    {
+      "column": "OldCenterId",
+      "type": "bigint",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "HierachicalPath",
+      "type": "nvarchar",
+      "nullable": false,
+      "maxLength": 300
+    },
+    {
+      "column": "Lat",
+      "type": "float",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "Lng",
+      "type": "float",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "UserRegistrarId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "RegistrationDateTime",
+      "type": "datetime",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "AcceptorUserId",
+      "type": "bigint",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "AcceptanceDateTime",
+      "type": "datetime",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "CenterUnitId",
+      "type": "bigint",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "SexReceptionId",
+      "type": "int",
+      "nullable": true,
+      "maxLength": 4
+    },
+    {
+      "column": "TimeActivityId",
+      "type": "int",
+      "nullable": true,
+      "maxLength": 4
+    },
+    {
+      "column": "LocationId",
+      "type": "int",
+      "nullable": true,
+      "maxLength": 4
+    },
+    {
+      "column": "HasSocial",
+      "type": "bit",
+      "nullable": true,
+      "maxLength": 1
+    },
+    {
+      "column": "HasDisability",
+      "type": "bit",
+      "nullable": true,
+      "maxLength": 1
+    },
+    {
+      "column": "HasPerventaion",
+      "type": "bit",
+      "nullable": true,
+      "maxLength": 1
+    },
+    {
+      "column": "CenterSubCatagoryId",
+      "type": "bigint",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "HasMosharekat",
+      "type": "bit",
+      "nullable": true,
+      "maxLength": 1
+    },
+    {
+      "column": "RegistrationNumber",
+      "type": "bigint",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "OldHP",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 100
+    },
+    {
+      "column": "Point",
+      "type": "geography",
+      "nullable": true,
+      "maxLength": -1
+    },
+    {
+      "column": "IsPersonal",
+      "type": "bit",
+      "nullable": true,
+      "maxLength": 1
+    },
+    {
+      "column": "NationalId",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 40
+    },
+    {
+      "column": "BirthDate",
+      "type": "datetime",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "Rate",
+      "type": "int",
+      "nullable": false,
+      "maxLength": 4
+    },
+    {
+      "column": "Account",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 100
+    },
+    {
+      "column": "BankId",
+      "type": "bigint",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "AccountIsVerfied",
+      "type": "bit",
+      "nullable": true,
+      "maxLength": 1
+    },
+    {
+      "column": "Password",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": -1
+    },
+    {
+      "column": "SubDivisionId",
+      "type": "bigint",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "IBN",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 100
+    }
+  ],
+  "City": [
+    {
+      "column": "CityId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "CityTitle",
+      "type": "nvarchar",
+      "nullable": false,
+      "maxLength": 100
+    },
+    {
+      "column": "ProvinceId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    }
+  ],
+  "Province": [
+    {
+      "column": "ProvinceId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "ProvinceTitle",
+      "type": "nvarchar",
+      "nullable": false,
+      "maxLength": 100
+    },
+    {
+      "column": "Lat",
+      "type": "float",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "Lng",
+      "type": "float",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "IsProhabited",
+      "type": "bit",
+      "nullable": false,
+      "maxLength": 1
+    },
+    {
+      "column": "Total",
+      "type": "bigint",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "Families",
+      "type": "bigint",
+      "nullable": true,
+      "maxLength": 8
+    },
+    {
+      "column": "ZanSarparast",
+      "type": "bigint",
+      "nullable": true,
+      "maxLength": 8
+    }
+  ],
+  "IBN_AccountNumber": [
+    {
+      "column": "row_id",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "NID",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 100
+    },
+    {
+      "column": "AccountNumber",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 100
+    },
+    {
+      "column": "IBN",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 100
+    },
+    {
+      "column": "status",
+      "type": "nvarchar",
+      "nullable": true,
+      "maxLength": 100
+    }
+  ],
+  "MakeOver": [
+    {
+      "column": "MakeOverId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "PersonId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "UserRegistrarId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "RegistrationDateTime",
+      "type": "datetime",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "MakeOverSupplyLocationId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "MakeOverActivityId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "FromDate",
+      "type": "date",
+      "nullable": false,
+      "maxLength": 3
+    },
+    {
+      "column": "CenterId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "Detail",
+      "type": "nvarchar",
+      "nullable": false,
+      "maxLength": 100
+    },
+    {
+      "column": "LocalSubsidy",
+      "type": "decimal",
+      "nullable": false,
+      "maxLength": 9
+    },
+    {
+      "column": "UniverseSubsidy",
+      "type": "decimal",
+      "nullable": false,
+      "maxLength": 9
+    },
+    {
+      "column": "IsNoName",
+      "type": "bit",
+      "nullable": false,
+      "maxLength": 1
+    },
+    {
+      "column": "IsSpecial",
+      "type": "bit",
+      "nullable": false,
+      "maxLength": 1
+    },
+    {
+      "column": "DefenitionId",
+      "type": "bigint",
+      "nullable": false,
+      "maxLength": 8
+    },
+    {
+      "column": "Mosharekat",
+      "type": "decimal",
+      "nullable": false,
+      "maxLength": 9
+    }
+  ]
+}

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Support Bot — Vendor Scorecard</title>
+  <style>
+    :root {
+      --ink: #1a1a1a;
+      --muted: #555;
+      --line: #ccc;
+      --soft: #f5f5f5;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      color: var(--ink);
+      line-height: 1.35;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px 20px 48px;
+      font-size: 12.5px;
+    }
+    h1 { font-size: 22px; margin: 0 0 4px; }
+    h2 { font-size: 15px; margin: 22px 0 8px; border-bottom: 1px solid var(--line); padding-bottom: 4px; }
+    h3 { font-size: 13px; margin: 14px 0 6px; }
+    p, li { color: var(--muted); }
+    .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; margin: 14px 0 18px; }
+    .meta label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+    .line {
+      border: none;
+      border-bottom: 1px solid var(--ink);
+      width: 100%;
+      padding: 4px 2px;
+      font-size: 13px;
+      background: transparent;
+    }
+    table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 6px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: var(--soft); font-weight: 600; font-size: 11.5px; }
+    td.center, th.center { text-align: center; }
+    td.right, th.right { text-align: right; }
+    .score-boxes { white-space: nowrap; letter-spacing: 1px; }
+    .band {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      margin: 10px 0 16px;
+    }
+    .band strong { color: var(--ink); }
+    .check { display: inline-block; width: 12px; height: 12px; border: 1px solid #333; margin-right: 4px; vertical-align: -1px; }
+    .note-lines { margin-top: 6px; }
+    .note-lines div {
+      border-bottom: 1px dotted #999;
+      height: 22px;
+      margin-bottom: 4px;
+    }
+    .footer {
+      margin-top: 20px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .print-bar {
+      position: sticky;
+      top: 0;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+      padding: 10px 0;
+      margin: -8px 0 16px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      z-index: 10;
+    }
+    .print-bar button {
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .print-bar span { color: var(--muted); font-size: 12px; }
+    @media print {
+      body { padding: 0; max-width: none; font-size: 11px; }
+      .print-bar { display: none !important; }
+      h2 { break-after: avoid; }
+      table, .band { break-inside: avoid; }
+      @page { margin: 12mm; }
+    }
+  </style>
+</head>
+<body>
+  <div class="print-bar">
+    <button type="button" onclick="window.print()">Print this scorecard</button>
+    <span>Tip: choose “Save as PDF” in the print dialog if you need a PDF copy.</span>
+  </div>
+
+  <h1>AI Support &amp; Ticketing Bot — Vendor Scorecard</h1>
+  <p>Fill during / after the interview. Score each category 1–5. Weighted total = sum((score÷5)×weight) for scored categories, normalized to 100.</p>
+
+  <div class="meta">
+    <div>
+      <label>Vendor / Product</label>
+      <input class="line" type="text" />
+    </div>
+    <div>
+      <label>Meeting date</label>
+      <input class="line" type="text" />
+    </div>
+    <div>
+      <label>Evaluator(s)</label>
+      <input class="line" type="text" />
+    </div>
+    <div>
+      <label>Our current helpdesk</label>
+      <input class="line" type="text" />
+    </div>
+  </div>
+
+  <div class="band">
+    <strong>Scoring guide:</strong>
+    5 Exceeds · 4 Strong · 3 Acceptable · 2 Weak · 1 Poor / does not meet<br />
+    <strong>Decision bands:</strong>
+    80+ Strong candidate · 65–79 Conditional · 50–64 Weak · &lt;50 Not recommended · Any unanswered Critical = Hold
+  </div>
+
+  <h2>1. Category scores</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:28%">Category</th>
+        <th class="center" style="width:8%">Weight</th>
+        <th class="center" style="width:28%">Score (circle)</th>
+        <th>Evidence / notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>AI &amp; product capabilities<br /><small>Answers, languages, hallucination control, HITL</small></td>
+        <td class="center">15%</td>
+        <td class="center score-boxes">1 &nbsp; 2 &nbsp; 3 &nbsp; 4 &nbsp; 5</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Ticketing &amp; workflow<br /><small>Create/route tickets, SLA, escalation, audit trail</small></td>
+        <td class="center">12%</td>
+        <td class="center score-boxes">1 &nbsp; 2 &nbsp; 3 &nbsp; 4 &nbsp; 5</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Integrations &amp; APIs<br /><small>Channels, SSO, webhooks, CRM lookups, sandbox</small></td>
+        <td class="center">12%</td>
+        <td class="center score-boxes">1 &nbsp; 2 &nbsp; 3 &nbsp; 4 &nbsp; 5</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Architecture &amp; deployment<br /><small>SaaS/on-prem, residency, uptime, DR, isolation</small></td>
+        <td class="center">10%</td>
+        <td class="center score-boxes">1 &nbsp; 2 &nbsp; 3 &nbsp; 4 &nbsp; 5</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Infrastructure &amp; tech requirements<br /><small>HW/SW we must provide, network, IT effort</small></td>
+        <td class="center">8%</td>
+        <td class="center score-boxes">1 &nbsp; 2 &nbsp; 3 &nbsp; 4 &nbsp; 5</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Security, privacy &amp; compliance<br /><small>Certs, encryption, training-on-data, retention</small></td>
+        <td class="center">12%</td>
+        <td class="center score-boxes">1 &nbsp; 2 &nbsp; 3 &nbsp; 4 &nbsp; 5</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Scalability &amp; performance<br /><small>Concurrency, latency, limits, peak behavior</small></td>
+        <td class="center">8%</td>
+        <td class="center score-boxes">1 &nbsp; 2 &nbsp; 3 &nbsp; 4 &nbsp; 5</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Implementation &amp; resources<br /><small>Timeline, RACI, data prep, PoC plan</small></td>
+        <td class="center">8%</td>
+        <td class="center score-boxes">1 &nbsp; 2 &nbsp; 3 &nbsp; 4 &nbsp; 5</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Support, SLA &amp; training<br /><small>Support hours, CSM, training, incidents</small></td>
+        <td class="center">5%</td>
+        <td class="center score-boxes">1 &nbsp; 2 &nbsp; 3 &nbsp; 4 &nbsp; 5</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Pricing, contract &amp; TCO<br /><small>License model, Year 1–2 cost, exit terms</small></td>
+        <td class="center">10%</td>
+        <td class="center score-boxes">1 &nbsp; 2 &nbsp; 3 &nbsp; 4 &nbsp; 5</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>2. Score calculation worksheet</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th class="right">Weight (W)</th>
+        <th class="right">Score (S)</th>
+        <th class="right">Points = (S÷5)×W</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>AI &amp; product</td><td class="right">15</td><td class="right">____</td><td class="right">____</td></tr>
+      <tr><td>Ticketing &amp; workflow</td><td class="right">12</td><td class="right">____</td><td class="right">____</td></tr>
+      <tr><td>Integrations &amp; APIs</td><td class="right">12</td><td class="right">____</td><td class="right">____</td></tr>
+      <tr><td>Architecture &amp; deployment</td><td class="right">10</td><td class="right">____</td><td class="right">____</td></tr>
+      <tr><td>Infrastructure &amp; tech</td><td class="right">8</td><td class="right">____</td><td class="right">____</td></tr>
+      <tr><td>Security &amp; compliance</td><td class="right">12</td><td class="right">____</td><td class="right">____</td></tr>
+      <tr><td>Scalability &amp; performance</td><td class="right">8</td><td class="right">____</td><td class="right">____</td></tr>
+      <tr><td>Implementation &amp; resources</td><td class="right">8</td><td class="right">____</td><td class="right">____</td></tr>
+      <tr><td>Support, SLA &amp; training</td><td class="right">5</td><td class="right">____</td><td class="right">____</td></tr>
+      <tr><td>Pricing &amp; commercial</td><td class="right">10</td><td class="right">____</td><td class="right">____</td></tr>
+      <tr>
+        <td><strong>TOTAL (if all scored)</strong></td>
+        <td class="right"><strong>100</strong></td>
+        <td class="right"></td>
+        <td class="right"><strong>____ / 100</strong></td>
+      </tr>
+    </tbody>
+  </table>
+  <p>If some categories are unscored: Total = (sum of points ÷ sum of weights scored) × 100.</p>
+
+  <h2>3. Critical questions gate</h2>
+  <p>Mark each Critical item covered. If any remain open, recommendation must be <strong>Hold</strong>.</p>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:8%" class="center">OK?</th>
+        <th>Critical question</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="center"><span class="check"></span></td><td>LLM / model choice and grounding approach</td></tr>
+      <tr><td class="center"><span class="check"></span></td><td>Native ticketing/helpdesk support for our stack</td></tr>
+      <tr><td class="center"><span class="check"></span></td><td>Channels we need (web / WhatsApp / email / etc.)</td></tr>
+      <tr><td class="center"><span class="check"></span></td><td>Deployment model (SaaS / private / on-prem)</td></tr>
+      <tr><td class="center"><span class="check"></span></td><td>Data residency (country / region)</td></tr>
+      <tr><td class="center"><span class="check"></span></td><td>Hardware/software WE must provide</td></tr>
+      <tr><td class="center"><span class="check"></span></td><td>Security certifications + compliance fit</td></tr>
+      <tr><td class="center"><span class="check"></span></td><td>Customer data NOT used to train shared models (contractual)</td></tr>
+      <tr><td class="center"><span class="check"></span></td><td>Capacity at our expected volume</td></tr>
+      <tr><td class="center"><span class="check"></span></td><td>Implementation timeline</td></tr>
+      <tr><td class="center"><span class="check"></span></td><td>Roles: vendor team vs our team</td></tr>
+      <tr><td class="center"><span class="check"></span></td><td>Pricing model clarity</td></tr>
+      <tr><td class="center"><span class="check"></span></td><td>Year-1 and Year-2+ full cost</td></tr>
+      <tr><td class="center"><span class="check"></span></td><td>Contract term, uplift, exit, data return</td></tr>
+    </tbody>
+  </table>
+
+  <h2>4. Commercial snapshot</h2>
+  <table>
+    <thead>
+      <tr><th style="width:35%">Item</th><th>Vendor answer</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Year-1 total (license + impl + training + support)</td><td></td></tr>
+      <tr><td>Year-2+ run rate</td><td></td></tr>
+      <tr><td>Unit price (per seat / conversation / resolution / token)</td><td></td></tr>
+      <tr><td>Overage rules</td><td></td></tr>
+      <tr><td>Paid add-ons required for us</td><td></td></tr>
+      <tr><td>Contract term &amp; renewal uplift</td><td></td></tr>
+      <tr><td>PoC cost / duration / success metrics</td><td></td></tr>
+    </tbody>
+  </table>
+
+  <h2>5. Recommendation</h2>
+  <p>
+    <span class="check"></span> Strong candidate (80+) &nbsp;&nbsp;
+    <span class="check"></span> Conditional fit (65–79) &nbsp;&nbsp;
+    <span class="check"></span> Weak fit (50–64) &nbsp;&nbsp;
+    <span class="check"></span> Not recommended (&lt;50) &nbsp;&nbsp;
+    <span class="check"></span> Hold — critical gaps
+  </p>
+  <p><strong>Weighted score:</strong> ________ / 100 &nbsp;&nbsp;&nbsp; <strong>Critical open:</strong> ________</p>
+  <div class="note-lines">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+
+  <p class="footer">Print one copy per vendor. Compare weighted scores and open critical items side by side before shortlisting for PoC.</p>
+</body>
+</html>

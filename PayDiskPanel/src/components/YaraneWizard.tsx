@@ -164,6 +164,11 @@ export function YaraneWizard() {
   const [extraTypes, setExtraTypes] = useState<YaraneDocType[]>([]);
   const [canCreate, setCanCreate] = useState(true);
   const [canApproveAccess, setCanApproveAccess] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  /** Exclusive highlight on list toolbar (only one primary at a time). */
+  const [listActionActive, setListActionActive] = useState<
+    "refresh" | "without-ibn" | "download" | null
+  >(null);
   const [compareBusy, setCompareBusy] = useState(false);
   const [compareOpen, setCompareOpen] = useState(false);
   const [compareError, setCompareError] = useState<string | null>(null);
@@ -212,6 +217,7 @@ export function YaraneWizard() {
       if (data.access) {
         setCanCreate(!!data.access.canCreate);
         setCanApproveAccess(!!data.access.canApprove);
+        setIsAdmin(data.access.role === "admin");
       }
       if (!res.ok || !data.ok || !data.transaction) {
         // Only probe mostamari on clear 404 — avoid doubling a slow/failed load.
@@ -315,6 +321,7 @@ export function YaraneWizard() {
     setListTotal(0);
     setListLoaded(false);
     setListIbnScope("all");
+    setListActionActive(null);
     setExportModalOpen(false);
     setExportBusy(false);
     setApproved(false);
@@ -338,6 +345,7 @@ export function YaraneWizard() {
       if (d.access) {
         setCanCreate(!!d.access.canCreate);
         setCanApproveAccess(!!d.access.canApprove);
+        setIsAdmin(d.access.role === "admin");
       }
     } catch {
       /* keep last known labOk/db — don't flash false read-only */
@@ -696,10 +704,12 @@ export function YaraneWizard() {
 
   return (
     <div className="space-y-5">
-      <div className="text-xs text-[var(--ink-soft)]">
-        {db || (loadingTxn ? "…" : "")}
-        {trId ? ` · تراکنش #${trId}` : urlTrId ? ` · تراکنش #${urlTrId}` : ""}
-      </div>
+      {isAdmin ? (
+        <div className="text-xs text-[var(--ink-soft)]">
+          {db || (loadingTxn ? "…" : "")}
+          {trId ? ` · تراکنش #${trId}` : urlTrId ? ` · تراکنش #${urlTrId}` : ""}
+        </div>
+      ) : null}
 
       {!loadingTxn && !labOk ? (
         <div className="rounded-xl bg-[#fff1db] text-[#a15c00] px-4 py-3 text-sm">
@@ -759,19 +769,7 @@ export function YaraneWizard() {
               <button
                 type="button"
                 className="btn btn-ghost"
-                onClick={() => {
-                  if (!trId) {
-                    setStep("type");
-                    return;
-                  }
-                  if (key2 && String(key2).trim()) {
-                    goToStep("approve");
-                  } else if (payedRows > 0) {
-                    goToStep("check");
-                  } else {
-                    setStep("calculate");
-                  }
-                }}
+                onClick={() => goToStep("type")}
               >
                 ادامه
               </button>
@@ -874,14 +872,7 @@ export function YaraneWizard() {
                 }
                 setPriorStepsLocked(true);
                 if (trId) {
-                  // Already calculated → skip past calculate; list marked → approve
-                  if (key2 && String(key2).trim()) {
-                    goToStep("approve");
-                  } else if (payedRows > 0) {
-                    goToStep("check");
-                  } else {
-                    setStep("calculate");
-                  }
+                  goToStep("calculate");
                   return;
                 }
                 void createTxn();
@@ -949,6 +940,16 @@ export function YaraneWizard() {
                 "اجرای محاسبه"
               )}
             </button>
+            {payedRows > 0 ? (
+              <button
+                type="button"
+                className="btn btn-ghost"
+                disabled={busy}
+                onClick={() => goToStep("check")}
+              >
+                ادامه
+              </button>
+            ) : null}
             {!labOk ? (
               <span className="text-xs text-[var(--ink-soft)] self-center">
                 هدف فعلی خواندنی است — برای اجرا، lab یا تولید (155) با نوشتن را انتخاب کنید
@@ -999,20 +1000,6 @@ export function YaraneWizard() {
             </button>
             <button
               type="button"
-              className="btn btn-primary"
-              disabled={!canDownloadDiskette || exportBusy}
-              title={
-                canDownloadDiskette
-                  ? "انتخاب قالب و نوع لیست (با شبا / بدون شبا / همه)"
-                  : "پس از محاسبه و وجود ردیف پرداخت فعال می‌شود"
-              }
-              onClick={openExportModal}
-            >
-              {exportBusy ? <LoadingSpinner size="sm" inline /> : null}
-              دانلود دیسکت
-            </button>
-            <button
-              type="button"
               className="btn btn-ghost"
               disabled={busy || payedRows <= 0}
               onClick={() => goToStep("list")}
@@ -1049,18 +1036,22 @@ export function YaraneWizard() {
             </button>
             <button
               type="button"
-              className="btn btn-ghost"
+              className={`btn ${listActionActive === "refresh" ? "btn-primary" : "btn-ghost"}`}
               disabled={busy}
-              onClick={() => void loadPersonList(listPage, "all")}
+              onClick={() => {
+                setListActionActive("refresh");
+                void loadPersonList(listPage, "all");
+              }}
             >
               بروزرسانی لیست
             </button>
             <button
               type="button"
-              className={`btn ${listIbnScope === "without-ibn" ? "btn-primary" : "btn-ghost"}`}
+              className={`btn ${listActionActive === "without-ibn" ? "btn-primary" : "btn-ghost"}`}
               disabled={busy || !trId || payedRows <= 0}
               title="افراد/مراکزی که Center.IBN خالی است"
               onClick={() => {
+                setListActionActive("without-ibn");
                 setListPage(1);
                 void loadPersonList(1, "without-ibn");
               }}
@@ -1069,14 +1060,17 @@ export function YaraneWizard() {
             </button>
             <button
               type="button"
-              className="btn btn-primary"
+              className={`btn ${listActionActive === "download" ? "btn-primary" : "btn-ghost"}`}
               disabled={!canDownloadDiskette || exportBusy}
               title={
                 canDownloadDiskette
                   ? "انتخاب قالب و نوع لیست (با شبا / بدون شبا / همه)"
                   : "پس از محاسبه و وجود ردیف پرداخت فعال می‌شود"
               }
-              onClick={openExportModal}
+              onClick={() => {
+                setListActionActive("download");
+                openExportModal();
+              }}
             >
               {exportBusy ? <LoadingSpinner size="sm" inline /> : null}
               دانلود دیسکت
@@ -1084,7 +1078,10 @@ export function YaraneWizard() {
             <button
               type="button"
               className="btn btn-ghost"
-              onClick={() => goToStep("approve")}
+              onClick={() => {
+                setListActionActive(null);
+                goToStep("approve");
+              }}
             >
               ادامه
             </button>
@@ -1101,6 +1098,7 @@ export function YaraneWizard() {
                 className="text-[var(--brand)] underline"
                 disabled={busy}
                 onClick={() => {
+                  setListActionActive("refresh");
                   setListPage(1);
                   void loadPersonList(1, "all");
                 }}
@@ -1258,7 +1256,7 @@ export function YaraneWizard() {
           <h2 className="font-[family-name:var(--font-display)] text-2xl">
             {approved ? "تایید شد" : "تایید"}
           </h2>
-          {txnDoneStatus}
+          {isAdmin ? txnDoneStatus : null}
           {approved ? (
             <>
               <p className="text-sm leading-7">
@@ -1273,7 +1271,7 @@ export function YaraneWizard() {
               </p>
               <div className="flex flex-wrap gap-2">
                 <Link href="/" className="btn btn-primary">
-                  فهرست تاییدشده‌ها
+                  بازگشت به فهرست تراکنش ها
                 </Link>
                 <button type="button" className="btn btn-ghost" onClick={resetNew}>
                   تراکنش جدید

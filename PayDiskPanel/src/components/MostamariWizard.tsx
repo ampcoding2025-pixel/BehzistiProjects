@@ -13,7 +13,6 @@ import { FaDataTable } from "@/components/FaDataTable";
 import { LoadingBlock, LoadingSpinner } from "@/components/LoadingSpinner";
 import { PersianDatePicker } from "@/components/PersianDatePicker";
 import { UiSelect } from "@/components/UiSelect";
-import { formatFaDate, formatTxnTitleFa } from "@/lib/format";
 import {
   MOSTAMARI_TYPES,
   getMostamariType,
@@ -162,9 +161,6 @@ export function MostamariWizard() {
   );
   const [title, setTitle] = useState("");
   const [date, setDate] = useState(todayIso());
-  /** System registration datetime (list column) — may differ from period RelatedTo. */
-  const [registrationDate, setRegistrationDate] = useState<string | null>(null);
-  const [relatedToDate, setRelatedToDate] = useState<string | null>(null);
   const [trId, setTrId] = useState<number | null>(urlTrId);
   const [yearMonth, setYearMonth] = useState(defaultYearMonth());
   const [peerTrId, setPeerTrId] = useState("");
@@ -223,6 +219,7 @@ export function MostamariWizard() {
     useState<MostamariExportFormat>("csv-excel");
   const [exportBusy, setExportBusy] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState(false);
+  const [bankModalOpen, setBankModalOpen] = useState(false);
   const [ibnChecked, setIbnChecked] = useState(false);
   const [ibnPage, setIbnPage] = useState(1);
   const [missingPage, setMissingPage] = useState(1);
@@ -231,6 +228,15 @@ export function MostamariWizard() {
   const [pairMoney, setPairMoney] = useState<Record<string, unknown>[]>([]);
   const [missingIbn, setMissingIbn] = useState<Record<string, unknown>[]>([]);
   const [skipped, setSkipped] = useState<Partial<Record<MostamariStepId, boolean>>>({});
+  const [isAdmin, setIsAdmin] = useState(false);
+  /** Exclusive highlight on pay-list toolbar (only one primary at a time). */
+  const [listActionActive, setListActionActive] = useState<
+    "load" | "download" | null
+  >(null);
+  /** Exclusive highlight on bank-prep toolbar. */
+  const [bankActionActive, setBankActionActive] = useState<
+    "missing-ibn" | "download" | null
+  >(null);
 
   const selectedType = useMemo(
     () => (typeId ? getMostamariType(typeId) : null),
@@ -239,6 +245,8 @@ export function MostamariWizard() {
   const pipeline = useMemo(() => pipelineForType(typeId || null), [typeId]);
   const idx = stepIndexInPipeline(pipeline, step);
   const currentStep = pipeline[idx] || pipeline[0];
+  const isLastStep =
+    pipeline.length > 0 && step === pipeline[pipeline.length - 1]?.id;
   const exportAdvice = useMemo(
     () => suggestMostamariExport(listTotal),
     [listTotal],
@@ -246,6 +254,8 @@ export function MostamariWizard() {
 
   const canDownloadDiskette =
     !!trId && (payedRows > 0 || listLoaded || listTotal > 0);
+  /** Existing or already-calculated transactions: title/period are read-only. */
+  const defineFieldsLocked = !!trId || payedRows > 0;
 
   async function runCompare() {
     if (!trId) return;
@@ -324,12 +334,6 @@ export function MostamariWizard() {
             </div>
           </div>
         </div>
-        {selectedType ? (
-          <p className="text-[11px] text-[var(--ink-soft)]">
-            نوع تشخیص‌داده‌شده: {selectedType.shortFa}
-            {ky ? ` · Ky=${ky}` : " · Ky خالی (از عنوان)"}
-          </p>
-        ) : null}
         <div className="flex flex-wrap gap-2 items-center">
           <button
             type="button"
@@ -421,9 +425,35 @@ export function MostamariWizard() {
     setExportModalOpen(false);
     setError(null);
     setMsg(
-      `دانلود دیسکت (${scopeLabel}) شروع شد — فایل به‌صورت جریانی ذخیره می‌شود.`,
+      `دانلود لیست (${scopeLabel}) شروع شد — فایل به‌صورت جریانی ذخیره می‌شود.`,
     );
     const url = `/api/wizard/mostamari/export?trId=${trId}&format=${encodeURIComponent(format)}&ibn=${encodeURIComponent(ibnScope)}`;
+    const a = document.createElement("a");
+    a.href = url;
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.setTimeout(() => setExportBusy(false), 2000);
+  }
+
+  function openBankModal() {
+    if (!canDownloadDiskette) return;
+    setBankActionActive("download");
+    setBankModalOpen(true);
+  }
+
+  function startBankDisketteDownload(ibnScope: MostamariExportIbnScope = "all") {
+    if (!trId || !canDownloadDiskette) return;
+    const scopeLabel =
+      MOSTAMARI_EXPORT_IBN_SCOPES.find((s) => s.id === ibnScope)?.labelFa ||
+      ibnScope;
+    setBankActionActive("download");
+    setExportBusy(true);
+    setBankModalOpen(false);
+    setError(null);
+    setMsg(`دانلود دیسکت بانک (${scopeLabel}) شروع شد`);
+    const url = `/api/wizard/mostamari/bank-export?trId=${trId}&ibn=${encodeURIComponent(ibnScope)}`;
     const a = document.createElement("a");
     a.href = url;
     a.rel = "noopener";
@@ -460,6 +490,16 @@ export function MostamariWizard() {
     }
   }, []);
 
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((d) => {
+        const role = d?.access?.role || d?.user?.role;
+        setIsAdmin(!!d?.ok && (role === "admin" || !!d?.access?.canSeeSettings));
+      })
+      .catch(() => setIsAdmin(false));
+  }, []);
+
   const loadTxn = useCallback(async (id: number) => {
     setLoadingTxn(true);
     setError(null);
@@ -476,6 +516,7 @@ export function MostamariWizard() {
       const h = data.header;
       setTrId(Number(h.Id));
       setListLoaded(false);
+      setListActionActive(null);
       setListRows([]);
       setListTotal(0);
       setListTotalExact(false);
@@ -483,8 +524,6 @@ export function MostamariWizard() {
       setTitle(String(h.Title || ""));
       const regIso = toIsoDate(h.RegistrationDate);
       const relIso = toIsoDate(h.RelatedTo);
-      setRegistrationDate(regIso);
-      setRelatedToDate(relIso);
       // Period picker = RelatedTo (دوره پرداخت); fall back to registration.
       setDate(relIso || regIso || todayIso());
       setPayedRows(Number(h.payedRows || 0));
@@ -517,7 +556,7 @@ export function MostamariWizard() {
       setDb(data.dbLabel || "");
       setMsg(
         fromHeader || fromTitle
-          ? `تراکنش مستمری #${h.Id}${h.Ky ? ` · Ky=${h.Ky}` : " · نوع از عنوان"}`
+          ? `تراکنش مستمری #${h.Id}`
           : `تراکنش مستمری #${h.Id} — نوع را دستی انتخاب کنید`,
       );
       if (Number(h.payedRows || 0) > 0) {
@@ -559,6 +598,25 @@ export function MostamariWizard() {
       setStep(trId ? "calculate" : "type");
     }
   }, [pipeline, step, trId]);
+
+  /** Auto-load amount histogram when entering «گزارش مبلغ» (no separate mystery button). */
+  useEffect(() => {
+    if (step !== "report" || !trId) return;
+    let cancelled = false;
+    (async () => {
+      setBusy(true);
+      setError(null);
+      try {
+        if (!cancelled) await refreshReview(trId);
+      } finally {
+        if (!cancelled) setBusy(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only when step/trId change
+  }, [step, trId]);
 
   async function post(body: Record<string, unknown>) {
     setBusy(true);
@@ -720,7 +778,7 @@ export function MostamariWizard() {
         return;
       }
       setMissingIbn(Array.isArray(data.rows) ? data.rows : []);
-      setMsg(data.message || null);
+      setMsg(null);
     } finally {
       setBusy(false);
     }
@@ -747,7 +805,6 @@ export function MostamariWizard() {
             {labOk ? " · نوشتن مجاز" : " · فقط خواندنی"}
             {trId ? ` · تراکنش #${trId}` : ""}
             {selectedType ? ` · ${selectedType.shortFa}` : ""}
-            {ky ? ` · Ky=${ky}` : ""}
           </p>
         </div>
         <Link href="/?family=mostamari" className="btn btn-ghost text-xs">
@@ -801,10 +858,6 @@ export function MostamariWizard() {
       {step === "type" ? (
         <div className="panel p-5 space-y-4">
           <h2 className="font-[family-name:var(--font-display)] text-2xl">نوع مستمری</h2>
-          <p className="text-sm text-[var(--ink-soft)] leading-7">
-            همه انواع مستمری، افزایش، حق پرستاری و امداد از این مسیر تعریف می‌شوند.
-            مراحل بعدی بر اساس نوع انتخابی تنظیم می‌شود.
-          </p>
           <div className="max-w-xl">
             <UiSelect
               id="mst-type-select"
@@ -845,6 +898,8 @@ export function MostamariWizard() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="مثلاً مستمری مهر ۱۴۰۴"
+                disabled={defineFieldsLocked}
+                readOnly={defineFieldsLocked}
               />
             </div>
             <PersianDatePicker
@@ -852,35 +907,17 @@ export function MostamariWizard() {
               label="تاریخ دوره پرداخت"
               value={date}
               onChange={setDate}
+              disabled={defineFieldsLocked}
             />
           </div>
-          {trId ? (
-            <div className="rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2.5 text-xs space-y-1.5">
-              <p>
-                تراکنش فعلی: #{trId} — {formatTxnTitleFa(title)}
-              </p>
-              <p className="text-[var(--ink-soft)] leading-5">
-                تاریخ ثبت در سیستم (ستون فهرست):{" "}
-                <strong>{formatFaDate(registrationDate)}</strong>
-                {" · "}
-                دوره پرداخت:{" "}
-                <strong>{formatFaDate(relatedToDate || date)}</strong>
-                {yearMonth ? (
-                  <>
-                    {" · "}
-                    Year: <strong>{yearMonth}</strong>
-                  </>
-                ) : null}
-              </p>
-              <p className="text-[var(--ink-soft)] leading-5">
-                فهرست اصلی تاریخ ثبت را نشان می‌دهد؛ این فرم دوره پرداخت را ویرایش
-                می‌کند — ممکن است با هم فرق داشته باشند.
-              </p>
-            </div>
+          {defineFieldsLocked ? (
+            <p className="text-xs text-[var(--ink-soft)] leading-5">
+              برای تراکنش ثبت‌شده یا محاسبه‌شده، عنوان و تاریخ دوره قابل ویرایش نیستند.
+            </p>
           ) : null}
           <NavButtons
             onPrev={goPrev}
-            nextLabel={trId ? `ادامه با #${trId}` : "ثبت تراکنش"}
+            nextLabel={trId ? "ادامه" : "ثبت تراکنش"}
             nextDisabled={busy || (!trId && (!title.trim() || !labOk))}
             busy={busy && !trId}
             onNext={async () => {
@@ -903,7 +940,6 @@ export function MostamariWizard() {
       {step === "calculate" ? (
         <div className="panel p-5 space-y-4">
           <h2 className="font-[family-name:var(--font-display)] text-2xl">محاسبه</h2>
-          {txnDoneStatus}
           {!typeId ? (
             <div className="space-y-2">
               <p className="text-sm text-[var(--bad)]">
@@ -925,8 +961,7 @@ export function MostamariWizard() {
           ) : (
             <p className="text-sm text-[var(--ink-soft)] leading-7">
               محاسبهٔ «{selectedType?.shortFa}» برای تراکنش #{trId}. این کار ممکن است چند
-              دقیقه طول بکشد؛ صفحه را نبندید. اگر قبلاً انجام شده، از دکمهٔ رد شدن استفاده
-              کنید.
+              دقیقه طول بکشد؛ صفحه را نبندید.
             </p>
           )}
           <div className="text-sm">
@@ -949,9 +984,6 @@ export function MostamariWizard() {
           ) : null}
           <NavButtons
             onPrev={goPrev}
-            optional={payedRows > 0}
-            skipLabel="رد شدن (قبلاً محاسبه شده)"
-            onSkip={payedRows > 0 ? () => goNext() : undefined}
             actionLabel={payedRows > 0 ? "اجرای مجدد" : "اجرای محاسبه"}
             actionPrimary
             actionDisabled={!trId || !typeId || !labOk}
@@ -973,15 +1005,13 @@ export function MostamariWizard() {
       {step === "report" ? (
         <div className="panel p-5 space-y-4">
           <h2 className="font-[family-name:var(--font-display)] text-2xl">گزارش مبلغ</h2>
-          {txnDoneStatus}
           <p className="text-sm text-[var(--ink-soft)] leading-7">
             خلاصهٔ تعداد افراد به تفکیک مبلغ پرداخت. مبالغ نامتعارف را اینجا کنترل کنید، سپس
             ادامه دهید.
           </p>
           <NavButtons
             onPrev={goPrev}
-            actionLabel="بارگذاری گزارش مبلغ"
-            actionPrimary
+            actionLabel="بروزرسانی"
             actionDisabled={!trId}
             busy={busy}
             onAction={async () => {
@@ -1000,7 +1030,9 @@ export function MostamariWizard() {
           />
           <div>
             <div className="text-sm font-semibold mb-2">توزیع مبلغ</div>
-            {moneyHist.length ? (
+            {busy && !moneyHist.length ? (
+              <LoadingBlock label="بارگذاری توزیع مبلغ…" />
+            ) : moneyHist.length ? (
               <FaDataTable
                 columns={["cnt", "Money"]}
                 columnTitles={{ cnt: "تعداد", Money: "مبلغ" }}
@@ -1012,7 +1044,7 @@ export function MostamariWizard() {
               />
             ) : (
               <p className="text-xs text-[var(--ink-soft)]">
-                هنوز گزارشی نیست — «بارگذاری گزارش مبلغ» را بزنید.
+                گزارشی یافت نشد — «بروزرسانی» را بزنید یا محاسبه را دوباره اجرا کنید.
               </p>
             )}
           </div>
@@ -1071,41 +1103,59 @@ export function MostamariWizard() {
       {step === "payList" ? (
         <div className="panel p-5 space-y-4">
           <h2 className="font-[family-name:var(--font-display)] text-2xl">لیست پرداخت</h2>
-          {txnDoneStatus}
           <p className="text-sm text-[var(--ink-soft)] leading-7">
             نمونهٔ فهرست پرداخت‌شوندگان با شبا.
           </p>
           <div className="flex flex-wrap items-center gap-2 w-full">
-            <NavButtons
-              className="flex flex-wrap items-center gap-2"
-              onPrev={goPrev}
-              actionLabel="بارگذاری لیست"
-              actionPrimary
-              actionDisabled={!trId}
-              busy={listLoading}
-              onAction={() => {
+            <button
+              type="button"
+              className="btn btn-ghost"
+              disabled={listLoading}
+              onClick={goPrev}
+            >
+              قبلی
+            </button>
+            <button
+              type="button"
+              className={`btn ${listActionActive === "load" ? "btn-primary" : "btn-ghost"}`}
+              disabled={!trId || listLoading}
+              onClick={() => {
                 if (!trId) return;
+                setListActionActive("load");
                 void loadList(trId, 1, listPageSize);
               }}
-              nextLabel="ادامه"
-              nextDisabled={!trId || payedRows <= 0}
-              onNext={goNext}
             >
-              <button
-                type="button"
-                className="btn btn-primary"
-                disabled={!canDownloadDiskette || exportBusy}
-                title={
-                  canDownloadDiskette
-                    ? "انتخاب قالب و نوع لیست (با شبا / بدون شبا / همه)"
-                    : "پس از محاسبه و وجود ردیف پرداخت فعال می‌شود"
-                }
-                onClick={openExportModal}
-              >
-                {exportBusy ? <LoadingSpinner size="sm" inline /> : null}
-                دانلود دیسکت
-              </button>
-            </NavButtons>
+              {listLoading ? <LoadingSpinner size="sm" inline /> : null}
+              بارگذاری لیست
+            </button>
+            <button
+              type="button"
+              className={`btn ${listActionActive === "download" ? "btn-primary" : "btn-ghost"}`}
+              disabled={!canDownloadDiskette || exportBusy}
+              title={
+                canDownloadDiskette
+                  ? "انتخاب قالب و نوع لیست (با شبا / بدون شبا / همه)"
+                  : "پس از محاسبه و وجود ردیف پرداخت فعال می‌شود"
+              }
+              onClick={() => {
+                setListActionActive("download");
+                openExportModal();
+              }}
+            >
+              {exportBusy ? <LoadingSpinner size="sm" inline /> : null}
+              دانلود لیست
+            </button>
+            <button
+              type="button"
+              className="btn btn-ghost"
+              disabled={!trId || payedRows <= 0 || listLoading}
+              onClick={() => {
+                setListActionActive(null);
+                goNext();
+              }}
+            >
+              ادامه
+            </button>
             <label className="text-sm flex items-center gap-2 ms-auto shrink-0">
               <span>تعداد در هر صفحه</span>
               <select
@@ -1115,6 +1165,7 @@ export function MostamariWizard() {
                 onChange={(e) => {
                   const n = Number(e.target.value) || 10;
                   setListPageSize(n);
+                  setListActionActive("load");
                   if (trId) void loadList(trId, 1, n);
                 }}
               >
@@ -1208,24 +1259,76 @@ export function MostamariWizard() {
         <div className="panel p-5 space-y-4">
           <h2 className="font-[family-name:var(--font-display)] text-2xl">تهیه دیسکت بانک</h2>
           <p className="text-sm text-[var(--ink-soft)] leading-7">
-            اختیاری. افراد فاقد شبا را جدا کنید؛ فایل نهایی بانک معمولاً در بسته‌های حدود
-            ۱۰۰هزارتایی بیرون از پنل آماده می‌شود.
+            قالب ارمغان (<span dir="ltr">dbo.Export</span>): هر ردیف ۳۰ کاراکتر —
+            <span dir="ltr" className="mx-1 font-mono text-xs">
+              1 + Account(15) + Money(14)
+            </span>
+            . ابتدا فاقد شبا را بررسی کنید، سپس دیسکت را دانلود یا روی مسیر اشتراک ارمغان بنویسید.
           </p>
-          <NavButtons
-            onPrev={goPrev}
-            optional
-            onSkip={skipOptional}
-            actionLabel="نمایش فاقد شبا"
-            actionPrimary
-            actionDisabled={!trId}
-            busy={busy}
-            onAction={async () => {
-              setMissingPage(1);
-              await runMissingIbn();
-            }}
-            nextLabel="ادامه"
-            onNext={goNext}
-          />
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              className="btn btn-ghost"
+              disabled={busy || exportBusy}
+              onClick={goPrev}
+            >
+              قبلی
+            </button>
+            <button
+              type="button"
+              className="btn btn-ghost"
+              disabled={busy || exportBusy}
+              onClick={() => {
+                setBankActionActive(null);
+                skipOptional();
+              }}
+            >
+              رد شدن از مرحله اختیاری
+            </button>
+            <button
+              type="button"
+              className={`btn ${bankActionActive === "missing-ibn" ? "btn-primary" : "btn-ghost"}`}
+              disabled={!trId || busy}
+              onClick={async () => {
+                setBankActionActive("missing-ibn");
+                setMissingPage(1);
+                await runMissingIbn();
+              }}
+            >
+              {busy && bankActionActive === "missing-ibn" ? (
+                <LoadingSpinner size="sm" inline />
+              ) : null}
+              نمایش فاقد شبا
+            </button>
+            <button
+              type="button"
+              className={`btn ${bankActionActive === "download" || bankModalOpen ? "btn-primary" : "btn-ghost"}`}
+              disabled={!canDownloadDiskette || exportBusy || busy}
+              title="دانلود فایل متنی هم‌قالب dbo.Export ارمغان"
+              onClick={openBankModal}
+            >
+              {exportBusy && bankActionActive === "download" ? (
+                <LoadingSpinner size="sm" inline />
+              ) : null}
+              دانلود دیسکت بانک
+            </button>
+            <button
+              type="button"
+              className="btn btn-ghost"
+              disabled={busy || exportBusy}
+              onClick={() => {
+                setBankActionActive(null);
+                goNext();
+              }}
+            >
+              ادامه
+            </button>
+          </div>
+          {bankToken ? (
+            <p className="text-xs text-[var(--brand)]" dir="ltr">
+              FileName: {bankToken}
+            </p>
+          ) : null}
           {missingIbn.length ? (
             <FaDataTable
               columns={Object.keys(missingIbn[0]!)}
@@ -1247,27 +1350,17 @@ export function MostamariWizard() {
       {step === "approve" ? (
         <div className="panel p-5 space-y-4">
           <h2 className="font-[family-name:var(--font-display)] text-2xl">تایید پرداخت</h2>
-          {txnDoneStatus}
-          <p className="text-sm text-[var(--ink-soft)] leading-7">
-            پس از پرداخت موفق، این تراکنش را برای گزارش‌ها و USSD تایید کنید (سال/ماه دوره و
-            نوع پرداخت). اگر به‌خاطر سقف بودجه لیست نهایی در تراکنش دیگری است، این تراکنش را
-            «کنسل‌شده» علامت بزنید.
-          </p>
           <div className="grid sm:grid-cols-2 gap-3 max-w-xl">
             <div className="field">
-              <label htmlFor="mst-year">سال/ماه دوره (YYYYMM شمسی)</label>
+              <label htmlFor="mst-year">سال/ماه</label>
               <input
                 id="mst-year"
                 value={yearMonth}
-                onChange={(e) =>
-                  setYearMonth(e.target.value.replace(/\D/g, "").slice(0, 6))
-                }
+                readOnly
+                disabled
                 placeholder={jalaliYearMonth()}
                 dir="ltr"
               />
-              <p className="text-[11px] text-[var(--ink-soft)] mt-1">
-                پیش‌فرض از تاریخ شمسی امروز / دوره تراکنش — قابل ویرایش
-              </p>
             </div>
             <div className="field">
               <label>نوع تایید</label>
@@ -1299,6 +1392,12 @@ export function MostamariWizard() {
               if (!data) return;
               setApproved(true);
               setKy(data.ky || selectedType?.ky || null);
+              if (data.fileName) setBankToken(String(data.fileName));
+              if (data.bankWarning) {
+                setError(
+                  `تایید انجام شد ولی دیسکت بانک روی مسیر ارمغان نوشته نشد: ${data.bankWarning}`,
+                );
+              }
               goNext();
             }}
             nextLabel="ادامه"
@@ -1331,17 +1430,13 @@ export function MostamariWizard() {
               کنسل به‌خاطر سقف بودجه
             </button>
           </NavButtons>
-          <p className="text-[11px] text-[var(--ink-soft)] leading-5">
-            حذف افراد از لیست برای رسیدن به سقف بودجه: لیست نهایی را در تراکنش دوم نگه دارید و
-            این تراکنش را کنسل کنید. تاریخ دوره: {formatFaDate(date)}
-          </p>
         </div>
       ) : null}
 
       {step === "postPay" ? (
         <div className="panel p-5 space-y-4">
           <h2 className="font-[family-name:var(--font-display)] text-2xl">پس از پرداخت</h2>
-          {txnDoneStatus}
+          {isLastStep && isAdmin ? txnDoneStatus : null}
           <p className="text-sm text-[var(--ink-soft)] leading-7">
             کارهای پیگیری بعد از پرداخت در صفحات جداگانه انجام می‌شود. از اینجا می‌توانید
             مسیر را ببندید یا به فهرست برگردید.
@@ -1379,6 +1474,117 @@ export function MostamariWizard() {
         </div>
       ) : null}
 
+      {bankModalOpen ? (
+        <div
+          className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="mostamari-bank-export-title"
+          onClick={() => !exportBusy && setBankModalOpen(false)}
+        >
+          <div
+            className="w-full max-w-lg max-h-[85vh] overflow-hidden rounded-2xl bg-white shadow-xl border border-[var(--line)] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="px-4 py-3 border-b border-[var(--line)] flex items-start justify-between gap-3">
+              <div>
+                <h2
+                  id="mostamari-bank-export-title"
+                  className="font-semibold text-lg"
+                >
+                  دانلود دیسکت بانک
+                </h2>
+                <p className="text-xs text-[var(--ink-soft)] mt-1">
+                  تراکنش #{trId}
+                  {payedRows > 0
+                    ? ` · ${payedRows.toLocaleString("fa-IR")} ردیف محاسبه‌شده`
+                    : ""}
+                </p>
+              </div>
+              <button
+                type="button"
+                className="btn btn-ghost text-xs"
+                disabled={exportBusy}
+                onClick={() => setBankModalOpen(false)}
+              >
+                بستن
+              </button>
+            </div>
+
+            <div className="p-4 overflow-auto space-y-4 text-sm">
+              <div className="rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2.5 space-y-1.5">
+                <p className="text-xs font-semibold">قالب پیشنهادی (ارمغان)</p>
+                <p className="text-xs leading-6 text-[var(--ink-soft)]">
+                  همان خروجی <span dir="ltr">dbo.Export</span>: فایل متنی با ردیف‌های ۳۰
+                  کاراکتری ثابت —
+                  <span dir="ltr" className="font-mono mx-1">
+                    1 + Account(15) + Money(14)
+                  </span>
+                  .
+                </p>
+                <p className="text-xs leading-6">
+                  قالب پیشنهادی:{" "}
+                  <span className="font-semibold">متن ارمغان (.txt)</span>
+                  {" — "}
+                  مناسب تحویل بانک / دانلود ارمغان
+                </p>
+              </div>
+
+              <fieldset className="space-y-2">
+                <legend className="font-semibold text-sm mb-1">قالب فایل</legend>
+                <label className="flex items-start gap-2 rounded-xl border border-[var(--accent)] bg-[var(--paper)] px-3 py-2.5">
+                  <input type="radio" className="mt-1" checked readOnly />
+                  <span className="min-w-0">
+                    <span className="font-medium">
+                      متن ارمغان (.txt)
+                      <span className="ms-2 text-[10px] text-[var(--accent)]">
+                        پیشنهادی
+                      </span>
+                    </span>
+                    <span className="block text-xs text-[var(--ink-soft)] leading-5 mt-0.5">
+                      هم‌قالب BCP ارمغان؛ بدون هدر؛ قابل استفاده در مسیر Diskette
+                    </span>
+                  </span>
+                </label>
+              </fieldset>
+
+              <div className="space-y-2">
+                <p className="font-semibold text-sm">دانلود بر اساس شبا</p>
+                <p className="text-xs text-[var(--ink-soft)] leading-5">
+                  معمولاً «با شبا» برای دیسکت بانک استفاده می‌شود.
+                </p>
+              </div>
+            </div>
+
+            <div className="px-4 py-3 border-t border-[var(--line)] flex flex-col gap-2">
+              <div className="flex flex-wrap gap-2">
+                {MOSTAMARI_EXPORT_IBN_SCOPES.map((scope) => (
+                  <button
+                    key={scope.id}
+                    type="button"
+                    className="btn btn-primary text-xs inline-flex items-center gap-1.5 flex-1 min-w-[8rem] justify-center"
+                    disabled={exportBusy || !canDownloadDiskette}
+                    title={scope.hintFa}
+                    onClick={() => startBankDisketteDownload(scope.id)}
+                  >
+                    {exportBusy ? <LoadingSpinner size="sm" inline /> : null}
+                    {scope.labelFa}
+                  </button>
+                ))}
+              </div>
+              <button
+                type="button"
+                className="btn btn-ghost text-xs self-end"
+                disabled={exportBusy}
+                onClick={() => setBankModalOpen(false)}
+              >
+                انصراف
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
       {exportModalOpen ? (
         <div
           className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4"
@@ -1397,7 +1603,7 @@ export function MostamariWizard() {
                   id="mostamari-export-title"
                   className="font-semibold text-lg"
                 >
-                  دانلود دیسکت پرداخت
+                  دانلود لیست پرداخت
                 </h2>
                 <p className="text-xs text-[var(--ink-soft)] mt-1">
                   تعداد ردیف‌های لیست:{" "}

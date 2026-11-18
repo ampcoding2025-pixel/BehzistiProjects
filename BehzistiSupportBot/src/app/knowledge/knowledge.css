@@ -538,11 +538,101 @@ html:has(.kn-app) {
 .kn-sources-header__navigation {
   display: flex;
   align-items: center;
+  min-width: 0;
+  flex: 1;
 }
 
 .kn-sources-header__add-source {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
+}
+
+.kn-agent-main--knowledge-page {
+  background: var(--surface-primary-default);
+  overflow: hidden;
+}
+
+.kn-knowledge-page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: var(--spacing-5) var(--spacing-6) var(--spacing-6);
+  box-sizing: border-box;
+}
+
+.kn-sources-grid--ai-agent,
+.kn-sources-grid--contextual {
+  --grid-gutter: 24px;
+  --grid-margin: 24px;
+}
+
+/* Segmented filter tabs */
+.kn-segmented {
+  appearance: none;
+  border: 0;
+  margin: 0;
+  padding: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--surface-secondary-default);
+  border-radius: var(--radius-3);
+  position: relative;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.kn-segmented::-webkit-scrollbar {
+  display: none;
+}
+
+.kn-segmented--md {
+  min-height: 40px;
+}
+
+.kn-segmented__btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--content-basic-secondary);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: var(--radius-2);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.kn-segmented__btn:hover {
+  color: var(--content-basic-primary);
+  background: var(--surface-secondary-hover);
+}
+
+.kn-segmented__btn.is-active {
+  background: var(--surface-primary-default);
+  color: var(--content-basic-primary);
+  box-shadow: 0 1px 2px #1313171a;
+}
+
+.kn-segmented__btn--icon .kn-sources-header__tab-icon {
+  display: inline-flex;
+  color: currentColor;
+}
+
+.kn-sources-header__tab-icon svg {
+  display: block;
+}
+
+.kn-segmented__label {
+  line-height: 1;
 }
 
 .kn-single-picker {

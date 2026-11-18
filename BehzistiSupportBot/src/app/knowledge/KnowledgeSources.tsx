@@ -2,13 +2,19 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Copilot } from "./Copilot";
 import { LaunchGuide } from "./LaunchGuide";
 import { Overview } from "./Overview";
+import { Profile } from "./Profile";
+import { Skills } from "./Skills";
 import "./knowledge.css";
 import "./launch-guide.css";
 import "./overview.css";
+import "./profile.css";
+import "./skills.css";
+import "./copilot.css";
 
-type SourceType = "all" | "didban" | "faq" | "file" | "url";
+type SourceType = "all" | "url" | "file" | "article" | "faq";
 
 type KnowledgeSource = {
   id: string;
@@ -19,12 +25,17 @@ type KnowledgeSource = {
 
 type NavId = "launch-guide" | "overview" | "profile" | "skills" | "knowledge" | "copilot";
 
-const FILTERS: Array<{ id: SourceType; label: string }> = [
-  { id: "all", label: "All" },
-  { id: "didban", label: "Didban" },
-  { id: "faq", label: "FAQ" },
-  { id: "file", label: "File" },
-  { id: "url", label: "Website" },
+const FILTERS: Array<{
+  id: SourceType;
+  label: string;
+  testId: string;
+  icon?: "website" | "file" | "article" | "faq";
+}> = [
+  { id: "all", label: "All", testId: "knowledge-source-tab-all" },
+  { id: "url", label: "Websites", testId: "knowledge-source-tab-websites", icon: "website" },
+  { id: "file", label: "Files", testId: "knowledge-source-tab-files", icon: "file" },
+  { id: "article", label: "Articles", testId: "knowledge-source-tab-articles", icon: "article" },
+  { id: "faq", label: "FAQ", testId: "knowledge-source-tab-faq", icon: "faq" },
 ];
 
 const SIDE_NAV: Array<{ id: NavId; label: string; badge?: string }> = [
@@ -38,7 +49,6 @@ const SIDE_NAV: Array<{ id: NavId; label: string; badge?: string }> = [
 export function KnowledgeSources() {
   const [sources, setSources] = useState<KnowledgeSource[]>([]);
   const [filter, setFilter] = useState<SourceType>("all");
-  const [pickerOpen, setPickerOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState<"header" | "empty" | null>(null);
   const [activeNav, setActiveNav] = useState<NavId>("launch-guide");
   const rootRef = useRef<HTMLDivElement>(null);
@@ -60,7 +70,6 @@ export function KnowledgeSources() {
   useEffect(() => {
     const onDoc = (e: MouseEvent) => {
       if (!rootRef.current?.contains(e.target as Node)) {
-        setPickerOpen(false);
         setMenuOpen(null);
       }
     };
@@ -73,16 +82,17 @@ export function KnowledgeSources() {
     [sources, filter],
   );
 
-  const filterCount = filter === "all" ? sources.length : filtered.length;
-  const filterLabel = `${FILTERS.find((f) => f.id === filter)?.label ?? "All"} (${filterCount})`;
+  const countFor = (id: SourceType) =>
+    id === "all" ? sources.length : sources.filter((s) => s.type === id).length;
+
   const needsSetup = sources.length === 0;
 
   function addSource(type: Exclude<SourceType, "all">) {
     const titles: Record<Exclude<SourceType, "all">, string> = {
-      didban: "Didban historical answers",
       faq: "FAQ collection",
       file: "Uploaded document",
       url: "Website source",
+      article: "Help article",
     };
     setSources((prev) => [
       {
@@ -252,7 +262,15 @@ export function KnowledgeSources() {
                     ? " kn-agent-main--overview"
                     : activeNav === "overview"
                       ? " kn-agent-main--overview-page"
-                      : ""
+                      : activeNav === "profile"
+                        ? " kn-agent-main--profile-page"
+                        : activeNav === "skills"
+                          ? " kn-agent-main--skills-page"
+                          : activeNav === "knowledge"
+                            ? " kn-agent-main--knowledge-page"
+                            : activeNav === "copilot"
+                              ? " kn-agent-main--copilot-page"
+                              : ""
                 }`}
               >
                 {activeNav === "launch-guide" ? (
@@ -269,29 +287,109 @@ export function KnowledgeSources() {
                     onBrowseSkills={() => setActiveNav("skills")}
                     onOpenProfile={() => setActiveNav("profile")}
                   />
+                ) : activeNav === "profile" ? (
+                  <Profile />
+                ) : activeNav === "skills" ? (
+                  <Skills />
+                ) : activeNav === "copilot" ? (
+                  <Copilot />
                 ) : activeNav === "knowledge" ? (
-                  <>
-                    <div className="kn-content-header">
-                      <h5 className="kn-content-header__title">Knowledge</h5>
-                      <div className="kn-content-header__right-node">
-                        <div className="kn-agent-section-header__actions">
-                          <div data-testid="tooltip-trigger">
-                            {needsSetup ? (
-                              <div className="kn-tag kn-tag--lg kn-tag--warning" data-testid="lc-tag">
-                                <div className="kn-tag__content-wrapper">
-                                  <div className="kn-tag__node" data-testid="lc-tag-left-node">
+                  <div className="kn-knowledge-page">
+                    <div className="kn-sources-grid-container">
+                      <div className="kn-sources-grid kn-sources-grid--ai-agent kn-sources-grid--contextual">
+                        <div className="kn-column kn-column--full-height">
+                          <div className="kn-sources-content">
+                            <div className="kn-sources-header">
+                              <div className="kn-sources-header__navigation">
+                                <fieldset className="kn-segmented kn-segmented--md">
+                                  {FILTERS.map((f) => {
+                                    const active = filter === f.id;
+                                    return (
+                                      <button
+                                        key={f.id}
+                                        type="button"
+                                        data-testid={f.testId}
+                                        aria-pressed={active}
+                                        className={`kn-segmented__btn${active ? " is-active" : ""}${
+                                          f.icon ? " kn-segmented__btn--icon" : ""
+                                        }`}
+                                        onClick={() => {
+                                          setFilter(f.id);
+                                          setMenuOpen(null);
+                                        }}
+                                      >
+                                        {f.icon ? (
+                                          <span
+                                            className={`kn-sources-header__tab-icon kn-sources-header__tab-icon--${f.icon}`}
+                                          >
+                                            <FilterTabIcon kind={f.icon} />
+                                          </span>
+                                        ) : null}
+                                        <span className="kn-segmented__label">
+                                          {f.label} ({countFor(f.id)})
+                                        </span>
+                                      </button>
+                                    );
+                                  })}
+                                </fieldset>
+                              </div>
+
+                              <div className="kn-sources-header__add-source">
+                                <div className="kn-action-menu" data-testid="action-menu-trigger-button">
+                                  <button
+                                    aria-disabled="false"
+                                    className="kn-btn kn-btn--primary kn-btn--sm kn-btn--with-left-icon"
+                                    type="button"
+                                    aria-expanded={menuOpen === "header"}
+                                    aria-haspopup="menu"
+                                    aria-label="add-source"
+                                    onClick={() =>
+                                      setMenuOpen((m) => (m === "header" ? null : "header"))
+                                    }
+                                  >
+                                    <span className="kn-btn__icon kn-btn__icon--left kn-icon">
+                                      <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        width="20"
+                                        height="20"
+                                        aria-label="add-source-icon"
+                                      >
+                                        <path
+                                          d="M5 12H19M12 5V19"
+                                          stroke="currentcolor"
+                                          strokeWidth="2"
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                        />
+                                      </svg>
+                                    </span>
+                                    <div className="kn-btn__content">New source</div>
+                                  </button>
+                                  {menuOpen === "header" ? (
+                                    <div className="kn-action-menu__list" role="menu">
+                                      <AddSourceItems onPick={addSource} />
+                                    </div>
+                                  ) : null}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="kn-sources-content__body">
+                              {filtered.length === 0 ? (
+                                <div className="kn-empty-state kn-empty-state--full kn-empty-state--centered">
+                                  <div className="kn-empty-state__icon--full" data-testid="icon">
                                     <span className="kn-icon">
                                       <svg
                                         viewBox="0 0 24 24"
                                         fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        role="img"
-                                        width="20"
-                                        height="20"
+                                        width="48"
+                                        height="48"
+                                        color="var(--content-basic-secondary)"
                                         aria-hidden="true"
                                       >
                                         <path
-                                          d="M12 8V12M12 16H12.01M3 12C3 13.1819 3.23279 14.3522 3.68508 15.4442C4.13738 16.5361 4.80031 17.5282 5.63604 18.364C6.47177 19.1997 7.46392 19.8626 8.55585 20.3149C9.64778 20.7672 10.8181 21 12 21C13.1819 21 14.3522 20.7672 15.4442 20.3149C16.5361 19.8626 17.5282 19.1997 18.364 18.364C19.1997 17.5282 19.8626 16.5361 20.3149 15.4442C20.7672 14.3522 21 13.1819 21 12C21 10.8181 20.7672 9.64778 20.3149 8.55585C19.8626 7.46392 19.1997 6.47177 18.364 5.63604C17.5282 4.80031 16.5361 4.13738 15.4442 3.68508C14.3522 3.23279 13.1819 3 12 3C10.8181 3 9.64778 3.23279 8.55585 3.68508C7.46392 4.13738 6.47177 4.80031 5.63604 5.63604C4.80031 6.47177 4.13738 7.46392 3.68508 8.55585C3.23279 9.64778 3 10.8181 3 12Z"
+                                          d="M12 5.99996C10.6318 5.21005 9.07983 4.79419 7.5 4.79419C5.92017 4.79419 4.36817 5.21005 3 5.99996V19C4.36817 18.21 5.92017 17.7942 7.5 17.7942C9.07983 17.7942 10.6318 18.2101 12 19M12 5.99996C13.3682 5.21005 14.9202 4.79419 16.5 4.79419C18.0798 4.79419 19.6318 5.21009 21 6V19C19.6318 18.2101 18.0798 17.7942 16.5 17.7942C14.9202 17.7942 13.3682 18.2101 12 19M12 5.99996V19"
                                           stroke="currentcolor"
                                           strokeWidth="2"
                                           strokeLinecap="round"
@@ -300,219 +398,59 @@ export function KnowledgeSources() {
                                       </svg>
                                     </span>
                                   </div>
-                                  <div className="kn-tag__content">Needs setup</div>
-                                </div>
-                              </div>
-                            ) : (
-                              <div
-                                className="kn-tag kn-tag--lg"
-                                style={{ background: "#d1f4d5", color: "#007031" }}
-                              >
-                                <div className="kn-tag__content-wrapper">
-                                  <div className="kn-tag__content">Ready</div>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="kn-agent-detail-layout__content">
-                      <div className="kn-sources-grid-container">
-                        <div className="kn-sources-grid">
-                          <div className="kn-column kn-column--full-height">
-                            <div className="kn-sources-content">
-                              <div className="kn-sources-header">
-                                <div className="kn-sources-header__navigation">
-                                  <div className="kn-single-picker" data-testid="picker-wrapper">
-                                    <div className="kn-form-field-content">
-                                      <button
-                                        aria-label={filterLabel}
-                                        className="kn-picker-trigger"
-                                        type="button"
-                                        tabIndex={0}
-                                        aria-expanded={pickerOpen}
-                                        aria-haspopup="listbox"
-                                        role="combobox"
-                                        onClick={() => {
-                                          setPickerOpen((v) => !v);
-                                          setMenuOpen(null);
-                                        }}
-                                      >
-                                        <div className="kn-picker-trigger__content kn-picker-trigger__content--medium">
-                                          <div
-                                            className="kn-picker-trigger__content-container"
-                                            style={{ height: 24 }}
-                                          >
-                                            <div className="kn-picker-trigger-item__content kn-picker-trigger-item__content--medium">
-                                              <div data-testid="tooltip-trigger">
-                                                <div className="kn-text">{filterLabel}</div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                        <div className="kn-picker-trigger__controls kn-picker-trigger__controls--medium">
-                                          <span
-                                            aria-hidden="true"
-                                            className="kn-animated-chevron kn-animated-chevron--md kn-picker-trigger__chevron-icon"
-                                            data-testid="trigger-chevron"
-                                          >
-                                            <span className="kn-animated-chevron__line kn-animated-chevron__line--left" />
-                                            <span className="kn-animated-chevron__line kn-animated-chevron__line--right" />
-                                          </span>
-                                        </div>
-                                      </button>
-                                      {pickerOpen && (
-                                        <div className="kn-picker-menu" role="listbox">
-                                          {FILTERS.map((f) => {
-                                            const count =
-                                              f.id === "all"
-                                                ? sources.length
-                                                : sources.filter((s) => s.type === f.id).length;
-                                            return (
-                                              <button
-                                                key={f.id}
-                                                type="button"
-                                                role="option"
-                                                className={`kn-picker-option${filter === f.id ? " is-active" : ""}`}
-                                                onClick={() => {
-                                                  setFilter(f.id);
-                                                  setPickerOpen(false);
-                                                }}
-                                              >
-                                                {f.label} ({count})
-                                              </button>
-                                            );
-                                          })}
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-
-                                <div className="kn-sources-header__add-source">
-                                  <div className="kn-action-menu" data-testid="action-menu-trigger-button">
-                                    <button
-                                      aria-disabled="false"
-                                      className="kn-btn kn-btn--primary kn-btn--sm kn-btn--with-left-icon"
-                                      type="button"
-                                      aria-expanded={menuOpen === "header"}
-                                      aria-haspopup="menu"
-                                      aria-label="add-source"
-                                      onClick={() => {
-                                        setMenuOpen((m) => (m === "header" ? null : "header"));
-                                        setPickerOpen(false);
-                                      }}
+                                  <h4 className="kn-empty-state__title">
+                                    Teach AI Agent your business
+                                  </h4>
+                                  <span className="kn-empty-state__description">
+                                    Add your docs, FAQs, or policies. AI Agent will use your content to
+                                    convert conversations.
+                                  </span>
+                                  <div className="kn-empty-state__actions">
+                                    <div
+                                      className="kn-action-menu"
+                                      data-testid="action-menu-trigger-button"
                                     >
-                                      <span className="kn-btn__icon kn-btn__icon--left kn-icon">
-                                        <svg
-                                          viewBox="0 0 24 24"
-                                          fill="none"
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          role="img"
-                                          width="20"
-                                          height="20"
-                                          aria-label="add-source-icon"
+                                      <button
+                                        aria-disabled="false"
+                                        className="kn-btn kn-btn--primary kn-btn--sm"
+                                        type="button"
+                                        aria-expanded={menuOpen === "empty"}
+                                        aria-haspopup="menu"
+                                        aria-label="add-source"
+                                        onClick={() =>
+                                          setMenuOpen((m) => (m === "empty" ? null : "empty"))
+                                        }
+                                      >
+                                        <div className="kn-btn__content">Add source</div>
+                                      </button>
+                                      {menuOpen === "empty" ? (
+                                        <div
+                                          className="kn-action-menu__list kn-action-menu__list--center"
+                                          role="menu"
                                         >
-                                          <path
-                                            d="M5 12H19M12 5V19"
-                                            stroke="currentcolor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                          />
-                                        </svg>
-                                      </span>
-                                      <div className="kn-btn__content">New source</div>
-                                    </button>
-                                    {menuOpen === "header" && (
-                                      <div className="kn-action-menu__list" role="menu">
-                                        <AddSourceItems onPick={addSource} />
-                                      </div>
-                                    )}
+                                          <AddSourceItems onPick={addSource} />
+                                        </div>
+                                      ) : null}
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-
-                              <div className="kn-sources-content__body">
-                                {filtered.length === 0 ? (
-                                  <div className="kn-empty-state kn-empty-state--full kn-empty-state--centered">
-                                    <div className="kn-empty-state__icon--full" data-testid="icon">
-                                      <span className="kn-icon">
-                                        <svg
-                                          viewBox="0 0 24 24"
-                                          fill="none"
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          role="img"
-                                          width="48"
-                                          height="48"
-                                          color="var(--content-basic-secondary)"
-                                          aria-hidden="true"
-                                        >
-                                          <path
-                                            d="M12 5.99996C10.6318 5.21005 9.07983 4.79419 7.5 4.79419C5.92017 4.79419 4.36817 5.21005 3 5.99996V19C4.36817 18.21 5.92017 17.7942 7.5 17.7942C9.07983 17.7942 10.6318 18.2101 12 19M12 5.99996C13.3682 5.21005 14.9202 4.79419 16.5 4.79419C18.0798 4.79419 19.6318 5.21009 21 6V19C19.6318 18.2101 18.0798 17.7942 16.5 17.7942C14.9202 17.7942 13.3682 18.2101 12 19M12 5.99996V19"
-                                            stroke="currentcolor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                          />
-                                        </svg>
-                                      </span>
-                                    </div>
-                                    <h4 className="kn-empty-state__title">Teach AI Agent your business</h4>
-                                    <span className="kn-empty-state__description">
-                                      Add your docs, FAQs, or policies. AI Agent will use your content to
-                                      convert conversations.
-                                    </span>
-                                    <div className="kn-empty-state__actions">
-                                      <div
-                                        className="kn-action-menu"
-                                        data-testid="action-menu-trigger-button"
-                                      >
-                                        <button
-                                          aria-disabled="false"
-                                          className="kn-btn kn-btn--primary kn-btn--sm"
-                                          type="button"
-                                          aria-expanded={menuOpen === "empty"}
-                                          aria-haspopup="menu"
-                                          aria-label="add-source"
-                                          onClick={() => {
-                                            setMenuOpen((m) => (m === "empty" ? null : "empty"));
-                                            setPickerOpen(false);
-                                          }}
-                                        >
-                                          <div className="kn-btn__content">Add source</div>
-                                        </button>
-                                        {menuOpen === "empty" && (
-                                          <div
-                                            className="kn-action-menu__list kn-action-menu__list--center"
-                                            role="menu"
-                                          >
-                                            <AddSourceItems onPick={addSource} />
-                                          </div>
-                                        )}
-                                      </div>
-                                    </div>
-                                  </div>
-                                ) : (
-                                  <div className="kn-sources-list">
-                                    {filtered.map((s) => (
-                                      <article key={s.id} className="kn-source-card">
-                                        <span className="kn-source-card__type">{s.type}</span>
-                                        <h3 className="kn-source-card__title">{s.title}</h3>
-                                        <p className="kn-source-card__meta">{s.meta}</p>
-                                      </article>
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
+                              ) : (
+                                <div className="kn-sources-list">
+                                  {filtered.map((s) => (
+                                    <article key={s.id} className="kn-source-card">
+                                      <span className="kn-source-card__type">{s.type}</span>
+                                      <h3 className="kn-source-card__title">{s.title}</h3>
+                                      <p className="kn-source-card__meta">{s.meta}</p>
+                                    </article>
+                                  ))}
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </>
+                  </div>
                 ) : (
                   <div className="lg-content">
                     <h1 className="lg-heading">
@@ -543,19 +481,10 @@ function AddSourceItems({
         type="button"
         className="kn-action-menu__item"
         role="menuitem"
-        onClick={() => onPick("didban")}
+        onClick={() => onPick("url")}
       >
-        Didban answers
-        <span className="kn-action-menu__hint">Historical CookieFlowReplyCitizen replies</span>
-      </button>
-      <button
-        type="button"
-        className="kn-action-menu__item"
-        role="menuitem"
-        onClick={() => onPick("faq")}
-      >
-        FAQ
-        <span className="kn-action-menu__hint">Frequently asked questions</span>
+        Website URL
+        <span className="kn-action-menu__hint">Public or internal docs page</span>
       </button>
       <button
         type="button"
@@ -570,12 +499,74 @@ function AddSourceItems({
         type="button"
         className="kn-action-menu__item"
         role="menuitem"
-        onClick={() => onPick("url")}
+        onClick={() => onPick("article")}
       >
-        Website URL
-        <span className="kn-action-menu__hint">Public or internal docs page</span>
+        Article
+        <span className="kn-action-menu__hint">Help Center / knowledge article</span>
+      </button>
+      <button
+        type="button"
+        className="kn-action-menu__item"
+        role="menuitem"
+        onClick={() => onPick("faq")}
+      >
+        FAQ
+        <span className="kn-action-menu__hint">Frequently asked questions</span>
       </button>
     </>
+  );
+}
+
+function FilterTabIcon({ kind }: { kind: "website" | "file" | "article" | "faq" }) {
+  if (kind === "website") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" width="20" height="20" aria-hidden="true">
+        <path
+          d="M3.6001 9H20.4001M3.6001 15H20.4001M11.5002 3C9.8155 5.69961 8.92236 8.81787 8.92236 12C8.92236 15.1821 9.8155 18.3004 11.5002 21M12.5 3C14.1847 5.69961 15.0778 8.81787 15.0778 12C15.0778 15.1821 14.1847 18.3004 12.5 21M3 12C3 13.1819 3.23279 14.3522 3.68508 15.4442C4.13738 16.5361 4.80031 17.5282 5.63604 18.364C6.47177 19.1997 7.46392 19.8626 8.55585 20.3149C9.64778 20.7672 10.8181 21 12 21C13.1819 21 14.3522 20.7672 15.4442 20.3149C16.5361 19.8626 17.5282 19.1997 18.364 18.364C19.1997 17.5282 19.8626 16.5361 20.3149 15.4442C20.7672 14.3522 21 13.1819 21 12C21 10.8181 20.7672 9.64778 20.3149 8.55585C19.8626 7.46392 19.1997 6.47177 18.364 5.63604C17.5282 4.80031 16.5361 4.13738 15.4442 3.68508C14.3522 3.23279 13.1819 3 12 3C10.8181 3 9.64778 3.23279 8.55585 3.68508C7.46392 4.13738 6.47177 4.80031 5.63604 5.63604C4.80031 6.47177 4.13738 7.46392 3.68508 8.55585C3.23279 9.64778 3 10.8181 3 12Z"
+          stroke="currentcolor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
+  if (kind === "file") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" width="20" height="20" aria-hidden="true">
+        <path
+          d="M14 3H7C6.46957 3 5.96086 3.21071 5.58579 3.58579C5.21071 3.96086 5 4.46957 5 5V19C5 19.5304 5.21071 20.0391 5.58579 20.4142C5.96086 20.7893 6.46957 21 7 21H17C17.5304 21 18.0391 20.7893 18.4142 20.4142C18.7893 20.0391 19 19.5304 19 19V8M14 3L19 8M14 3V7C14 7.26522 14.1054 7.51957 14.2929 7.70711C14.4804 7.89464 14.7348 8 15 8H19M10.7051 9.67053L9.09879 16.5567L15.2503 15.0873L10.7051 9.67053ZM16.2465 15.1744C16.1984 15.7246 15.7134 16.1316 15.1632 16.0835C14.613 16.0353 14.206 15.5503 14.2542 15.0001C14.3023 14.4499 14.7873 14.0429 15.3375 14.0911C15.8877 14.1392 16.2947 14.6242 16.2465 15.1744ZM11.7011 9.75766C11.653 10.3078 11.168 10.7148 10.6178 10.6667C10.0676 10.6186 9.66061 10.1335 9.70874 9.58335C9.75688 9.03317 10.2419 8.62618 10.7921 8.67431C11.3423 8.72245 11.7493 9.20748 11.7011 9.75766ZM10.0957 16.6439C10.0475 17.1941 9.5625 17.6011 9.01231 17.5529C8.46213 17.5048 8.05514 17.0198 8.10327 16.4696C8.15141 15.9194 8.63644 15.5124 9.18662 15.5605C9.73681 15.6087 10.1438 16.0937 10.0957 16.6439Z"
+          stroke="currentcolor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
+  if (kind === "article") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" width="20" height="20" aria-hidden="true">
+        <path
+          d="M12 19H8M10 5V19M4 7V5H16V7M15 13V12H21V13M18 12V19M17 19H19"
+          stroke="currentcolor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 24 24" fill="none" width="20" height="20" aria-hidden="true">
+      <path
+        d="M14 15V17C14 17.2652 13.8946 17.5196 13.7071 17.7071C13.5196 17.8946 13.2652 18 13 18H6L3 21V11C3 10.7348 3.10536 10.4804 3.29289 10.2929C3.48043 10.1054 3.73478 10 4 10H6M21 14L18 11H11C10.7348 11 10.4804 10.8946 10.2929 10.7071C10.1054 10.5196 10 10.2652 10 10V4C10 3.73478 10.1054 3.48043 10.2929 3.29289C10.4804 3.10536 10.7348 3 11 3H20C20.2652 3 20.5196 3.10536 20.7071 3.29289C20.8946 3.48043 21 3.73478 21 4V14Z"
+        stroke="currentcolor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }
 

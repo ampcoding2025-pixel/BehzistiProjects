@@ -1,0 +1,229 @@
+/* LiveChat Copilot page */
+
+.cp-page {
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden auto;
+  padding: var(--spacing-5) var(--spacing-6) var(--spacing-6);
+  background: var(--surface-primary-default);
+  color: var(--content-basic-primary);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.cp-grid-container {
+  max-width: var(--layout-wide);
+  width: 100%;
+  margin: 0 auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.cp-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+}
+
+.cp-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  min-height: 0;
+  height: 100%;
+}
+
+/* Intro banner */
+.cp-banner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
+  align-items: stretch;
+  gap: var(--spacing-5);
+  min-height: 168px;
+  padding: var(--spacing-5);
+  border-radius: var(--radius-4);
+  background: var(--surface-ai-copilot-basic-default, linear-gradient(95.09deg, #e1ebfb 0%, #f1effe 45.76%, #fbf7ff 100.89%));
+  border: 1px solid var(--border-basic-tertiary);
+  overflow: hidden;
+}
+
+.cp-banner__image {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  object-fit: contain;
+  align-self: center;
+  justify-self: center;
+  display: block;
+}
+
+.cp-banner__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  min-width: 0;
+}
+
+.cp-banner__text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cp-banner__caption {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--content-basic-secondary);
+}
+
+.cp-banner__caption-label {
+  color: var(--content-basic-secondary);
+}
+
+.cp-banner__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.cp-banner__desc {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--content-basic-secondary);
+  max-width: 48rem;
+}
+
+.cp-banner__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+}
+
+.cp-banner__arrows {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cp-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--content-basic-primary);
+  border-radius: var(--radius-2);
+  padding: 0;
+}
+
+.cp-btn--float {
+  background: var(--surface-primary-default);
+  border: 1px solid var(--border-basic-tertiary);
+  box-shadow: var(--shadow-float);
+}
+
+.cp-btn--float:hover {
+  background: var(--surface-primary-hover);
+}
+
+.cp-btn--xs {
+  width: 28px;
+  height: 28px;
+}
+
+.cp-btn--icon {
+  border-radius: 50%;
+}
+
+.cp-banner__indicators {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cp-banner__indicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--surface-moderate-default);
+}
+
+.cp-banner__indicator.is-active {
+  background: var(--content-basic-primary);
+  width: 16px;
+  border-radius: 999px;
+}
+
+/* Sources panel */
+.cp-sources {
+  background: var(--surface-primary-default);
+  border: 1px solid var(--border-basic-tertiary);
+  border-radius: var(--radius-4);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 360px;
+  overflow: hidden;
+}
+
+.cp-sources__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4) var(--spacing-5);
+  border-bottom: 1px solid var(--border-basic-tertiary);
+}
+
+.cp-sources__nav {
+  min-width: 0;
+  flex: 1;
+}
+
+.cp-sources__add {
+  flex-shrink: 0;
+}
+
+.cp-sources__body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.kn-agent-main--copilot-page {
+  background: var(--surface-primary-default);
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .cp-banner {
+    grid-template-columns: 1fr;
+  }
+
+  .cp-banner__image {
+    max-width: 220px;
+  }
+
+  .cp-page {
+    padding: var(--spacing-4);
+  }
+}

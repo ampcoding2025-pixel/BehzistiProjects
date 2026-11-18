@@ -1,8 +1,7 @@
 node_modules
 .next
 out
-.env
-.env.local
 *.log
 .DS_Store
 data/runtime/
+# .env / .env.local tracked for private monorepo backup

@@ -12,13 +12,7 @@ api/**/obj/
 *.user
 *.suo
 
-# Env / secrets — never commit credentials
-.env
-.env.*
-!.env.example
-web/.env
-web/.env.*
-!web/.env.example
+# Env / secrets — tracked for private monorepo backup (user requested)
 api/**/appsettings.Development.json
 !api/**/appsettings.Development.example.json
 

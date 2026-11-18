@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { LaunchGuide } from "./LaunchGuide";
+import { Overview } from "./Overview";
 import "./knowledge.css";
 import "./launch-guide.css";
+import "./overview.css";
 
 type SourceType = "all" | "didban" | "faq" | "file" | "url";
 
@@ -245,13 +247,27 @@ export function KnowledgeSources() {
               </aside>
 
               <div
-                className={`kn-agent-main${activeNav === "launch-guide" ? " kn-agent-main--overview" : ""}`}
+                className={`kn-agent-main${
+                  activeNav === "launch-guide"
+                    ? " kn-agent-main--overview"
+                    : activeNav === "overview"
+                      ? " kn-agent-main--overview-page"
+                      : ""
+                }`}
               >
                 {activeNav === "launch-guide" ? (
                   <LaunchGuide
                     onAddWebsite={() => setActiveNav("knowledge")}
                     onAddFiles={() => setActiveNav("knowledge")}
                     onConnectChannels={() => setActiveNav("overview")}
+                  />
+                ) : activeNav === "overview" ? (
+                  <Overview
+                    knowledgeCount={sources.length}
+                    skillsCount={4}
+                    onManageKnowledge={() => setActiveNav("knowledge")}
+                    onBrowseSkills={() => setActiveNav("skills")}
+                    onOpenProfile={() => setActiveNav("profile")}
                   />
                 ) : activeNav === "knowledge" ? (
                   <>

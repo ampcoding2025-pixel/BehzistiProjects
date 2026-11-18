@@ -14,19 +14,13 @@ build/
 coverage/
 *.tsbuildinfo
 
-# Env & secrets (keep *.example)
-.env
-.env.local
-.env.*.local
-.env.development.local
-.env.test.local
-.env.production.local
-!.env.example
-**/.env.local
+# Env & secrets — tracked intentionally for private monorepo backup
+# (user requested .env.local / config push to BehzistiProjects)
+# Still ignore node_modules credential type stubs via path rules below
 **/credentials.json
 **/*.pem
 **/*secret*
-!**/.env.example
+!**/node_modules/**
 
 # Logs & caches
 *.log

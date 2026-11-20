@@ -1,10 +1,12 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
+import { useLocale } from "@/lib/i18n/locale";
+import { localeFromProfileLanguage } from "@/lib/i18n/messages";
 
-const TONES = ["Friendly", "Professional", "Casual", "Empathetic"] as const;
-const LENGTHS = ["Short", "Medium", "Long"] as const;
-const LANGUAGES = ["All languages", "English", "Persian"] as const;
+const TONE_KEYS = ["friendly", "professional", "casual", "empathetic"] as const;
+const LENGTH_KEYS = ["short", "medium", "long"] as const;
+const LANGUAGE_KEYS = ["allLanguages", "english", "persian"] as const;
 
 const DEFAULT_AGENT_MESSAGE =
   "Good morning, Amp! Welcome to our chat—you're in a preview chat, and it's great to have you here for the first time. How can I assist you today?";
@@ -21,20 +23,55 @@ type Props = {
 };
 
 export function Profile({
-  initialName = "AI agent",
+  initialName,
   initialCustomVoice = "You are a calm, welcoming support specialist who...",
 }: Props) {
+  const { locale, setLocale, t } = useLocale();
   const toneMenuId = useId();
   const lengthMenuId = useId();
   const languageMenuId = useId();
 
-  const [name] = useState(initialName);
+  const [name, setName] = useState(initialName ?? t.nav.aiAgent);
   const [acceptingChats, setAcceptingChats] = useState(true);
-  const [language, setLanguage] = useState<(typeof LANGUAGES)[number]>("All languages");
-  const [tone, setTone] = useState<(typeof TONES)[number]>("Friendly");
-  const [answerLength, setAnswerLength] = useState<(typeof LENGTHS)[number]>("Short");
+  const [languageKey, setLanguageKey] = useState<(typeof LANGUAGE_KEYS)[number]>(
+    locale === "fa" ? "persian" : "english",
+  );
+  const [toneKey, setToneKey] = useState<(typeof TONE_KEYS)[number]>("friendly");
+  const [answerLengthKey, setAnswerLengthKey] =
+    useState<(typeof LENGTH_KEYS)[number]>("short");
   const [customVoice] = useState(initialCustomVoice);
   const [openMenu, setOpenMenu] = useState<"language" | "tone" | "length" | null>(null);
+
+  const languageOptions = useMemo(
+    () =>
+      LANGUAGE_KEYS.map((key) => ({
+        key,
+        label: t.profile[key],
+      })),
+    [t],
+  );
+  const toneOptions = useMemo(
+    () => TONE_KEYS.map((key) => ({ key, label: t.profile[key] })),
+    [t],
+  );
+  const lengthOptions = useMemo(
+    () => LENGTH_KEYS.map((key) => ({ key, label: t.profile[key] })),
+    [t],
+  );
+
+  useEffect(() => {
+    setLanguageKey(locale === "fa" ? "persian" : "english");
+    if (!initialName) setName(t.nav.aiAgent);
+  }, [locale, t.nav.aiAgent, initialName]);
+
+  function applyUiLanguage(key: (typeof LANGUAGE_KEYS)[number]) {
+    setLanguageKey(key);
+    const next = localeFromProfileLanguage(
+      key === "persian" ? "Persian" : key === "english" ? "English" : "",
+    );
+    if (next) setLocale(next);
+    // "All languages" keeps current UI locale but is stored as agent preference.
+  }
   const [previewKey, setPreviewKey] = useState(0);
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -67,7 +104,7 @@ export function Profile({
           <div className="pf-profile__row pf-profile__row--lg">
             <div
               className="pf-agent"
-              aria-label="AI Agent name container"
+              aria-label={t.nav.aiAgent}
               role="button"
               tabIndex={0}
             >
@@ -87,9 +124,9 @@ export function Profile({
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        alt="AI agent"
+                        alt={t.nav.aiAgent}
                         className="pf-avatar__image"
-                        src="https://cdn.static-text.com/assets/text-app/ai-agents/default-avatar.png"
+                        src="/behzisti-logo.svg"
                       />
                     </div>
                     <div className="pf-avatar-menu__edit-overlay">
@@ -110,7 +147,7 @@ export function Profile({
               </div>
 
               <div className="pf-agent__name-wrapper">
-                <span className="pf-field-label">Name</span>
+                <span className="pf-field-label">{t.profile.name}</span>
                 <div className="pf-agent__name-value">
                   <span className="pf-field-value">{name}</span>
                 </div>
@@ -119,7 +156,7 @@ export function Profile({
               <button
                 type="button"
                 className="pf-btn pf-btn--plain pf-btn--icon"
-                aria-label="Edit name"
+                aria-label={t.profile.editName}
                 tabIndex={-1}
               >
                 <svg viewBox="0 0 24 24" fill="none" width="20" height="20" aria-hidden="true">
@@ -136,15 +173,15 @@ export function Profile({
 
             <label className="pf-status">
               <span className="pf-status__content">
-                <span className="pf-field-label">Status</span>
+                <span className="pf-field-label">{t.profile.status}</span>
                 <span className="pf-field-value">
-                  {acceptingChats ? "Accepting chats" : "Not accepting chats"}
+                  {acceptingChats ? t.profile.acceptingChats : t.profile.notAcceptingChats}
                 </span>
               </span>
               <span className="pf-switch" data-testid="accept-chats-switch-trigger">
                 <span className="pf-switch__inner pf-switch__inner--compact">
                   <input
-                    aria-label="Accept chats"
+                    aria-label={t.profile.acceptChats}
                     className="pf-switch__input"
                     type="checkbox"
                     checked={acceptingChats}
@@ -184,29 +221,32 @@ export function Profile({
               }}
             >
               <div className="pf-language__container">
-                <span className="pf-field-label">Language</span>
-                <span className="pf-field-value pf-language__selected">{language}</span>
+                <span className="pf-field-label">{t.profile.language}</span>
+                <span className="pf-field-value pf-language__selected">
+                  {t.profile[languageKey]}
+                </span>
               </div>
               <ChevronDown />
             </div>
             {openMenu === "language" ? (
               <div className="pf-menu" role="menu">
-                {LANGUAGES.map((item) => (
+                {languageOptions.map((item) => (
                   <button
-                    key={item}
+                    key={item.key}
                     type="button"
                     role="menuitem"
-                    className={`pf-menu__item${item === language ? " is-active" : ""}`}
+                    className={`pf-menu__item${item.key === languageKey ? " is-active" : ""}`}
                     onClick={() => {
-                      setLanguage(item);
+                      applyUiLanguage(item.key);
                       setOpenMenu(null);
                     }}
                   >
-                    {item}
+                    {item.label}
                   </button>
                 ))}
               </div>
             ) : null}
+            <p className="pf-language-hint">{t.profile.uiLanguageHint}</p>
           </div>
 
           {/* Tone + Answer length */}
@@ -228,28 +268,28 @@ export function Profile({
                 }}
               >
                 <div className="pf-picker__container">
-                  <span className="pf-field-label">Tone of voice</span>
+                  <span className="pf-field-label">{t.profile.toneOfVoice}</span>
                   <div className="pf-picker__selected">
                     <ToneIcon />
-                    <span className="pf-field-value">{tone}</span>
+                    <span className="pf-field-value">{t.profile[toneKey]}</span>
                   </div>
                 </div>
                 <ChevronDown />
               </div>
               {openMenu === "tone" ? (
                 <div className="pf-menu" role="menu">
-                  {TONES.map((item) => (
+                  {toneOptions.map((item) => (
                     <button
-                      key={item}
+                      key={item.key}
                       type="button"
                       role="menuitem"
-                      className={`pf-menu__item${item === tone ? " is-active" : ""}`}
+                      className={`pf-menu__item${item.key === toneKey ? " is-active" : ""}`}
                       onClick={() => {
-                        setTone(item);
+                        setToneKey(item.key);
                         setOpenMenu(null);
                       }}
                     >
-                      {item}
+                      {item.label}
                     </button>
                   ))}
                 </div>
@@ -273,28 +313,28 @@ export function Profile({
                 }}
               >
                 <div className="pf-picker__container">
-                  <span className="pf-field-label">Answer length</span>
+                  <span className="pf-field-label">{t.profile.answerLength}</span>
                   <div className="pf-picker__selected">
                     <LengthIcon />
-                    <span className="pf-field-value">{answerLength}</span>
+                    <span className="pf-field-value">{t.profile[answerLengthKey]}</span>
                   </div>
                 </div>
                 <ChevronDown />
               </div>
               {openMenu === "length" ? (
                 <div className="pf-menu" role="menu">
-                  {LENGTHS.map((item) => (
+                  {lengthOptions.map((item) => (
                     <button
-                      key={item}
+                      key={item.key}
                       type="button"
                       role="menuitem"
-                      className={`pf-menu__item${item === answerLength ? " is-active" : ""}`}
+                      className={`pf-menu__item${item.key === answerLengthKey ? " is-active" : ""}`}
                       onClick={() => {
-                        setAnswerLength(item);
+                        setAnswerLengthKey(item.key);
                         setOpenMenu(null);
                       }}
                     >
-                      {item}
+                      {item.label}
                     </button>
                   ))}
                 </div>
@@ -304,7 +344,7 @@ export function Profile({
 
           {/* Custom voice */}
           <div
-            aria-label="AI Agent instructions container"
+            aria-label={t.profile.customVoice}
             className="pf-instructions"
             role="button"
             tabIndex={0}
@@ -313,7 +353,7 @@ export function Profile({
               <div className="pf-instructions__content-wrap">
                 <div className="pf-state-preview" role="button">
                   <div className="pf-state-preview__content">
-                    <span className="pf-field-label">Custom voice</span>
+                    <span className="pf-field-label">{t.profile.customVoice}</span>
                     <span className="pf-field-value pf-state-preview__text">{customVoice}</span>
                   </div>
                   <div className="pf-state-preview__button">
@@ -371,7 +411,7 @@ export function Profile({
                               alt="Current agent avatar"
                               draggable={false}
                               className="lg-widget__avatar"
-                              src="https://cdn.static-text.com/assets/text-app/ai-agents/default-avatar.png"
+                              src="/behzisti-logo.svg"
                             />
                           </div>
                           <div className="lg-widget__agent-meta">
@@ -409,7 +449,7 @@ export function Profile({
                                     alt="Current agent avatar"
                                     draggable={false}
                                     className="lg-widget__msg-avatar"
-                                    src="https://cdn.static-text.com/assets/text-app/ai-agents/default-avatar.png"
+                                    src="/behzisti-logo.svg"
                                   />
                                 </div>
                                 <div className="lg-widget__msg-col">

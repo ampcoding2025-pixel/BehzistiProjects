@@ -361,9 +361,8 @@ export function SupportChatWidget(props: SupportChatWidgetProps) {
               <path d="M6 6l12 12M18 6L6 18" />
             </svg>
           ) : (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 12c0 4.4-4.3 8-9.5 8-1.1 0-2.1-.1-3.1-.4L3 21l1.6-4.1C3.6 15.7 3 13.9 3 12c0-4.4 4.3-8 9.5-8S21 7.6 21 12z" />
-            </svg>
+            // eslint-disable-next-line @next/next/no-img-element
+            <img className="bzw-launcher__logo" src={logoSrc} alt="" />
           )}
         </button>
       </div>

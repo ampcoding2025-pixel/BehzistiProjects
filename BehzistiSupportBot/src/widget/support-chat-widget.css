@@ -62,11 +62,22 @@
   transform: translateY(1px);
 }
 
-.bzw-launcher svg {
-  width: 1.55rem;
-  height: 1.55rem;
+.bzw-launcher svg,
+.bzw-launcher__logo {
+  width: 1.7rem;
+  height: 1.7rem;
   position: relative;
   z-index: 1;
+  object-fit: contain;
+}
+
+.bzw-launcher__logo {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: #fff;
+  padding: 2px;
+  box-sizing: border-box;
 }
 
 /* Ping rings — matches host app animate-slowPing / #00BAD140 */

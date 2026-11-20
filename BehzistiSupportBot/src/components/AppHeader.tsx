@@ -16,11 +16,11 @@ export function AppHeader() {
         </div>
       </div>
       <nav className="nav-links" aria-label="ناوبری">
-        <Link href="/" className={pathname === "/" ? "active" : ""}>
-          گفتگو با کاربر
-        </Link>
-        <Link href="/knowledge" className={pathname === "/knowledge" ? "active" : ""}>
+        <Link href="/knowledge" className={pathname === "/knowledge" || pathname === "/" ? "active" : ""}>
           Knowledge
+        </Link>
+        <Link href="/chat" className={pathname === "/chat" ? "active" : ""}>
+          گفتگو با کاربر
         </Link>
         <Link href="/agent" className={pathname === "/agent" ? "active" : ""}>
           پنل کارشناس

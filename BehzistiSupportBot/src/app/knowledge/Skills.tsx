@@ -1,6 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useLocale } from "@/lib/i18n/locale";
+
+type SkillIconKind = "wave" | "id" | "ticket" | "transfer" | "discount" | "shopify" | "cart";
 
 type SkillDef = {
   id: string;
@@ -8,74 +11,83 @@ type SkillDef = {
   description: string;
   enabled?: boolean;
   setupRequired?: boolean;
-  icon: "wave" | "id" | "ticket" | "transfer" | "discount" | "shopify" | "cart";
+  icon: SkillIconKind;
 };
 
-const DEFAULT_SKILLS: SkillDef[] = [
-  {
-    id: "welcome",
-    title: "Send welcome message",
-    description: "Send a predefined or context-based welcome message when a chat starts.",
-    enabled: true,
-    icon: "wave",
-  },
-  {
-    id: "collect",
-    title: "Collect customer details",
-    description: "Ask for the customer's name and email at the start of a chat.",
-    enabled: true,
-    icon: "id",
-  },
-  {
-    id: "tickets",
-    title: "Handle tickets",
-    description: "Read, create, and update tickets when a chat needs follow-up.",
-    enabled: true,
-    icon: "ticket",
-  },
-  {
-    id: "transfer",
-    title: "Transfer to human",
-    description: "Transfer chats to a teammate on request or if AI Agent can't help.",
-    enabled: true,
-    icon: "transfer",
-  },
-  {
-    id: "discount",
-    title: "Offer discount code",
-    description: "Share a discount code when a customer asks for one.",
-    setupRequired: true,
-    icon: "discount",
-  },
-  {
-    id: "order",
-    title: "Get order status",
-    description: "Check order status and share updates with customers.",
-    setupRequired: true,
-    icon: "shopify",
-  },
-  {
-    id: "recommend",
-    title: "Recommend products",
-    description: "Suggest products from your catalog based on customer needs.",
-    setupRequired: true,
-    icon: "cart",
-  },
-];
-
 export function Skills() {
-  const [enabled, setEnabled] = useState<Record<string, boolean>>(() =>
-    Object.fromEntries(DEFAULT_SKILLS.map((s) => [s.id, !!s.enabled])),
+  const { t, dir } = useLocale();
+  const sk = t.skillsPage;
+
+  const skills = useMemo<SkillDef[]>(
+    () => [
+      {
+        id: "welcome",
+        title: sk.welcomeTitle,
+        description: sk.welcomeDesc,
+        enabled: true,
+        icon: "wave",
+      },
+      {
+        id: "collect",
+        title: sk.collectTitle,
+        description: sk.collectDesc,
+        enabled: true,
+        icon: "id",
+      },
+      {
+        id: "tickets",
+        title: sk.ticketsTitle,
+        description: sk.ticketsDesc,
+        enabled: true,
+        icon: "ticket",
+      },
+      {
+        id: "transfer",
+        title: sk.transferTitle,
+        description: sk.transferDesc,
+        enabled: true,
+        icon: "transfer",
+      },
+      {
+        id: "discount",
+        title: sk.discountTitle,
+        description: sk.discountDesc,
+        setupRequired: true,
+        icon: "discount",
+      },
+      {
+        id: "order",
+        title: sk.orderTitle,
+        description: sk.orderDesc,
+        setupRequired: true,
+        icon: "shopify",
+      },
+      {
+        id: "recommend",
+        title: sk.recommendTitle,
+        description: sk.recommendDesc,
+        setupRequired: true,
+        icon: "cart",
+      },
+    ],
+    [sk],
   );
 
+  const [enabled, setEnabled] = useState<Record<string, boolean>>(() => ({
+    welcome: true,
+    collect: true,
+    tickets: true,
+    transfer: true,
+  }));
+
   return (
-    <div className="sk-settings">
+    <div className="sk-settings" dir={dir}>
       <div className="sk-settings__wrapper sk-settings__wrapper--contextual">
         <div className="sk-page">
           {/* Custom skills */}
           <section className="sk-section">
             <div className="sk-section__title-row">
-              <h5 className="sk-section__title">Custom skills</h5>
+              <h5 className="sk-section__title">{sk.customSkills}</h5>
             </div>
             <div className="sk-grid">
               <button type="button" className="sk-create" aria-disabled="false">
@@ -96,10 +108,8 @@ export function Skills() {
                     </div>
                   </div>
                   <div className="sk-create__content">
-                    <span className="sk-create__title">Create skill</span>
-                    <span className="sk-create__desc">
-                      Tell your AI Agent when to act and what to do.
-                    </span>
+                    <span className="sk-create__title">{sk.createSkill}</span>
+                    <span className="sk-create__desc">{sk.createSkillDesc}</span>
                   </div>
                 </div>
               </button>
@@ -108,9 +118,9 @@ export function Skills() {
 
           {/* Default skills */}
           <section className="sk-section">
-            <h5 className="sk-section__title">Default skills</h5>
+            <h5 className="sk-section__title">{sk.defaultSkills}</h5>
             <div className="sk-grid">
-              {DEFAULT_SKILLS.map((skill) => (
+              {skills.map((skill) => (
                 <div key={skill.id} className="sk-item">
                   <div
                     data-testid="skill-card"
@@ -128,7 +138,7 @@ export function Skills() {
                             <button
                               type="button"
                               className="sk-card__setup"
-                              aria-label="Setup required"
+                              aria-label={sk.setupRequired}
                               onClick={(e) => e.stopPropagation()}
                             >
                               <span className="sk-card__setup-badge">
@@ -152,7 +162,7 @@ export function Skills() {
                           ) : (
                             <span className="sk-switch sk-switch--medium">
                               <input
-                                aria-label="Enable skill"
+                                aria-label={sk.enableSkill}
                                 className="sk-switch__input"
                                 type="checkbox"
                                 checked={!!enabled[skill.id]}
@@ -203,7 +213,7 @@ export function Skills() {
   );
 }
 
-function SkillIcon({ kind }: { kind: SkillDef["icon"] }) {
+function SkillIcon({ kind }: { kind: SkillIconKind }) {
   if (kind === "wave") {
     return (
       <span className="sk-card__icon">

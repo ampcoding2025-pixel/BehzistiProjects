@@ -1,7 +1,7 @@
 import { SupportChatWidget } from "@/widget";
 import { ChatWidget } from "@/components/ChatWidget";
 
-export default function HomePage() {
+export default function ChatPage() {
   return (
     <>
       <section className="hero">

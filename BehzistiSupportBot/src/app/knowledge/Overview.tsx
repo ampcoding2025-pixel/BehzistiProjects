@@ -1,5 +1,7 @@
 "use client";
 
+import { useLocale } from "@/lib/i18n/locale";
+
 type Props = {
   knowledgeCount?: number;
   skillsCount?: number;
@@ -8,13 +10,6 @@ type Props = {
   onOpenProfile?: () => void;
 };
 
-const METRICS = [
-  { title: "AI resolution rate", value: "0%", compare: "vs 0%  for previous period" },
-  { title: "AI Agent chats", value: "0", compare: "vs 0  for previous period" },
-  { title: "AI Agent CSAT score", value: "0%", compare: "vs 0%  for previous period" },
-  { title: "Transferred chats", value: "0%", compare: "vs 0%  for previous period" },
-];
-
 export function Overview({
   knowledgeCount = 0,
   skillsCount = 4,
@@ -22,26 +17,36 @@ export function Overview({
   onBrowseSkills,
   onOpenProfile,
 }: Props) {
+  const { t, dir } = useLocale();
+  const ov = t.overview;
+
+  const metrics = [
+    { title: ov.metricResolution, value: "0%", compare: ov.comparePercent },
+    { title: ov.metricChats, value: "0", compare: ov.compareCount },
+    { title: ov.metricCsat, value: "0%", compare: ov.comparePercent },
+    { title: ov.metricTransferred, value: "0%", compare: ov.comparePercent },
+  ];
+
   return (
-    <div className="ov-layout ov-layout--contextual">
+    <div className="ov-layout ov-layout--contextual" dir={dir}>
       {/* Agent identity */}
       <div className="ov-section">
         <button
           type="button"
           className="ov-identity"
-          aria-label="Open AI Agent profile"
+          aria-label={t.nav.profile}
           onClick={onOpenProfile}
         >
           <div className="ov-avatar ov-avatar--sm ov-avatar--with-status">
             <span className="ov-status ov-status--accept" role="status" data-testid="avatar__status" />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              alt="AI agent"
+              alt={t.nav.aiAgent}
               className="ov-avatar__image"
-              src="https://cdn.static-text.com/assets/text-app/ai-agents/default-avatar.png"
+              src="/behzisti-logo.svg"
             />
           </div>
-          <h1 className="ov-identity__name">AI agent</h1>
+          <h1 className="ov-identity__name">{t.nav.aiAgent}</h1>
           <span className="ov-identity__edit" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true">
               <path
@@ -65,16 +70,16 @@ export function Overview({
             <div className="ov-tile__content">
               <div className="ov-tile__copy">
                 <div className="ov-tile__title">
-                  <span className="ov-tile__title-main">Knowledge sources</span>
-                  <span className="ov-tile__title-meta">{knowledgeCount} in use</span>
+                  <span className="ov-tile__title-main">{ov.knowledgeSources}</span>
+                  <span className="ov-tile__title-meta">
+                    {knowledgeCount} {ov.inUse}
+                  </span>
                 </div>
-                <span className="ov-tile__desc">
-                  Add sources that teach your AI Agent to answer your way.
-                </span>
+                <span className="ov-tile__desc">{ov.knowledgeDesc}</span>
               </div>
               <div className="ov-tile__action">
                 <button type="button" className="ov-btn ov-btn--secondary ov-btn--sm" onClick={onManageKnowledge}>
-                  <span className="ov-btn__content">Manage knowledge</span>
+                  <span className="ov-btn__content">{ov.manageKnowledge}</span>
                 </button>
               </div>
             </div>
@@ -96,16 +101,16 @@ export function Overview({
             <div className="ov-tile__content">
               <div className="ov-tile__copy">
                 <div className="ov-tile__title">
-                  <span className="ov-tile__title-main">Skills</span>
-                  <span className="ov-tile__title-meta">{skillsCount} active</span>
+                  <span className="ov-tile__title-main">{ov.skills}</span>
+                  <span className="ov-tile__title-meta">
+                    {skillsCount} {ov.active}
+                  </span>
                 </div>
-                <span className="ov-tile__desc">
-                  Add custom skills and your AI Agent resolves more chats on its own.
-                </span>
+                <span className="ov-tile__desc">{ov.skillsDesc}</span>
               </div>
               <div className="ov-tile__action">
                 <button type="button" className="ov-btn ov-btn--secondary ov-btn--sm" onClick={onBrowseSkills}>
-                  <span className="ov-btn__content">Browse skills</span>
+                  <span className="ov-btn__content">{ov.browseSkills}</span>
                 </button>
               </div>
             </div>
@@ -114,12 +119,12 @@ export function Overview({
                 <div className="ov-media" data-testid="media-loader" style={{ aspectRatio: "1280 / 720" }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    alt="Skills overview"
+                    alt={ov.skillsOverviewAlt}
                     loading="eager"
                     src="https://cdn.static-text.com/assets/text-app/ai-agents/overview-skills.png"
                   />
                 </div>
-                <button type="button" className="ov-play" aria-label="Play Skills overview">
+                <button type="button" className="ov-play" aria-label={ov.playSkillsOverview}>
                   <span className="ov-play-button">
                     <svg viewBox="0 0 24 25" fill="none" width="24" height="24" aria-hidden="true">
                       <path
@@ -140,15 +145,15 @@ export function Overview({
         <section className="ov-perf">
           <header className="ov-perf__header">
             <div className="ov-perf__title">
-              <h2>Performance data</h2>
-              <span className="ov-perf__range">12–18 Nov vs 5–11 Nov</span>
+              <h2>{ov.performanceData}</h2>
+              <span className="ov-perf__range">{ov.dateRange}</span>
             </div>
             <button type="button" className="ov-btn ov-btn--secondary ov-btn--md">
-              <span className="ov-btn__content">View full report</span>
+              <span className="ov-btn__content">{ov.viewFullReport}</span>
             </button>
           </header>
           <div className="ov-perf__metrics">
-            {METRICS.map((m) => (
+            {metrics.map((m) => (
               <div key={m.title}>
                 <div data-testid="widget-box" className="ov-metric-box">
                   <div className="ov-metric">
@@ -195,20 +200,17 @@ export function Overview({
       {/* Knowledge gaps */}
       <div className="ov-section">
         <section className="ov-gaps">
-          <h5>Knowledge gaps</h5>
+          <h5>{ov.knowledgeGaps}</h5>
           <div className="ov-gaps-empty ov-gaps-empty--full">
             <div className="ov-gaps-empty__copy">
-              <span className="ov-gaps-empty__title">No gaps so far.</span>
-              <span className="ov-gaps-empty__desc">
-                When one appears, teach your AI Agent once and it&apos;ll handle similar question
-                automatically.
-              </span>
+              <span className="ov-gaps-empty__title">{ov.noGapsTitle}</span>
+              <span className="ov-gaps-empty__desc">{ov.noGapsDesc}</span>
             </div>
             <div className="ov-gaps-empty__decor" aria-hidden="true">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 className="ov-gaps-empty__preview"
-                alt="Knowledge gaps preview"
+                alt={ov.gapsPreviewAlt}
                 src="https://cdn.static-text.com/assets/text-app/ai-agents/overview-knowledge-gaps-empty-state.png"
               />
             </div>

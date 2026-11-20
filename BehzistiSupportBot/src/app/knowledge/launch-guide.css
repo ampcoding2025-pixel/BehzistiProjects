@@ -417,25 +417,23 @@
 .lg-preview__reset {
   position: absolute;
   top: 12px;
-  right: 12px;
+  inset-inline-end: 12px;
   z-index: 5;
 }
 
-/* Maximized chat widget — exact LiveChat preview shell */
+/* Maximized chat widget — LiveChat preview shell */
 .lg-widget {
   color: var(--content-basic-primary);
-  direction: ltr;
   scrollbar-width: thin;
   scrollbar-color: var(--surface-opacity-basic-active) transparent;
   position: absolute;
-  inset: 0 0 0 auto;
+  inset: 0;
   width: 100%;
   height: 100%;
-  will-change: transform, opacity;
+  will-change: opacity;
   backface-visibility: hidden;
   padding: 1em;
-  font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: var(--font);
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
@@ -466,18 +464,22 @@
 
 .lg-widget__agent-bar {
   pointer-events: auto;
-  width: 108px;
+  width: max-content;
+  max-width: calc(100% - 24px);
   height: 40px;
   border-radius: 999px;
-  background: #fff;
+  background: var(--surface-primary-default, #fff);
   border: 1px solid #ececef;
   box-shadow: 0 4px 16px #1313171a;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: default;
-  padding: 0 8px;
+  padding: 0 10px;
   box-sizing: border-box;
+  transition:
+    width 0.3s cubic-bezier(0.33, 0, 0.67, 1),
+    height 0.3s cubic-bezier(0.33, 0, 0.67, 1);
 }
 
 .lg-widget__agent-bar-inner {
@@ -498,19 +500,23 @@
 .lg-widget__avatar {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  background: #fff;
   display: block;
+  padding: 1px;
+  box-sizing: border-box;
 }
 
 .lg-widget__agent-meta {
-  width: 52px;
   min-width: 0;
+  max-width: 160px;
 }
 
 .lg-widget__agent-meta h1 {
   font-size: 0.8125rem;
   font-weight: bold;
   width: min-content;
+  max-width: 100%;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -525,6 +531,7 @@
   font-size: 0.8125rem;
   color: rgb(17, 17, 17);
   width: min-content;
+  max-width: 100%;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -569,7 +576,10 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  object-fit: cover;
+  object-fit: contain;
+  background: #fff;
+  padding: 1px;
+  box-sizing: border-box;
   display: block;
 }
 
@@ -579,15 +589,16 @@
 }
 
 .lg-widget__bubble {
-  background: #fff;
+  background: var(--surface-primary-default, #fff);
   border: 1px solid #ececef;
   border-radius: 16px;
   padding: 10px 12px;
   font-size: 0.875rem;
   line-height: 1.45;
-  color: #111;
+  color: var(--content-basic-primary, #111);
   max-width: 92%;
   box-sizing: border-box;
+  box-shadow: var(--shadow-message-box, 0 0 8px 0 #1313171f);
 }
 
 .lg-widget__quick-wrap {
@@ -603,14 +614,14 @@
 
 .lg-widget__quick-reply {
   appearance: none;
-  border: 1px solid var(--border-basic-primary);
-  background: #fff;
-  border-radius: 999px;
+  border: 1px solid var(--border-basic-primary, #c9c9cd);
+  background: var(--surface-primary-default, #fff);
+  border-radius: var(--radius-full, 999px);
   padding: 8px 12px;
   font: inherit;
   font-size: 0.8125rem;
   line-height: 1.35;
-  text-align: left;
+  text-align: start;
   cursor: default;
   max-width: 100%;
   color: var(--content-basic-primary);
@@ -627,10 +638,14 @@
   align-items: flex-end;
   gap: 8px;
   padding: 8px 8px 8px 12px;
-  background: #fff;
+  background: var(--surface-primary-default, #fff);
   border: 1px solid #e8e8eb;
   border-radius: 16px;
   box-shadow: 0 1px 4px #1313170f;
+}
+
+.lg-widget[dir="rtl"] .lg-widget__composer {
+  padding: 8px 12px 8px 8px;
 }
 
 .lg-widget__input {

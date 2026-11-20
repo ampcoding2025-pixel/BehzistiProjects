@@ -1,21 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useLocale } from "@/lib/i18n/locale";
 
 type StepId = "create" | "activate" | "train" | "channels";
-
-const SKILLS = [
-  { label: "Collect customers details", icon: "user" as const },
-  { label: "Transfer chats to humans", icon: "transfer" as const },
-  { label: "Handle tickets", icon: "ticket" as const },
-  { label: "Send personalized greeting", icon: "wave" as const },
-];
-
-const QUICK_REPLIES = [
-  "What are your company’s products or services?",
-  "How can I contact customer support?",
-  "Where can I find more information about your product?",
-];
 
 type Props = {
   onAddWebsite?: () => void;
@@ -24,21 +12,30 @@ type Props = {
 };
 
 export function LaunchGuide({ onAddWebsite, onAddFiles, onConnectChannels }: Props) {
+  const { t, dir } = useLocale();
+  const lg = t.launchGuide;
   const [openStep, setOpenStep] = useState<StepId | null>("train");
   const [previewKey, setPreviewKey] = useState(0);
+
+  const skills = [
+    { label: lg.skillCollectDetails, icon: "user" as const },
+    { label: lg.skillTransfer, icon: "transfer" as const },
+    { label: lg.skillTickets, icon: "ticket" as const },
+    { label: lg.skillGreeting, icon: "wave" as const },
+  ];
 
   function toggle(id: StepId) {
     setOpenStep((cur) => (cur === id ? null : id));
   }
 
   return (
-    <div className="lg-content">
-      <h1 className="lg-heading">Launch your AI Agent now</h1>
+    <div className="lg-content" dir={dir}>
+      <h1 className="lg-heading">{lg.heading}</h1>
 
       <div className="lg-layout">
         <div className="lg-guide">
           <div className="lg-steps">
-            {/* Create AI agent — complete */}
+            {/* Create — complete */}
             <section
               className="lg-step"
               data-has-body="true"
@@ -49,14 +46,18 @@ export function LaunchGuide({ onAddWebsite, onAddFiles, onConnectChannels }: Pro
                   type="button"
                   className="lg-step__trigger"
                   aria-expanded={openStep === "create"}
-                  aria-label="Create AI agent complete"
+                  aria-label={lg.createDone}
                   onClick={() => toggle("create")}
                 />
-                <span className="lg-step__status-marker" role="img" aria-label="Create AI agent complete">
+                <span
+                  className="lg-step__status-marker"
+                  role="img"
+                  aria-label={lg.createDone}
+                >
                   <CheckIcon />
                 </span>
                 <span className="lg-step__label-copy">
-                  <span className="lg-step__title lg-step__title--bold">Create AI agent</span>
+                  <span className="lg-step__title lg-step__title--bold">{lg.createTitle}</span>
                 </span>
                 <span className="lg-step__badge">
                   <span className="lg-pill lg-pill--lg lg-pill--border">
@@ -64,7 +65,7 @@ export function LaunchGuide({ onAddWebsite, onAddFiles, onConnectChannels }: Pro
                       <span className="lg-pill__icon">
                         <PlayCircleIcon />
                       </span>
-                      <span className="lg-pill__text">4 skills</span>
+                      <span className="lg-pill__text">{lg.skillsCount}</span>
                     </span>
                   </span>
                 </span>
@@ -81,7 +82,7 @@ export function LaunchGuide({ onAddWebsite, onAddFiles, onConnectChannels }: Pro
                 <div className="lg-step__content-inner">
                   <div className="lg-step__body">
                     <div className="lg-skills">
-                      {SKILLS.map((s) => (
+                      {skills.map((s) => (
                         <div key={s.label} className="lg-pill lg-pill--lg lg-skill">
                           <span className="lg-pill__wrap">
                             <span className="lg-pill__icon">
@@ -99,13 +100,13 @@ export function LaunchGuide({ onAddWebsite, onAddFiles, onConnectChannels }: Pro
                         <span className="lg-btn__icon lg-btn__icon--right">
                           <PlusIcon />
                         </span>
-                        <span className="lg-btn__content">Create skill</span>
+                        <span className="lg-btn__content">{lg.createSkill}</span>
                       </button>
                       <button type="button" className="lg-btn lg-btn--plain lg-btn--md lg-btn--right-icon">
                         <span className="lg-btn__icon lg-btn__icon--right">
                           <ArrowRightIcon />
                         </span>
-                        <span className="lg-btn__content">See all skills</span>
+                        <span className="lg-btn__content">{lg.seeAllSkills}</span>
                       </button>
                     </div>
                   </footer>
@@ -123,18 +124,18 @@ export function LaunchGuide({ onAddWebsite, onAddFiles, onConnectChannels }: Pro
                   type="button"
                   className="lg-step__trigger"
                   aria-expanded={openStep === "activate"}
-                  aria-label="Activate your AI Agent complete"
+                  aria-label={lg.activateDone}
                   onClick={() => toggle("activate")}
                 />
                 <span
                   className="lg-step__status-marker"
                   role="img"
-                  aria-label="Activate your AI Agent complete"
+                  aria-label={lg.activateDone}
                 >
                   <CheckIcon />
                 </span>
                 <span className="lg-step__label-copy">
-                  <span className="lg-step__title lg-step__title--bold">Activate your AI Agent</span>
+                  <span className="lg-step__title lg-step__title--bold">{lg.activateTitle}</span>
                 </span>
                 <span className="lg-step__chevron">
                   <ChevronIcon up={openStep === "activate"} />
@@ -151,13 +152,13 @@ export function LaunchGuide({ onAddWebsite, onAddFiles, onConnectChannels }: Pro
                     <div className="lg-step__footer lg-step__footer--activate">
                       <div className="lg-activate-status">
                         <span className="lg-status-badge lg-status-badge--accept" role="status" />
-                        <span>Answering chats</span>
+                        <span>{lg.answeringChats}</span>
                       </div>
                       <button type="button" className="lg-btn lg-btn--plain lg-btn--md lg-btn--right-icon">
                         <span className="lg-btn__icon lg-btn__icon--right">
                           <ArrowRightIcon />
                         </span>
-                        <span className="lg-btn__content">View profile</span>
+                        <span className="lg-btn__content">{lg.viewProfile}</span>
                       </button>
                     </div>
                   </footer>
@@ -176,17 +177,15 @@ export function LaunchGuide({ onAddWebsite, onAddFiles, onConnectChannels }: Pro
                   type="button"
                   className="lg-step__trigger"
                   aria-expanded={openStep === "train"}
-                  aria-label="Train on your website or files incomplete"
+                  aria-label={lg.trainIncomplete}
                   onClick={() => toggle("train")}
                 />
                 <span className="lg-step__status-icon">
-                  <CircleIcon label="Train on your website or files incomplete" />
+                  <CircleIcon label={lg.trainIncomplete} />
                 </span>
                 <span className="lg-step__label-copy">
-                  <span className="lg-step__title">Train on your website or files</span>
-                  <span className="lg-step__description">
-                    Most teams hit 80% resolution rates from their website alone.
-                  </span>
+                  <span className="lg-step__title">{lg.trainTitle}</span>
+                  <span className="lg-step__description">{lg.trainDesc}</span>
                 </span>
                 <span className="lg-step__chevron">
                   <ChevronIcon up={openStep === "train"} />
@@ -208,14 +207,14 @@ export function LaunchGuide({ onAddWebsite, onAddFiles, onConnectChannels }: Pro
                         <span className="lg-btn__icon lg-btn__icon--left">
                           <PlusIcon />
                         </span>
-                        <span className="lg-btn__content">Add website</span>
+                        <span className="lg-btn__content">{lg.addWebsite}</span>
                       </button>
                       <button
                         type="button"
                         className="lg-btn lg-btn--plain lg-btn--sm"
                         onClick={onAddFiles}
                       >
-                        <span className="lg-btn__content">Add files</span>
+                        <span className="lg-btn__content">{lg.addFiles}</span>
                       </button>
                     </div>
                   </div>
@@ -235,14 +234,14 @@ export function LaunchGuide({ onAddWebsite, onAddFiles, onConnectChannels }: Pro
                   type="button"
                   className="lg-step__trigger"
                   aria-expanded={openStep === "channels"}
-                  aria-label="Connect your channels incomplete"
+                  aria-label={lg.channelsIncomplete}
                   onClick={() => toggle("channels")}
                 />
                 <span className="lg-step__status-icon">
-                  <CircleIcon label="Connect your channels incomplete" />
+                  <CircleIcon label={lg.channelsIncomplete} />
                 </span>
                 <span className="lg-step__label-copy">
-                  <span className="lg-step__title lg-step__title--bold">Connect your channels</span>
+                  <span className="lg-step__title lg-step__title--bold">{lg.channelsTitle}</span>
                 </span>
                 <span className="lg-step__chevron">
                   <ChevronIcon up={openStep === "channels"} />
@@ -262,7 +261,7 @@ export function LaunchGuide({ onAddWebsite, onAddFiles, onConnectChannels }: Pro
                         className="lg-btn lg-btn--primary lg-btn--sm"
                         onClick={onConnectChannels}
                       >
-                        <span className="lg-btn__content">Connect channels</span>
+                        <span className="lg-btn__content">{lg.connectChannels}</span>
                       </button>
                       <div className="lg-avatar-stack" data-testid="avatar-stack">
                         <ChannelAvatar kind="web" z={4} />
@@ -277,26 +276,12 @@ export function LaunchGuide({ onAddWebsite, onAddFiles, onConnectChannels }: Pro
             </section>
           </div>
 
-          <aside className="lg-testimonial" aria-label="Customer story">
-            <span className="lg-testimonial__quote">
-              “We’re resolving over 80% of customer queries without human intervention, while
-              maintaining strong customer satisfaction.”
-            </span>
-            <div className="lg-testimonial__author">
-              <span>Alexandra at</span>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                alt="Stratco"
-                className="lg-testimonial__company"
-                height={20}
-                width={80}
-                src="https://cdn.static-text.com/assets/text-app/agents/ai-agent/launch-guide/stratco-logo.png"
-              />
-            </div>
+          <aside className="lg-testimonial" aria-label={lg.customerStory}>
+            <span className="lg-testimonial__quote">«{lg.testimonial}»</span>
           </aside>
         </div>
 
-        <div className="lg-preview" aria-label="AI agent preview">
+        <div className="lg-preview" aria-label={lg.previewLabel}>
           <div className="lg-preview__widget">
             <div className="lg-preview__widget-frame" key={previewKey}>
               <WidgetPreview />
@@ -304,7 +289,7 @@ export function LaunchGuide({ onAddWebsite, onAddFiles, onConnectChannels }: Pro
             <button
               type="button"
               className="lg-btn lg-btn--float lg-btn--md lg-btn--icon-only lg-preview__reset"
-              aria-label="Reset preview"
+              aria-label={lg.resetPreview}
               onClick={() => setPreviewKey((k) => k + 1)}
             >
               <svg viewBox="0 0 24 24" fill="none" width="20" height="20" aria-hidden="true">
@@ -325,11 +310,15 @@ export function LaunchGuide({ onAddWebsite, onAddFiles, onConnectChannels }: Pro
 }
 
 function WidgetPreview() {
+  const { t, dir } = useLocale();
+  const lg = t.launchGuide;
+  const quickReplies = [lg.quickReply1, lg.quickReply2, lg.quickReply3];
+
   return (
     <div
       data-testid="maximized"
       id="chat-widget-maximized"
-      dir="ltr"
+      dir={dir}
       className="lg-widget"
       role="presentation"
     >
@@ -347,19 +336,19 @@ function WidgetPreview() {
               <div data-testid="agent-avatar" className="lg-widget__avatar-wrap">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  alt="Current agent avatar"
+                  alt={t.nav.aiAgent}
                   draggable={false}
                   className="lg-widget__avatar"
-                  src="https://cdn.static-text.com/assets/text-app/ai-agents/default-avatar.png"
+                  src="/behzisti-logo.svg"
                 />
               </div>
               <div className="lg-widget__agent-meta">
-                <h1>AI agent</h1>
-                <span className="lg-widget__agent-sub">AI Assistant</span>
+                <h1>{t.nav.aiAgent}</h1>
+                <span className="lg-widget__agent-sub">{lg.agentSub}</span>
               </div>
             </div>
             <span id="dynamic-island-aria-label" aria-live="polite" className="lg-widget__sr-only">
-              AI agent, Press to expand details
+              {t.nav.aiAgent}
             </span>
           </div>
         </div>
@@ -371,18 +360,17 @@ function WidgetPreview() {
                 <div className="lg-widget__msg-avatar-col">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    alt="Current agent avatar"
+                    alt={t.nav.aiAgent}
                     draggable={false}
                     className="lg-widget__msg-avatar"
-                    src="https://cdn.static-text.com/assets/text-app/ai-agents/default-avatar.png"
+                    src="/behzisti-logo.svg"
                   />
                 </div>
                 <div className="lg-widget__msg-col">
                   <div role="row">
                     <div data-testid="message-item" className="lg-widget__message-item">
                       <div role="gridcell" className="lg-widget__bubble" tabIndex={0}>
-                        Good morning, Amp! Welcome to our preview chat—it&apos;s great to have you
-                        here. How can I assist you today?
+                        {lg.welcomeMessage}
                       </div>
                     </div>
                   </div>
@@ -399,7 +387,7 @@ function WidgetPreview() {
                   className="lg-widget__quick-replies"
                   role="group"
                 >
-                  {QUICK_REPLIES.map((q, i) => (
+                  {quickReplies.map((q, i) => (
                     <button key={q} type="button" value={String(i)} className="lg-widget__quick-reply">
                       {q}
                     </button>
@@ -413,13 +401,13 @@ function WidgetPreview() {
             <div className="lg-widget__composer">
               <textarea
                 data-testid="message-input"
-                aria-label="Write a message…"
+                aria-label={lg.writeMessage}
                 data-enable-grammarly="false"
                 enterKeyHint="send"
-                dir="ltr"
+                dir={dir}
                 id="chat-widget-text-input"
                 className="lg-widget__input"
-                placeholder="Write a message…"
+                placeholder={lg.writeMessage}
                 readOnly
                 rows={1}
                 style={{ height: "45px" }}
@@ -427,7 +415,7 @@ function WidgetPreview() {
               <div className="lg-widget__send-wrap">
                 <button
                   data-testid="send-message"
-                  aria-label="Send message"
+                  aria-label={lg.sendMessage}
                   className="lg-widget__send"
                   disabled
                   type="button"

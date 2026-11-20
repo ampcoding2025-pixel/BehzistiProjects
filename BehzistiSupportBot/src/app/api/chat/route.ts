@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
+import { invalidateKnowledgeCache } from "@/lib/knowledge";
 import { buildAnswer, retrieve, wantsHuman } from "@/lib/rag";
 import { generateWithOllama, getOllamaConfig } from "@/lib/ollama";
 import {
@@ -83,6 +84,7 @@ export async function POST(req: Request) {
     }
 
     const scopeAppId = session.appId || appId;
+    invalidateKnowledgeCache();
     const chunks = await retrieve(text, 3, scopeAppId);
     const built = buildAnswer(text, chunks);
 

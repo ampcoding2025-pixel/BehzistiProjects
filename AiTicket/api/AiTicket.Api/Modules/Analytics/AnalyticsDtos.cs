@@ -108,3 +108,56 @@ public sealed record UserWorkDistributionResponse(
     string Name,
     IReadOnlyList<NamedValueDto> ByState,
     IReadOnlyList<NamedValueDto> ByType);
+
+/// <summary>One work item (flow/cartable/cookie) for a staff user.</summary>
+public sealed class UserRequestItemDto
+{
+    public long CookieId { get; init; }
+    public string Subject { get; init; } = "";
+    public string StepName { get; init; } = "";
+    public double? Hours { get; init; }
+    public bool IsOpen { get; init; }
+    public DateTime? StartTime { get; init; }
+    public DateTime? FinishTime { get; init; }
+}
+
+/// <summary>Named metric with fractional value (e.g. aggregated hours).</summary>
+public sealed class NamedDoubleValueDto
+{
+    public string Name { get; init; } = "";
+    public double Value { get; init; }
+}
+
+public sealed record UserRequestsResponse(
+    MetaDto Meta,
+    int UserId,
+    string Role,
+    string Name,
+    IReadOnlyList<UserRequestItemDto> Items,
+    IReadOnlyList<NamedDoubleValueDto> StepHoursOpen,
+    IReadOnlyList<NamedDoubleValueDto> StepHoursClosed);
+
+/// <summary>One step on a learned/actual cookie workflow path.</summary>
+public sealed record CookieWorkflowStepDto(
+    int Order,
+    int StatusId,
+    string Name,
+    /// <summary>done | current | remaining | skipped</summary>
+    string State,
+    DateTime? StartTime,
+    DateTime? FinishTime,
+    double? Hours,
+    /// <summary>Sum of dwell hours from path start through this step (reached steps only).</summary>
+    double? CumulativeHours = null);
+
+public sealed record CookieWorkflowResponse(
+    MetaDto Meta,
+    long CookieId,
+    string Subject,
+    string SubjectClassName,
+    bool IsOpen,
+    string? CurrentStepName,
+    IReadOnlyList<CookieWorkflowStepDto> Steps,
+    string PathNote,
+    /// <summary>CookieTime → CookieFinishTime (or now if still open).</summary>
+    double? LifetimeHours = null);

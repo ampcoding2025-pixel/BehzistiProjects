@@ -44,6 +44,23 @@ public sealed class CachingAnalyticsQueryService(
             $"uwork:{Key(filter)}:{userId}:{role}",
             () => inner.GetUserWorkDistributionAsync(filter, userId, role, ct));
 
+    public Task<UserRequestsResponse> GetUserRequestsAsync(
+        PeriodFilter filter,
+        int userId,
+        string role,
+        CancellationToken ct) =>
+        GetOrCreateAsync(
+            $"ureq:v2:{Key(filter)}:{userId}:{role}",
+            () => inner.GetUserRequestsAsync(filter, userId, role, ct));
+
+    public Task<CookieWorkflowResponse> GetCookieWorkflowAsync(long cookieId, CancellationToken ct) =>
+        GetOrCreateAsync(
+            $"cwf:v11:{cookieId}",
+            () => inner.GetCookieWorkflowAsync(cookieId, ct));
+
+    // user-requests cache bust when lifetime/open semantics change
+    // (key already includes filter+user+role via ureq:)
+
     public Task<KpiValuesResponse> GetKpiValuesAsync(PeriodFilter filter, IReadOnlyList<string>? codes, CancellationToken ct)
     {
         var codeKey = codes is null ? "*" : string.Join(',', codes);

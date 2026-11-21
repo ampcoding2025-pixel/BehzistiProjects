@@ -151,6 +151,72 @@ public sealed class AnalyticsController(
         return Ok(await analytics.GetUserWorkDistributionAsync(filter, userId, role, ct));
     }
 
+    /// <summary>Per-request list for one user + step hour aggregates (open vs closed).</summary>
+    [HttpGet("requests/user-requests")]
+    [ProducesResponseType(typeof(UserRequestsResponse), StatusCodes.Status200OK)]
+    public async Task<ActionResult<UserRequestsResponse>> GetUserRequests(
+        [FromQuery] int userId,
+        [FromQuery] string role = "flowActor",
+        [FromQuery] DateTime? from = null,
+        [FromQuery] DateTime? to = null,
+        [FromQuery] int? departmentId = null,
+        [FromQuery] int? subjectClassId = null,
+        [FromQuery] int? channelId = null,
+        [FromQuery] int? regionId = null,
+        [FromQuery] int? zoneId = null,
+        [FromQuery] int? subjectGroupId = null,
+        CancellationToken ct = default)
+    {
+        if (!connectionFactory.IsConfigured)
+        {
+            return StatusCode(StatusCodes.Status503ServiceUnavailable, new ProblemDto(
+                "https://aiticket.local/problems/didban-not-configured",
+                "Didban not configured",
+                503,
+                "Set Didban:ConnectionString via user secrets or environment.",
+                "didban_not_configured"));
+        }
+
+        if (userId <= 0)
+            return BadRequest(new ProblemDto(
+                "https://aiticket.local/problems/validation",
+                "userId required",
+                400,
+                "Pass a positive userId.",
+                "invalid_user_id"));
+
+        var filter = new PeriodFilter(from, to, departmentId, subjectClassId, channelId, regionId, zoneId, subjectGroupId);
+        return Ok(await analytics.GetUserRequestsAsync(filter, userId, role, ct));
+    }
+
+    /// <summary>Learned workflow path for one cookie (from closed peers of same class) + progress.</summary>
+    [HttpGet("requests/cookie-workflow")]
+    [ProducesResponseType(typeof(CookieWorkflowResponse), StatusCodes.Status200OK)]
+    public async Task<ActionResult<CookieWorkflowResponse>> GetCookieWorkflow(
+        [FromQuery] long cookieId,
+        CancellationToken ct = default)
+    {
+        if (!connectionFactory.IsConfigured)
+        {
+            return StatusCode(StatusCodes.Status503ServiceUnavailable, new ProblemDto(
+                "https://aiticket.local/problems/didban-not-configured",
+                "Didban not configured",
+                503,
+                "Set Didban:ConnectionString via user secrets or environment.",
+                "didban_not_configured"));
+        }
+
+        if (cookieId <= 0)
+            return BadRequest(new ProblemDto(
+                "https://aiticket.local/problems/validation",
+                "cookieId required",
+                400,
+                "Pass a positive cookieId.",
+                "invalid_cookie_id"));
+
+        return Ok(await analytics.GetCookieWorkflowAsync(cookieId, ct));
+    }
+
     [HttpGet("categories/tree")]
     [ProducesResponseType(typeof(CategoryExplorerResponse), StatusCodes.Status200OK)]
     public async Task<ActionResult<CategoryExplorerResponse>> GetCategoryTree(

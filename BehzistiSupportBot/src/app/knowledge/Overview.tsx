@@ -43,7 +43,7 @@ export function Overview({
             <img
               alt={t.nav.aiAgent}
               className="ov-avatar__image"
-              src="/behzisti-logo.svg"
+              src="/behzisti-logo.png"
             />
           </div>
           <h1 className="ov-identity__name">{t.nav.aiAgent}</h1>
@@ -111,28 +111,6 @@ export function Overview({
               <div className="ov-tile__action">
                 <button type="button" className="ov-btn ov-btn--secondary ov-btn--sm" onClick={onBrowseSkills}>
                   <span className="ov-btn__content">{ov.browseSkills}</span>
-                </button>
-              </div>
-            </div>
-            <div className="ov-tile__image">
-              <div className="ov-preview">
-                <div className="ov-media" data-testid="media-loader" style={{ aspectRatio: "1280 / 720" }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    alt={ov.skillsOverviewAlt}
-                    loading="eager"
-                    src="https://cdn.static-text.com/assets/text-app/ai-agents/overview-skills.png"
-                  />
-                </div>
-                <button type="button" className="ov-play" aria-label={ov.playSkillsOverview}>
-                  <span className="ov-play-button">
-                    <svg viewBox="0 0 24 25" fill="none" width="24" height="24" aria-hidden="true">
-                      <path
-                        d="M8.2423 8.00667C8.2423 7.54262 8.74653 7.25423 9.14651 7.48951L16.6359 11.895C17.0302 12.127 17.0302 12.6973 16.6359 12.9293L9.14651 17.3348C8.74653 17.5701 8.2423 17.2817 8.2423 16.8177L8.2423 8.00667Z"
-                        fill="currentcolor"
-                      />
-                    </svg>
-                  </span>
                 </button>
               </div>
             </div>

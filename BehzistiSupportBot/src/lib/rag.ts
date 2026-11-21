@@ -100,10 +100,18 @@ export function buildAnswer(
   }
 
   const best = chunks[0].score;
-  const confidence = Math.max(0, Math.min(1, best / 2.2));
-  const handoffSuggested = confidence < 0.45;
+  const historicalOnly = chunks[0].doc.meta?.validity === "available_unvalidated";
+  const confidence = Math.min(
+    historicalOnly ? 0.4 : 1,
+    Math.max(0, Math.min(1, best / 2.2)),
+  );
+  const handoffSuggested = historicalOnly || confidence < 0.45;
 
   const lines: string[] = [];
+  if (historicalOnly) {
+    lines.push("توجه: این پاسخ از داده تاریخی دیده‌بان است و اعتبار قانونی یا به‌روز آن تأیید نشده است.");
+    lines.push("");
+  }
   lines.push("بر اساس دانش سازمانی موجود:");
   lines.push("");
   lines.push(chunks[0].doc.text.split("\n").slice(1).join("\n").trim() || chunks[0].doc.text);

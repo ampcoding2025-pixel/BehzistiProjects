@@ -57,7 +57,11 @@ function buildContext(chunks: RetrievedChunk[]): string {
   return chunks
     .map((c, i) => {
       const label = SOURCE_LABEL[c.doc.source] ?? c.doc.source;
-      return `[${i + 1}] (${label}) ${c.doc.title}\n${c.doc.text}`;
+      const validity =
+        c.doc.meta?.validity === "available_unvalidated"
+          ? " · پاسخ تاریخی؛ اعتبارسنجی‌نشده"
+          : "";
+      return `[${i + 1}] (${label}${validity}) ${c.doc.title}\n${c.doc.text}`;
     })
     .join("\n\n");
 }
@@ -76,6 +80,7 @@ export async function generateWithOllama(args: {
   const system = `تو دستیار هوشمند «سامانه هوشمند پاسخگویی و پشتیبانی سازمانی» سازمان بهزیستی کشور هستی.
 فقط به فارسی رسمی و کوتاه پاسخ بده.
 فقط از روی اسناد دانش سازمانی که در اختیار داری پاسخ بده.
+پاسخ‌های تاریخی دیده‌بان اعتبارسنجی نشده‌اند؛ آن‌ها را قانون یا وضعیت قطعی و جاری معرفی نکن و در صورت استناد، تاریخی‌بودنشان را روشن کن.
 اگر اسناد کافی نیست یا مطمئن نیستی، صریح بگو نمی‌دانم و پیشنهاد اتصال به کارشناس زنده بده.
 عدد یا قانون قطعی اختراع نکن.
 در پایان، منابع استفاده‌شده را با شماره سند ذکر کن.

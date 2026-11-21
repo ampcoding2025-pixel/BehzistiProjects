@@ -20,7 +20,7 @@ type SuggestedQ = {
 
 type ScenarioTab = "suggested" | "gaps";
 
-const AVATAR = "/behzisti-logo.svg";
+const AVATAR = "/behzisti-logo.png";
 
 export function Playground() {
   const { t, locale } = useLocale();

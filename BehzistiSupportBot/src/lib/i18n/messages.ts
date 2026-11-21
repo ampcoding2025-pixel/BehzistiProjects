@@ -11,6 +11,7 @@ export type Messages = {
     knowledge: string;
     playground: string;
     copilot: string;
+    settings: string;
     aiAgent: string;
   };
   knowledge: {
@@ -51,6 +52,39 @@ export type Messages = {
     addFile: string;
     addArticle: string;
     addFaq: string;
+    addDatabase: string;
+    databaseSources: {
+      title: string;
+      description: string;
+      addConnection: string;
+      empty: string;
+      loading: string;
+      name: string;
+      endpoint: string;
+      endpointHint: string;
+      host: string;
+      connected: string;
+      disconnected: string;
+      enabled: string;
+      disabled: string;
+      enable: string;
+      settings: string;
+      sync: string;
+      syncing: string;
+      syncedCases: string;
+      lastSync: string;
+      neverSynced: string;
+      test: string;
+      testing: string;
+      save: string;
+      cancel: string;
+      remove: string;
+      removeConfirm: string;
+      credentials: string;
+      credentialsHint: string;
+      historicalWarning: string;
+      testSuccess: string;
+    };
   };
   playground: {
     title: string;
@@ -112,8 +146,6 @@ export type Messages = {
     active: string;
     skillsDesc: string;
     browseSkills: string;
-    skillsOverviewAlt: string;
-    playSkillsOverview: string;
     performanceData: string;
     dateRange: string;
     viewFullReport: string;
@@ -143,12 +175,26 @@ export type Messages = {
     ticketsDesc: string;
     transferTitle: string;
     transferDesc: string;
-    discountTitle: string;
-    discountDesc: string;
-    orderTitle: string;
-    orderDesc: string;
     recommendTitle: string;
     recommendDesc: string;
+  };
+  settingsPage: {
+    title: string;
+    description: string;
+    aiProvider: string;
+    aiProviderDescription: string;
+    ollama: string;
+    ollamaDescription: string;
+    copilot: string;
+    copilotDescription: string;
+    connected: string;
+    disconnected: string;
+    checking: string;
+    model: string;
+    availableModels: string;
+    copilotLoginInstructions: string;
+    copilotNotAuthenticated: string;
+    providerSelectionNotice: string;
   };
   launchGuide: {
     heading: string;
@@ -198,6 +244,7 @@ export const messages: Record<Locale, Messages> = {
       knowledge: "Knowledge",
       playground: "Playground",
       copilot: "Copilot",
+      settings: "Settings",
       aiAgent: "Behzisti Smart Assistant",
     },
     knowledge: {
@@ -239,6 +286,42 @@ export const messages: Record<Locale, Messages> = {
       addFile: "File",
       addArticle: "Article",
       addFaq: "FAQ",
+      addDatabase: "Database connection",
+      databaseSources: {
+        title: "Database connections",
+        description:
+          "Connect a read-only AiTicket API. When enabled, all available redacted Dideban answer cases are synced locally for chat retrieval.",
+        addConnection: "Add database connection",
+        empty: "No database connections have been added.",
+        loading: "Loading database connections…",
+        name: "Connection name",
+        endpoint: "AiTicket API address",
+        endpointHint: "Set by DIDBAN_KNOWLEDGE_API on the app server (example: http://localhost:5088).",
+        host: "Host / IP",
+        connected: "Connected",
+        disconnected: "Disconnected",
+        enabled: "Using in chat",
+        disabled: "Not used in chat",
+        enable: "Use this connection in chat",
+        settings: "Connection settings",
+        sync: "Sync all cases",
+        syncing: "Syncing cases…",
+        syncedCases: "Cases synced",
+        lastSync: "Last sync",
+        neverSynced: "Not synced yet",
+        test: "Test connection",
+        testing: "Testing…",
+        save: "Save connection",
+        cancel: "Cancel",
+        remove: "Remove connection",
+        removeConfirm: "Remove this connection and its local synced index?",
+        credentials: "Database credentials",
+        credentialsHint:
+          "SQL credentials remain on the AiTicket API server. This app does not store or reveal them.",
+        historicalWarning:
+          "Historical answers are unvalidated and may contain sensitive content. This app has no sign-in; anyone who can reach it can manage this source. Review access before enabling it or using a cloud AI provider.",
+        testSuccess: "AiTicket API is reachable.",
+      },
     },
     playground: {
       title: "Playground",
@@ -304,8 +387,6 @@ export const messages: Record<Locale, Messages> = {
       active: "active",
       skillsDesc: "Add custom skills and your assistant resolves more chats on its own.",
       browseSkills: "Browse skills",
-      skillsOverviewAlt: "Skills overview",
-      playSkillsOverview: "Play Skills overview",
       performanceData: "Performance data",
       dateRange: "12–18 Nov vs 5–11 Nov",
       viewFullReport: "View full report",
@@ -336,12 +417,28 @@ export const messages: Record<Locale, Messages> = {
       ticketsDesc: "Read, create, and update tickets when a chat needs follow-up.",
       transferTitle: "Transfer to human",
       transferDesc: "Transfer chats to a teammate on request or if the assistant can't help.",
-      discountTitle: "Offer discount code",
-      discountDesc: "Share a discount code when a client asks for one.",
-      orderTitle: "Get order status",
-      orderDesc: "Check order status and share updates with clients.",
       recommendTitle: "Recommend products",
       recommendDesc: "Suggest products from your catalog based on client needs.",
+    },
+    settingsPage: {
+      title: "Settings",
+      description: "Choose the AI provider used by conversations in this application.",
+      aiProvider: "AI provider",
+      aiProviderDescription: "Choose Ollama or GitHub Copilot.",
+      ollama: "Ollama",
+      ollamaDescription: "Run a model on your local Ollama service.",
+      copilot: "GitHub Copilot",
+      copilotDescription: "Generate answers with GitHub Copilot models.",
+      connected: "Connected",
+      disconnected: "Not connected",
+      checking: "Checking…",
+      model: "Model",
+      availableModels: "Available models",
+      copilotLoginInstructions:
+        "To connect Copilot, sign in with an eligible GitHub Copilot account on the computer running this app. Run `copilot login` in a terminal as the same Windows user as the app.",
+      copilotNotAuthenticated: "GitHub Copilot is not authenticated.",
+      providerSelectionNotice:
+        "Provider selection is shared by the app. When Copilot is selected, user questions and retrieved knowledge are sent to GitHub. If the selected provider is disconnected, chat requests show an error instead of silently switching models.",
     },
     launchGuide: {
       heading: "Launch Behzisti Smart Assistant",
@@ -391,6 +488,7 @@ export const messages: Record<Locale, Messages> = {
       knowledge: "منابع دانش",
       playground: "آزمون کیفیت پاسخ ها",
       copilot: "دستیار کارشناس",
+      settings: "تنظیمات",
       aiAgent: "دستیار هوشمند بهزیستی",
     },
     knowledge: {
@@ -432,6 +530,42 @@ export const messages: Record<Locale, Messages> = {
       addFile: "فایل",
       addArticle: "مقاله",
       addFaq: "پرسش‌های متداول",
+      addDatabase: "اتصال پایگاه داده",
+      databaseSources: {
+        title: "اتصال‌های پایگاه داده",
+        description:
+          "اتصال فقط‌خواندنی به API سامانه AiTicket. با فعال‌سازی، همه پاسخ‌های تاریخیِ پالایش‌شده دیده‌بان برای بازیابی گفتگو به‌صورت محلی همگام می‌شوند.",
+        addConnection: "افزودن اتصال پایگاه داده",
+        empty: "هنوز اتصالی به پایگاه داده اضافه نشده است.",
+        loading: "در حال بارگذاری اتصال‌های پایگاه داده…",
+        name: "نام اتصال",
+        endpoint: "نشانی API سامانه AiTicket",
+        endpointHint: "از متغیر DIDBAN_KNOWLEDGE_API روی سرور برنامه تنظیم می‌شود (نمونه: http://localhost:5088).",
+        host: "میزبان / IP",
+        connected: "متصل",
+        disconnected: "قطع",
+        enabled: "استفاده در گفتگو",
+        disabled: "عدم استفاده در گفتگو",
+        enable: "استفاده از این اتصال در گفتگو",
+        settings: "تنظیمات اتصال",
+        sync: "همگام‌سازی همه پرونده‌ها",
+        syncing: "در حال همگام‌سازی…",
+        syncedCases: "پرونده همگام‌شده",
+        lastSync: "آخرین همگام‌سازی",
+        neverSynced: "هنوز همگام‌سازی نشده",
+        test: "آزمایش اتصال",
+        testing: "در حال آزمایش…",
+        save: "ذخیره اتصال",
+        cancel: "لغو",
+        remove: "حذف اتصال",
+        removeConfirm: "این اتصال و نمایه همگام‌شده محلی آن حذف شود؟",
+        credentials: "اعتبارنامه پایگاه داده",
+        credentialsHint:
+          "اعتبارنامه‌های SQL فقط روی سرور API سامانه AiTicket نگهداری می‌شوند؛ این برنامه آن‌ها را ذخیره یا نمایش نمی‌دهد.",
+        historicalWarning:
+          "پاسخ‌های تاریخی اعتبارسنجی نشده‌اند و ممکن است محتوای حساس داشته باشند. این برنامه ورود کاربری ندارد و هر فرد دارای دسترسی به آن می‌تواند این منبع را مدیریت کند. پیش از فعال‌سازی یا استفاده با مدل ابری، دسترسی را بررسی کنید.",
+        testSuccess: "اتصال به API سامانه AiTicket برقرار است.",
+      },
     },
     playground: {
       title: "آزمون کیفیت پاسخ ها",
@@ -498,8 +632,6 @@ export const messages: Record<Locale, Messages> = {
       active: "فعال",
       skillsDesc: "مهارت‌های سفارشی اضافه کنید تا دستیار گفتگوهای بیشتری را خودش حل کند.",
       browseSkills: "مشاهده مهارت‌ها",
-      skillsOverviewAlt: "نمای کلی مهارت‌ها",
-      playSkillsOverview: "پخش نمای کلی مهارت‌ها",
       performanceData: "داده‌های عملکرد",
       dateRange: "۱۲–۱۸ آبان در برابر ۵–۱۱ آبان",
       viewFullReport: "مشاهده گزارش کامل",
@@ -530,12 +662,28 @@ export const messages: Record<Locale, Messages> = {
       ticketsDesc: "در صورت نیاز به پیگیری، درخواست‌ها را بخواند، ایجاد یا به‌روزرسانی کند.",
       transferTitle: "انتقال به کارشناس",
       transferDesc: "درخواست مراجعین یا ناتوانی دستیار در پاسخ، گفتگو را به کارشناس منتقل کند.",
-      discountTitle: "ارائه کد تخفیف",
-      discountDesc: "در صورت درخواست مراجعین، کد تخفیف را به اشتراک بگذارد.",
-      orderTitle: "وضعیت سفارش",
-      orderDesc: "وضعیت سفارش را بررسی کند و به‌روزرسانی را به مراجعین اعلام کند.",
       recommendTitle: "پیشنهاد خدمات",
       recommendDesc: "بر اساس نیاز مراجعین، خدمات یا موارد مرتبط را پیشنهاد دهد.",
+    },
+    settingsPage: {
+      title: "تنظیمات",
+      description: "ارائه‌دهنده هوش مصنوعی مورد استفاده گفتگوها در این برنامه را انتخاب کنید.",
+      aiProvider: "ارائه‌دهنده هوش مصنوعی",
+      aiProviderDescription: "Ollama یا GitHub Copilot را انتخاب کنید.",
+      ollama: "Ollama",
+      ollamaDescription: "اجرای مدل از طریق سرویس محلی Ollama.",
+      copilot: "GitHub Copilot",
+      copilotDescription: "تولید پاسخ با مدل‌های GitHub Copilot.",
+      connected: "متصل",
+      disconnected: "متصل نیست",
+      checking: "در حال بررسی…",
+      model: "مدل",
+      availableModels: "مدل‌های در دسترس",
+      copilotLoginInstructions:
+        "برای اتصال Copilot، با حساب واجد شرایط GitHub Copilot در رایانه‌ای که برنامه روی آن اجرا می‌شود وارد شوید. در ترمینال و با همان کاربر ویندوز برنامه، دستور `copilot login` را اجرا کنید.",
+      copilotNotAuthenticated: "ورود به GitHub Copilot انجام نشده است.",
+      providerSelectionNotice:
+        "انتخاب ارائه‌دهنده برای کل برنامه مشترک است. با انتخاب Copilot، پرسش کاربران و اسناد بازیابی‌شده به GitHub فرستاده می‌شود. اگر ارائه‌دهنده انتخاب‌شده قطع باشد، گفتگو خطا می‌دهد و بی‌صدا به مدل دیگری تغییر نمی‌کند.",
     },
     launchGuide: {
       heading: "راه‌اندازی دستیار هوشمند بهزیستی",

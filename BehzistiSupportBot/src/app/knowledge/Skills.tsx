@@ -49,20 +49,6 @@ export function Skills() {
         icon: "transfer",
       },
       {
-        id: "discount",
-        title: sk.discountTitle,
-        description: sk.discountDesc,
-        setupRequired: true,
-        icon: "discount",
-      },
-      {
-        id: "order",
-        title: sk.orderTitle,
-        description: sk.orderDesc,
-        setupRequired: true,
-        icon: "shopify",
-      },
-      {
         id: "recommend",
         title: sk.recommendTitle,
         description: sk.recommendDesc,

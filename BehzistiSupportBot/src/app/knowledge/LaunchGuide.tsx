@@ -339,7 +339,7 @@ function WidgetPreview() {
                   alt={t.nav.aiAgent}
                   draggable={false}
                   className="lg-widget__avatar"
-                  src="/behzisti-logo.svg"
+                  src="/behzisti-logo.png"
                 />
               </div>
               <div className="lg-widget__agent-meta">
@@ -363,7 +363,7 @@ function WidgetPreview() {
                     alt={t.nav.aiAgent}
                     draggable={false}
                     className="lg-widget__msg-avatar"
-                    src="/behzisti-logo.svg"
+                    src="/behzisti-logo.png"
                   />
                 </div>
                 <div className="lg-widget__msg-col">

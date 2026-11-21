@@ -1,5 +1,6 @@
 import { readdir, readFile } from "fs/promises";
 import path from "path";
+import { loadEnabledDatabaseDocs } from "./didban-sources";
 import type { KnowledgeDoc } from "./types";
 
 const ROOT = path.join(process.cwd(), "data", "knowledge");
@@ -89,6 +90,7 @@ export async function loadKnowledge(): Promise<KnowledgeDoc[]> {
       appIds: item.appIds ?? ["*"],
       meta: { source: item.source ?? "" },
     })),
+    ...(await loadEnabledDatabaseDocs()),
   ];
 
   cache = docs;

@@ -13,7 +13,7 @@ export default function AgentLayout({
       <SupportChatWidget
         apiBaseUrl=""
         appId="behzisti-portal"
-        logoSrc="/behzisti-logo.svg"
+        logoSrc="/behzisti-logo.png"
         title="سامانه هوشمند پاسخگویی و پشتیبانی سازمانی"
         subtitle="دانش سازمانی · بخشنامه · قانون · FAQ دیده‌بان"
         position="bottom-right"

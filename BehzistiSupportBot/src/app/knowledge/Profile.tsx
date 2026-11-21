@@ -126,7 +126,7 @@ export function Profile({
                       <img
                         alt={t.nav.aiAgent}
                         className="pf-avatar__image"
-                        src="/behzisti-logo.svg"
+                        src="/behzisti-logo.png"
                       />
                     </div>
                     <div className="pf-avatar-menu__edit-overlay">
@@ -411,7 +411,7 @@ export function Profile({
                               alt="Current agent avatar"
                               draggable={false}
                               className="lg-widget__avatar"
-                              src="/behzisti-logo.svg"
+                              src="/behzisti-logo.png"
                             />
                           </div>
                           <div className="lg-widget__agent-meta">
@@ -449,7 +449,7 @@ export function Profile({
                                     alt="Current agent avatar"
                                     draggable={false}
                                     className="lg-widget__msg-avatar"
-                                    src="/behzisti-logo.svg"
+                                    src="/behzisti-logo.png"
                                   />
                                 </div>
                                 <div className="lg-widget__msg-col">

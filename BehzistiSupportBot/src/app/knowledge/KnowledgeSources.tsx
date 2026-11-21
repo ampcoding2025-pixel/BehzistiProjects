@@ -10,6 +10,8 @@ import { Overview } from "./Overview";
 import { Playground } from "./Playground";
 import { Profile } from "./Profile";
 import { Skills } from "./Skills";
+import { AiSettings } from "./AiSettings";
+import { DatabaseSources } from "./DatabaseSources";
 import "./knowledge.css";
 import "./launch-guide.css";
 import "./overview.css";
@@ -18,7 +20,7 @@ import "./skills.css";
 import "./copilot.css";
 import "./playground.css";
 
-type SourceType = "all" | "url" | "file" | "article" | "faq";
+type SourceType = "all" | "url" | "file" | "article" | "faq" | "database";
 
 type KnowledgeSource = {
   id: string;
@@ -45,7 +47,8 @@ type NavId =
   | "skills"
   | "knowledge"
   | "playground"
-  | "copilot";
+  | "copilot"
+  | "settings";
 
 const NAV_IDS: NavId[] = [
   "launch-guide",
@@ -55,6 +58,7 @@ const NAV_IDS: NavId[] = [
   "knowledge",
   "playground",
   "copilot",
+  "settings",
 ];
 
 
@@ -118,6 +122,7 @@ export function KnowledgeSources() {
     file: 0,
     article: 0,
     faq: 0,
+    database: 0,
   });
   const [menuOpen, setMenuOpen] = useState<"header" | "empty" | null>(null);
   const [ollama, setOllama] = useState<OllamaStatus>({
@@ -171,11 +176,17 @@ export function KnowledgeSources() {
           testId: "knowledge-source-tab-faq",
           icon: "faq" as const,
         },
+        {
+          id: "database" as const,
+          label: t.knowledge.addDatabase,
+          testId: "knowledge-source-tab-databases",
+          icon: "database" as const,
+        },
       ] satisfies Array<{
         id: SourceType;
         label: string;
         testId: string;
-        icon?: "website" | "file" | "article" | "faq";
+        icon?: "website" | "file" | "article" | "faq" | "database";
       }>,
     [t],
   );
@@ -236,18 +247,26 @@ export function KnowledgeSources() {
       setPage(data.page ?? nextPage);
       setTotal(data.total ?? docs.length);
       setTotalPages(Math.max(1, data.totalPages ?? 1));
-      setCounts({
+      setCounts((current) => ({
         all: data.counts?.all ?? 0,
         url: data.counts?.url ?? 0,
         file: data.counts?.file ?? 0,
         article: data.counts?.article ?? 0,
         faq: data.counts?.faq ?? 0,
-      });
+        database: current.database,
+      }));
     } catch {
       setSources([]);
       setTotal(0);
       setTotalPages(1);
-      setCounts({ all: 0, url: 0, file: 0, article: 0, faq: 0 });
+      setCounts((current) => ({
+        all: 0,
+        url: 0,
+        file: 0,
+        article: 0,
+        faq: 0,
+        database: current.database,
+      }));
     } finally {
       setSourcesLoading(false);
     }
@@ -286,11 +305,14 @@ export function KnowledgeSources() {
   }, []);
 
   useEffect(() => {
+    if (filter === "database") return;
     void loadSources(page, filter);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, filter]);
 
   const countFor = (id: SourceType) => counts[id] ?? 0;
+  const setDatabaseCount = (database: number) =>
+    setCounts((current) => ({ ...current, database }));
 
   const rangeFrom = total === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
   const rangeTo = Math.min(page * PAGE_SIZE, total);
@@ -328,7 +350,7 @@ export function KnowledgeSources() {
                       <img
                         alt={t.nav.aiAgent}
                         className="kn-side-nav__avatar-img"
-                        src="/behzisti-logo.svg"
+                        src="/behzisti-logo.png"
                       />
                     </div>
                     <div className="kn-side-nav__agent-name">
@@ -388,27 +410,33 @@ export function KnowledgeSources() {
 
                   <div
                     className="kn-side-nav__item"
-                    data-active={activeNav === "copilot" ? "true" : "false"}
+                    data-active={activeNav === "settings" ? "true" : "false"}
                     data-testid={
-                      activeNav === "copilot"
+                      activeNav === "settings"
                         ? "side-navigation-active-item-test-id"
                         : "side-navigation-item-test-id"
                     }
                   >
                     <Link
-                      href="/copilot"
-                      className={`kn-side-nav__anchor${activeNav === "copilot" ? " is-active" : ""}`}
-                      aria-current={activeNav === "copilot" ? "page" : undefined}
+                      href="/settings"
+                      className={`kn-side-nav__anchor${activeNav === "settings" ? " is-active" : ""}`}
+                      aria-current={activeNav === "settings" ? "page" : undefined}
+                      aria-label={t.nav.settings}
+                      data-testid="settings-nav-item"
                     >
                       <span className="kn-side-nav__left-node" data-testid="side-navigation-parent-icon">
-                        <NavIcon id="copilot" />
+                        <NavIcon id="settings" />
                       </span>
-                      <span className={`kn-side-nav__label${activeNav === "copilot" ? " is-active" : ""}`}>
+                      <span className={`kn-side-nav__label${activeNav === "settings" ? " is-active" : ""}`}>
                         <div data-testid="tooltip-trigger">
-                          <div className="kn-text">{t.nav.copilot}</div>
+                          <div className="kn-text">{t.nav.settings}</div>
                         </div>
                       </span>
-                      <span className="kn-side-nav__right-node" />
+                      <span className="kn-side-nav__right-node">
+                        <span className="kn-side-nav__badge" aria-hidden="true">
+                          !
+                        </span>
+                      </span>
                     </Link>
                   </div>
                 </div>
@@ -430,6 +458,8 @@ export function KnowledgeSources() {
                               ? " kn-agent-main--playground-page"
                               : activeNav === "copilot"
                                 ? " kn-agent-main--copilot-page"
+                                : activeNav === "settings"
+                                  ? " kn-agent-main--settings-page"
                                 : ""
                 }`}
               >
@@ -455,6 +485,8 @@ export function KnowledgeSources() {
                   <Playground />
                 ) : activeNav === "copilot" ? (
                   <Copilot />
+                ) : activeNav === "settings" ? (
+                  <AiSettings />
                 ) : activeNav === "knowledge" ? (
                   <div className="kn-knowledge-page">
                     <header className="kn-content-header">
@@ -517,7 +549,8 @@ export function KnowledgeSources() {
                                             </span>
                                           ) : null}
                                           <span className="kn-segmented__label">
-                                            {f.label} ({countFor(f.id)})
+                                            {f.label}
+                                            {f.id === "database" ? "" : ` (${countFor(f.id)})`}
                                           </span>
                                         </button>
                                       );
@@ -562,7 +595,12 @@ export function KnowledgeSources() {
                                     </button>
                                     {menuOpen === "header" ? (
                                       <div className="kn-action-menu__list" role="menu">
-                                        <AddSourceItems onClose={() => setMenuOpen(null)} />
+                                        <AddSourceItems
+                                          onClose={() => setMenuOpen(null)}
+                                          onAddDatabase={() => {
+                                            setFilter("database");
+                                          }}
+                                        />
                                       </div>
                                     ) : null}
                                   </div>
@@ -570,7 +608,13 @@ export function KnowledgeSources() {
                               </div>
 
                               <div className="kn-sources-content__body">
-                                {sourcesLoading ? (
+                                {filter === "database" ? (
+                                  <DatabaseSources
+                                    dir={dir}
+                                    messages={t.knowledge.databaseSources}
+                                    onConnectionsCount={setDatabaseCount}
+                                  />
+                                ) : sourcesLoading ? (
                                   <p className="kn-sources-loading">{t.knowledge.loading}</p>
                                 ) : total === 0 ? (
                                   <div className="kn-empty-state kn-empty-state--full kn-empty-state--centered">
@@ -626,7 +670,12 @@ export function KnowledgeSources() {
                                             className="kn-action-menu__list kn-action-menu__list--center"
                                             role="menu"
                                           >
-                                            <AddSourceItems onClose={() => setMenuOpen(null)} />
+                                            <AddSourceItems
+                                              onClose={() => setMenuOpen(null)}
+                                              onAddDatabase={() => {
+                                                setFilter("database");
+                                              }}
+                                            />
                                           </div>
                                         ) : null}
                                       </div>
@@ -701,17 +750,6 @@ export function KnowledgeSources() {
                                                   </td>
                                                   <td className="kn-table__td kn-table__td--author">
                                                     <div className="kn-author">
-                                                      <div
-                                                        className="kn-author__avatar"
-                                                        aria-hidden="true"
-                                                      >
-                                                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                        <img
-                                                          alt=""
-                                                          className="kn-author__avatar-img"
-                                                          src="/behzisti-logo.svg"
-                                                        />
-                                                      </div>
                                                       <span className="kn-author__text">
                                                         {s.addedBy || t.knowledge.addedBySystem}
                                                       </span>
@@ -901,7 +939,13 @@ function SourceTypeIcon({ type }: { type: Exclude<SourceType, "all"> }) {
   );
 }
 
-function AddSourceItems({ onClose }: { onClose: () => void }) {
+function AddSourceItems({
+  onClose,
+  onAddDatabase,
+}: {
+  onClose: () => void;
+  onAddDatabase: () => void;
+}) {
   const { t, dir } = useLocale();
   const items = [
     {
@@ -924,6 +968,11 @@ function AddSourceItems({ onClose }: { onClose: () => void }) {
       label: t.knowledge.addFaq,
       testId: "question-answer",
     },
+    {
+      id: "database" as const,
+      label: t.knowledge.addDatabase,
+      testId: "database-connection",
+    },
   ];
 
   return (
@@ -937,6 +986,7 @@ function AddSourceItems({ onClose }: { onClose: () => void }) {
             role="menuitem"
             onClick={() => {
               onClose();
+              if (item.id === "database") onAddDatabase();
             }}
           >
             <div className="kn-list-item">
@@ -982,7 +1032,11 @@ function KnowledgeCheckIcon() {
   );
 }
 
-function FilterTabIcon({ kind }: { kind: "website" | "file" | "article" | "faq" }) {
+function FilterTabIcon({
+  kind,
+}: {
+  kind: "website" | "file" | "article" | "faq" | "database";
+}) {
   if (kind === "website") {
     return (
       <svg viewBox="0 0 24 24" fill="none" width="20" height="20" aria-hidden="true">
@@ -1022,6 +1076,18 @@ function FilterTabIcon({ kind }: { kind: "website" | "file" | "article" | "faq" 
       </svg>
     );
   }
+  if (kind === "database") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" width="20" height="20" aria-hidden="true">
+        <ellipse cx="12" cy="5" rx="8" ry="3" stroke="currentcolor" strokeWidth="2" />
+        <path
+          d="M4 5V19C4 20.66 7.58 22 12 22C16.42 22 20 20.66 20 19V5M4 12C4 13.66 7.58 15 12 15C16.42 15 20 13.66 20 12"
+          stroke="currentcolor"
+          strokeWidth="2"
+        />
+      </svg>
+    );
+  }
   return (
     <svg viewBox="0 0 24 24" fill="none" width="20" height="20" aria-hidden="true">
       <path
@@ -1036,6 +1102,17 @@ function FilterTabIcon({ kind }: { kind: "website" | "file" | "article" | "faq" 
 }
 
 function NavIcon({ id }: { id: NavId }) {
+  if (id === "settings") {
+    return (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M12.75 2C14.13 2 15.25 3.12 15.25 4.5V5.25C15.59 5.41 15.91 5.6 16.22 5.81L16.87 5.43C18.07 4.74 19.59 5.15 20.28 6.34L21.03 7.64C21.72 8.84 21.31 10.37 20.12 11.06L19.48 11.43C19.49 11.62 19.5 11.81 19.5 12C19.5 12.19 19.49 12.38 19.48 12.57L20.12 12.94C21.31 13.63 21.72 15.16 21.03 16.36L20.28 17.66C19.59 18.85 18.07 19.26 16.87 18.57L16.23 18.19C15.92 18.4 15.59 18.59 15.25 18.76V19.5C15.25 20.88 14.13 22 12.75 22H11.25C9.87 22 8.75 20.88 8.75 19.5V18.76C8.41 18.59 8.08 18.4 7.77 18.19L7.13 18.57C5.93 19.26 4.41 18.85 3.72 17.66L2.97 16.36C2.28 15.16 2.69 13.63 3.88 12.94L4.52 12.57C4.51 12.38 4.5 12.19 4.5 12C4.5 11.81 4.51 11.62 4.52 11.43L3.88 11.06C2.69 10.37 2.28 8.84 2.97 7.64L3.72 6.34C4.41 5.15 5.93 4.74 7.13 5.43L7.78 5.81C8.09 5.6 8.41 5.41 8.75 5.25V4.5C8.75 3.12 9.87 2 11.25 2H12.75ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z"
+          fill="currentColor"
+        />
+      </svg>
+    );
+  }
+
   if (id === "copilot") {
     return (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -1064,7 +1141,7 @@ function NavIcon({ id }: { id: NavId }) {
     );
   }
 
-  const d: Record<Exclude<NavId, "copilot" | "playground">, string> = {
+  const d: Record<Exclude<NavId, "copilot" | "playground" | "settings">, string> = {
     "launch-guide":
       "M12 5V3M12 13V9M12 22V17M9 5H19L21 7L19 9H9C8.73478 9 8.48043 8.89464 8.29289 8.70711C8.10536 8.51957 8 8.26522 8 8V6C8 5.73478 8.10536 5.48043 8.29289 5.29289C8.48043 5.10536 8.73478 5 9 5ZM13 13H6L4 15L6 17H13C13.2652 17 13.5196 16.8946 13.7071 16.7071C13.8946 16.5196 14 16.2652 14 16V14C14 13.7348 13.8946 13.4804 13.7071 13.2929C13.5196 13.1054 13.2652 13 13 13Z",
     overview:
@@ -1080,7 +1157,7 @@ function NavIcon({ id }: { id: NavId }) {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
-        d={d[id as Exclude<NavId, "copilot" | "playground">] || d.overview}
+        d={d[id as Exclude<NavId, "copilot" | "playground" | "settings">] || d.overview}
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"

@@ -4,6 +4,11 @@ import { invalidateKnowledgeCache } from "@/lib/knowledge";
 import { buildAnswer, retrieve, wantsHuman } from "@/lib/rag";
 import { generateWithOllama, getOllamaConfig } from "@/lib/ollama";
 import {
+  generateWithCopilot,
+  getAiProvider,
+  getCopilotStatus,
+} from "@/lib/ai-provider";
+import {
   appendMessage,
   createSession,
   getSession,
@@ -44,13 +49,8 @@ export async function POST(req: Request) {
     }
 
     let session = body.sessionId ? await getSession(body.sessionId) : null;
-    if (!session) {
-      session = await createSession(body.userLabel, appId);
-    }
-
-    await appendMessage(session.id, { role: "user", content: text });
-
-    if (session.status === "with_agent" || session.status === "waiting_agent") {
+    if (session?.status === "with_agent" || session?.status === "waiting_agent") {
+      await appendMessage(session.id, { role: "user", content: text });
       const updated = await getSession(session.id);
       return withCors(
         NextResponse.json({
@@ -67,6 +67,10 @@ export async function POST(req: Request) {
     }
 
     if (wantsHuman(text)) {
+      if (!session) {
+        session = await createSession(body.userLabel, appId);
+      }
+      await appendMessage(session.id, { role: "user", content: text });
       await setSessionStatus(session.id, "waiting_agent");
       const msg = await appendMessage(session.id, {
         role: "assistant",
@@ -83,6 +87,28 @@ export async function POST(req: Request) {
       return withCors(NextResponse.json(response));
     }
 
+    const selectedProvider = await getAiProvider();
+    if (selectedProvider === "copilot") {
+      const status = await getCopilotStatus();
+      if (!status.connected) {
+        return withCors(
+          NextResponse.json(
+            {
+              error:
+                status.error ??
+                "GitHub Copilot is not connected. Check Settings → AI provider.",
+            },
+            { status: 503 },
+          ),
+        );
+      }
+    }
+
+    if (!session) {
+      session = await createSession(body.userLabel, appId);
+    }
+    await appendMessage(session.id, { role: "user", content: text });
+
     const scopeAppId = session.appId || appId;
     invalidateKnowledgeCache();
     const chunks = await retrieve(text, 3, scopeAppId);
@@ -91,42 +117,70 @@ export async function POST(req: Request) {
     let content = built.content;
     let confidence = built.confidence;
     let handoffSuggested = built.handoffSuggested;
-    let provider: "ollama" | "lexical" = "lexical";
+    let provider: "ollama" | "copilot" | "lexical" = "lexical";
     let ollamaModel: string | undefined;
+    let copilotModel: string | undefined;
 
-    const ollamaCfg = getOllamaConfig();
-    if (ollamaCfg.enabled && chunks.length > 0) {
-      const llm = await generateWithOllama({
+    if (selectedProvider === "copilot") {
+      const llm = await generateWithCopilot({
         question: text,
         chunks,
         appId: scopeAppId,
-        config: ollamaCfg,
       });
-      if (llm.usedOllama && llm.content) {
+      if (llm.content) {
         content = llm.content;
-        provider = "ollama";
-        ollamaModel = llm.model;
-        // Keep retrieval confidence; add soft handoff cue if model abstains.
+        provider = "copilot";
+        copilotModel = llm.model;
         if (/نمی[‌ ]?دانم|کارشناس زنده|اطمینان ندارم/i.test(llm.content)) {
           handoffSuggested = true;
         }
-      } else if (llm.error) {
-        console.warn("[ollama fallback]", llm.error);
+      } else {
+        console.error("[copilot generation]", llm.error);
+        return withCors(
+          NextResponse.json(
+            {
+              error: llm.error ?? "GitHub Copilot could not generate a response.",
+              sessionId: session.id,
+            },
+            { status: 502 },
+          ),
+        );
       }
-    } else if (ollamaCfg.enabled && chunks.length === 0) {
-      // Still try Ollama with empty context so it can politely abstain.
-      const llm = await generateWithOllama({
-        question: text,
-        chunks: [],
-        appId: scopeAppId,
-        config: ollamaCfg,
-      });
-      if (llm.usedOllama && llm.content) {
-        content = llm.content;
-        provider = "ollama";
-        ollamaModel = llm.model;
-        confidence = 0;
-        handoffSuggested = true;
+    } else {
+      const ollamaCfg = getOllamaConfig();
+      if (ollamaCfg.enabled && chunks.length > 0) {
+        const llm = await generateWithOllama({
+          question: text,
+          chunks,
+          appId: scopeAppId,
+          config: ollamaCfg,
+        });
+        if (llm.usedOllama && llm.content) {
+          content = llm.content;
+          provider = "ollama";
+          ollamaModel = llm.model;
+          // Keep retrieval confidence; add soft handoff cue if model abstains.
+          if (/نمی[‌ ]?دانم|کارشناس زنده|اطمینان ندارم/i.test(llm.content)) {
+            handoffSuggested = true;
+          }
+        } else if (llm.error) {
+          console.warn("[ollama fallback]", llm.error);
+        }
+      } else if (ollamaCfg.enabled && chunks.length === 0) {
+        // Still try Ollama with empty context so it can politely abstain.
+        const llm = await generateWithOllama({
+          question: text,
+          chunks: [],
+          appId: scopeAppId,
+          config: ollamaCfg,
+        });
+        if (llm.usedOllama && llm.content) {
+          content = llm.content;
+          provider = "ollama";
+          ollamaModel = llm.model;
+          confidence = 0;
+          handoffSuggested = true;
+        }
       }
     }
 
@@ -155,9 +209,11 @@ export async function POST(req: Request) {
       handoffSuggested,
       provider,
       ollamaModel: ollamaModel ?? null,
+      copilotModel: copilotModel ?? null,
     } satisfies ChatApiResponse & {
-      provider: "ollama" | "lexical";
+      provider: "ollama" | "copilot" | "lexical";
       ollamaModel: string | null;
+      copilotModel: string | null;
     };
     return withCors(NextResponse.json(response));
   } catch (err) {

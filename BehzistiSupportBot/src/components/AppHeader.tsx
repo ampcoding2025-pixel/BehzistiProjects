@@ -9,7 +9,7 @@ export function AppHeader() {
     <header className="topbar">
       <div className="brand">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/behzisti-logo.svg" alt="سازمان بهزیستی کشور" />
+        <img src="/behzisti-logo.png" alt="سازمان بهزیستی کشور" />
         <div>
           <h1>سامانه هوشمند پاسخگویی و پشتیبانی سازمانی</h1>
           <p>سازمان بهزیستی کشور</p>

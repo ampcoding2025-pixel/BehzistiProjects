@@ -1,0 +1,273 @@
+.kn-db-sources {
+  width: 100%;
+  min-width: 0;
+  padding: 20px;
+  overflow: auto;
+  color: var(--content-basic-primary);
+}
+
+.kn-db-sources__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.kn-db-sources__header h2,
+.kn-db-connection__title h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+.kn-db-sources__header p {
+  max-width: 760px;
+  margin: 6px 0 0;
+  color: var(--content-basic-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.kn-db-sources__warning,
+.kn-db-sources__alert,
+.kn-db-sources__notice {
+  margin: 12px 0;
+  border-radius: var(--radius-2);
+  padding: 10px 12px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.kn-db-sources__warning {
+  background: #fff6db;
+  color: #614d00;
+}
+
+.kn-db-sources__alert {
+  background: #fff0ef;
+  color: #922b22;
+}
+
+.kn-db-sources__notice {
+  background: #eaf6ed;
+  color: #1d6530;
+}
+
+.kn-db-sources__empty {
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--content-basic-secondary);
+  text-align: center;
+}
+
+.kn-db-sources__empty p {
+  margin: 0;
+}
+
+.kn-db-sources__list {
+  display: grid;
+  gap: 12px;
+}
+
+.kn-db-connection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border: 1px solid var(--border-basic-tertiary);
+  border-radius: var(--radius-3);
+  background: var(--surface-primary-default);
+  padding: 16px;
+}
+
+.kn-db-connection__main {
+  min-width: 0;
+}
+
+.kn-db-connection__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.kn-db-connection__status,
+.kn-db-connection__enabled {
+  border-radius: var(--radius-full);
+  background: #fff0ef;
+  color: #922b22;
+  padding: 3px 8px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.kn-db-connection__status.is-connected,
+.kn-db-connection__enabled.is-enabled {
+  background: #eaf6ed;
+  color: #1d6530;
+}
+
+.kn-db-connection__enabled:not(.is-enabled) {
+  background: var(--surface-secondary-default);
+  color: var(--content-basic-secondary);
+}
+
+.kn-db-connection__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin: 12px 0 0;
+}
+
+.kn-db-connection__details div {
+  min-width: 130px;
+}
+
+.kn-db-connection__details dt {
+  color: var(--content-basic-secondary);
+  font-size: 0.75rem;
+}
+
+.kn-db-connection__details dd {
+  margin: 3px 0 0;
+  overflow-wrap: anywhere;
+  font-size: 0.8125rem;
+}
+
+.kn-db-connection__error {
+  margin: 10px 0 0;
+  color: #922b22;
+  font-size: 0.8125rem;
+}
+
+.kn-db-connection__actions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.kn-db-switch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--content-basic-secondary);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.kn-db-switch input {
+  width: 18px;
+  height: 18px;
+  accent-color: #178548;
+}
+
+.kn-db-connection__settings {
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-basic-tertiary);
+  border-radius: var(--radius-2);
+  background: var(--surface-primary-default);
+  color: var(--content-basic-primary);
+  cursor: pointer;
+}
+
+.kn-db-connection__settings:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.kn-db-dialog-backdrop {
+  position: fixed;
+  z-index: 80;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow-y: auto;
+  background: rgb(19 19 23 / 48%);
+  padding: 20px;
+}
+
+.kn-db-dialog {
+  width: min(100%, 520px);
+  display: grid;
+  gap: 16px;
+  border-radius: var(--radius-3);
+  background: var(--surface-primary-default);
+  padding: 24px;
+  box-shadow: var(--shadow-pop-over);
+}
+
+.kn-db-dialog h2 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.kn-db-dialog > label {
+  display: grid;
+  gap: 6px;
+  color: var(--content-basic-primary);
+  font-size: 0.875rem;
+}
+
+.kn-db-dialog input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--border-basic-primary);
+  border-radius: var(--radius-2);
+  background: var(--surface-primary-default);
+  color: var(--content-basic-primary);
+  padding: 10px 12px;
+  font: inherit;
+}
+
+.kn-db-dialog small {
+  color: var(--content-basic-secondary);
+  font-size: 0.75rem;
+}
+
+.kn-db-dialog__credentials {
+  display: grid;
+  gap: 5px;
+  border-radius: var(--radius-2);
+  background: var(--surface-secondary-default);
+  padding: 12px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.kn-db-dialog__credentials span {
+  color: var(--content-basic-secondary);
+}
+
+.kn-db-dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+@media (max-width: 760px) {
+  .kn-db-connection {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .kn-db-connection__actions {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .kn-db-sources__header {
+    flex-direction: column;
+  }
+}

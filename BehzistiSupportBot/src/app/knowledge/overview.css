@@ -173,36 +173,6 @@
   object-fit: cover;
 }
 
-.ov-preview {
-  position: relative;
-}
-
-.ov-play {
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  width: 56px;
-  height: 56px;
-  border: 0;
-  border-radius: 50%;
-  background: transparent;
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  padding: 0;
-}
-
-.ov-play-button {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: var(--shadow-float);
-  display: grid;
-  place-items: center;
-  color: var(--content-basic-primary);
-}
-
 /* Buttons */
 .ov-btn {
   appearance: none;

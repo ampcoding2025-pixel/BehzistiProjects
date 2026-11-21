@@ -174,10 +174,6 @@
   display: inline-flex;
 }
 
-.sk-card__icon--shopify {
-  background: transparent;
-}
-
 .sk-card__actions {
   display: flex;
   align-items: center;

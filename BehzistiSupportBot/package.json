@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@microsoft/copilot-sdk": "^2.0.1",
+    "@microsoft/copilot-sdk-win32-x64": "^2.0.1",
     "next": "15.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -18,5 +20,8 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "typescript": "^5"
+  },
+  "allowScripts": {
+    "koffi@3.3.6": true
   }
 }

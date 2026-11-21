@@ -5,13 +5,6 @@ import { createAiClient, type FaqItem } from "./ai-client";
 import type { SupportChatConfig, WidgetMessage, WidgetSessionStatus } from "./types";
 import "./support-chat-widget.css";
 
-const STATUS_LABEL: Record<WidgetSessionStatus, string> = {
-  bot: "پاسخ‌گویی هوشمند",
-  waiting_agent: "در انتظار کارشناس",
-  with_agent: "متصل به کارشناس",
-  closed: "بسته شده",
-};
-
 const DEFAULT_WELCOME =
   "سلام! من دستیار دانش سازمانی هستم. سؤال خود را بپرسید یا یکی از پرسش‌های متداول زیر را انتخاب کنید.";
 
@@ -306,18 +299,27 @@ export function SupportChatWidget(props: SupportChatWidgetProps) {
           </div>
 
           <footer className="bzw-footer">
-            <div className="bzw-status">وضعیت: {STATUS_LABEL[status]} · دامنه دانش: {appId}</div>
             <div className="bzw-actions">
-              {(handoffSuggested || status === "bot") && status !== "with_agent" && (
+              {handoffSuggested && status !== "with_agent" && status !== "waiting_agent" ? (
                 <button
                   type="button"
                   className="bzw-btn ghost"
                   disabled={busy || !sessionId}
                   onClick={requestHandoff}
                 >
+                  پاسخ پیدا نشد — اتصال به کارشناس زنده
+                </button>
+              ) : null}
+              {!handoffSuggested && status === "bot" && sessionId ? (
+                <button
+                  type="button"
+                  className="bzw-btn ghost"
+                  disabled={busy}
+                  onClick={requestHandoff}
+                >
                   کارشناس زنده
                 </button>
-              )}
+              ) : null}
             </div>
             <form
               className="bzw-composer"

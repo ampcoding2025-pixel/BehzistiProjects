@@ -11,36 +11,7 @@ import {
   bandToneClass,
   type UserScorecardModel,
 } from "@/lib/userPerformanceScore";
-import { cn, formatFaNumber } from "@/lib/utils";
-
-function Meter({
-  label,
-  value,
-  note,
-}: {
-  label: string;
-  value: number | null;
-  note: string;
-}) {
-  const pct = value == null ? 0 : Math.max(0, Math.min(100, value));
-  return (
-    <div className="space-y-1">
-      <div className="flex items-baseline justify-between gap-2 text-sm">
-        <span className="font-medium text-slate-800">{label}</span>
-        <span className="tabular-nums text-slate-900">
-          {value == null ? "—" : formatFaNumber(value, 1)}
-        </span>
-      </div>
-      <div className="h-2 overflow-hidden rounded-full bg-slate-100">
-        <div
-          className="h-full rounded-full bg-[var(--brand)] transition-[width]"
-          style={{ width: value == null ? "0%" : `${pct}%` }}
-        />
-      </div>
-      <p className="text-[11px] leading-relaxed text-slate-500">{note}</p>
-    </div>
-  );
-}
+import { cn, formatFaMonthLabel, formatFaNumber, formatFaPeriodLabel } from "@/lib/utils";
 
 function rateTrendOption(trend: UserRateTrendData | null): EChartsOption {
   if (!trend?.points.length) return {};
@@ -60,7 +31,8 @@ function rateTrendOption(trend: UserRateTrendData | null): EChartsOption {
         if (!point) return "";
         const rateTxt = point.rate == null ? "—" : formatFaNumber(point.rate, 1);
         const daysTxt = point.avgHours == null ? "—" : formatFaNumber(point.avgHours, 1);
-        return `${point.label}<br/>نرخ: ${rateTxt}<br/>حجم: ${formatFaNumber(point.load)}<br/>میانگین ساعت: ${daysTxt}`;
+        const month = formatFaMonthLabel(point.label);
+        return `${month}<br/>نرخ: ${rateTxt}<br/>حجم: ${formatFaNumber(point.load)}<br/>میانگین ساعت: ${daysTxt}`;
       },
     },
     grid: { left: 44, right: 16, top: 28, bottom: 36 },
@@ -68,13 +40,22 @@ function rateTrendOption(trend: UserRateTrendData | null): EChartsOption {
       type: "category",
       data: labels,
       boundaryGap: false,
-      axisLabel: { color: "#64748b", fontSize: 10, rotate: labels.length > 6 ? 30 : 0 },
+      axisLabel: {
+        color: "#64748b",
+        fontSize: 10,
+        rotate: labels.length > 6 ? 30 : 0,
+        formatter: (v: string) => formatFaMonthLabel(String(v)),
+      },
     },
     yAxis: {
       type: "value",
       name: "نرخ",
       nameTextStyle: { color: "#64748b", fontSize: 10 },
-      axisLabel: { color: "#64748b", fontSize: 10 },
+      axisLabel: {
+        color: "#64748b",
+        fontSize: 10,
+        formatter: (v: number) => formatFaNumber(Number(v), 1),
+      },
       splitLine: { lineStyle: { color: "#eef2f7" } },
     },
     series: [
@@ -154,7 +135,9 @@ export function UserScoreCardPanel({
             {isBestDefault ? " · پیش‌فرض: بهترین عملکرد" : " · انتخاب‌شده از نمودار"}
           </p>
           <h3 className="mt-0.5 text-lg font-bold text-slate-900">{model.name}</h3>
-          <p className="mt-1 text-sm text-[var(--muted)]">بازه «{periodLabel}»</p>
+          <p className="mt-1 text-sm text-[var(--muted)]">
+            بازه «{formatFaPeriodLabel(periodLabel)}»
+          </p>
         </div>
         <div className="flex flex-wrap gap-2">
           {!isBestDefault && onShowBest ? (
@@ -190,12 +173,14 @@ export function UserScoreCardPanel({
               <p className="text-xs font-medium opacity-80">امتیاز عملکرد</p>
               <p className="mt-0.5 text-3xl font-bold tabular-nums">
                 {formatFaNumber(breakdown.score, 1)}
-                <span className="mr-1 text-sm font-medium opacity-70">/ ۱۰۰</span>
+                <span className="mr-1 text-base font-medium opacity-70">
+                  از {formatFaNumber(100)}
+                </span>
               </p>
             </div>
             <div className="text-left">
               <p className="text-sm font-semibold">{bandLabelFa(breakdown.band)}</p>
-              <p className="mt-0.5 text-xs opacity-80">
+              <p className="mt-0.5 text-xs opacity-80" dir="rtl">
                 رتبه {formatFaNumber(model.peerRank)} از {formatFaNumber(model.peerCount)}
               </p>
             </div>
@@ -222,24 +207,6 @@ export function UserScoreCardPanel({
                 {currentRate == null ? "—" : formatFaNumber(currentRate, 1)}
               </p>
             </div>
-          </div>
-
-          <div className="rounded-lg bg-slate-50 px-3 py-2.5 text-[12px] leading-relaxed text-slate-600">
-            <p className="font-medium text-slate-800">فرمول</p>
-            <p className="mt-1">{breakdown.formulaFa}</p>
-            <p className="mt-1 text-[11px] text-slate-500">
-              نرخ = حجم ÷ میانگین ساعت · کلیک روی نام کاربر در نمودارها این کارت را عوض می‌کند
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            <Meter label="امتیاز حجم" value={breakdown.loadIndex} note={breakdown.loadNote} />
-            <Meter label="امتیاز سرعت" value={breakdown.speedIndex} note={breakdown.speedNote} />
-            <Meter
-              label="شاخص نرخ"
-              value={breakdown.throughputIndex}
-              note={breakdown.throughputNote}
-            />
           </div>
         </div>
 

@@ -32,7 +32,11 @@ function stateBarOption(rows: NamedValue[]): EChartsOption {
     xAxis: {
       type: "value",
       min: 0,
-      axisLabel: { color: "#64748b", fontSize: 10 },
+      axisLabel: {
+        color: "#64748b",
+        fontSize: 10,
+        formatter: (v: number) => formatFaNumber(Number(v)),
+      },
       splitLine: { lineStyle: { color: "#eef2f7" } },
     },
     yAxis: {
@@ -127,7 +131,7 @@ export function UserWorkDistributionRow({
   return (
     <section className="grid grid-cols-1 gap-4 xl:grid-cols-2">
       <ChartCard
-        title="باز در برابر بسته‌شده"
+        title="درخواست‌های باز در برابر درخواست‌های بسته‌شده"
         subtitle={`توزیع کار «${userName}» بر اساس وضعیت اتمام`}
       >
         {loading ? (

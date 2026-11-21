@@ -41,7 +41,10 @@ export function sortedHorizontalBarOption(
     xAxis: {
       type: "value",
       min: 0,
-      axisLabel: { color: slate },
+      axisLabel: {
+        color: slate,
+        formatter: (v: number) => formatFaNumber(Number(v)),
+      },
       splitLine: { lineStyle: { color: "#eef2f7" } },
     },
     yAxis: {

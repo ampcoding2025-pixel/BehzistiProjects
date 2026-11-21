@@ -264,7 +264,7 @@ export function workloadScatterOption(
 
   const medRateLabel =
     baseline != null
-      ? `میانه نسبت (Σحجم÷Σساعت): ${formatFaNumber(baseline.medRate, 2)}`
+      ? `میانه نسبت: ${formatFaNumber(baseline.medRate, 2)}`
       : "";
 
   return {

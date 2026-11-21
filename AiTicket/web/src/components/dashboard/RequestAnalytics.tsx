@@ -6,6 +6,7 @@ import { ChartCard } from "@/components/dashboard/ChartCard";
 import { KpiCard } from "@/components/dashboard/KpiCard";
 import { UserScoreCardPanel } from "@/components/dashboard/UserScoreCard";
 import { UserWorkDistributionRow } from "@/components/dashboard/UserWorkDistributionRow";
+import { UserRequestsPanel } from "@/components/dashboard/UserRequestsPanel";
 import { WorkloadUserTable } from "@/components/dashboard/WorkloadUserTable";
 import { EChart } from "@/components/charts/EChart";
 import { IranProvinceMap } from "@/components/charts/IranProvinceMap";
@@ -31,7 +32,13 @@ import {
   scoreWorkloadUser,
   type UserScorecardModel,
 } from "@/lib/userPerformanceScore";
-import { cn, formatFaNumber } from "@/lib/utils";
+import {
+  cn,
+  formatFaDate,
+  formatFaMonthLabel,
+  formatFaNumber,
+  toEnDigits,
+} from "@/lib/utils";
 import { X } from "lucide-react";
 
 const slate = "#64748b";
@@ -72,7 +79,7 @@ const ROLE_META: Record<
   referUser: { label: "ارجاع / بازدید روی گام", cohortKey: "byFlowReferred" },
   cartableUser: { label: "کارتابل", cohortKey: "byCartableUser" },
   callUser: { label: "تماس‌ها", cohortKey: "byCallUser" },
-  caseUser: { label: "ثبت/لمس پرونده", cohortKey: "byCaseUser" },
+  caseUser: { label: "ثبت پرونده", cohortKey: "byCaseUser" },
 };
 
 function pickBestUser(
@@ -356,12 +363,20 @@ export function RequestAnalytics() {
         type: "category",
         boundaryGap: false,
         data: trend.map((p) => p.label),
-        axisLabel: { color: slate, rotate: trend.length > 10 ? 35 : 0, fontSize: 10 },
+        axisLabel: {
+          color: slate,
+          rotate: trend.length > 10 ? 35 : 0,
+          fontSize: 10,
+          formatter: (v: string) => formatFaMonthLabel(String(v)),
+        },
         triggerEvent: true,
       },
       yAxis: {
         type: "value",
-        axisLabel: { color: slate },
+        axisLabel: {
+          color: slate,
+          formatter: (v: number) => formatFaNumber(Number(v)),
+        },
         splitLine: { lineStyle: { color: "#e2e8f0" } },
       },
       series: [
@@ -421,8 +436,9 @@ export function RequestAnalytics() {
       data?: { name?: string } | number;
     };
     // Prefer category axis name / dataIndex — avoids fragile object-data name fields
-    let label: string | null =
-      typeof p.name === "string" && /^\d{4}\/\d{2}$/.test(p.name) ? p.name : null;
+    const nameEn =
+      typeof p.name === "string" ? toEnDigits(p.name).replace("-", "/") : "";
+    let label: string | null = /^\d{4}\/\d{2}$/.test(nameEn) ? nameEn : null;
     if (!label && typeof p.dataIndex === "number") {
       label = data?.openClosedTrend?.[p.dataIndex]?.label ?? null;
     }
@@ -570,77 +586,81 @@ export function RequestAnalytics() {
     if (filters.subjectClassId != null) {
       chips.push({
         key: "class",
-        label: `طبقه: ${labels.subjectClass ?? filters.subjectClassId}`,
+        label: `طبقه: ${labels.subjectClass ?? formatFaNumber(filters.subjectClassId)}`,
         clear: () => toggleDimension("subjectClass", filters.subjectClassId),
       });
     }
     if (filters.channelId != null) {
       chips.push({
         key: "channel",
-        label: `کانال: ${labels.channel ?? filters.channelId}`,
+        label: `کانال: ${labels.channel ?? formatFaNumber(filters.channelId)}`,
         clear: () => toggleDimension("channel", filters.channelId),
       });
     }
     if (filters.regionId != null) {
       chips.push({
         key: "region",
-        label: `استان: ${labels.region ?? filters.regionId}`,
+        label: `استان: ${labels.region ?? formatFaNumber(filters.regionId)}`,
         clear: () => toggleDimension("region", filters.regionId),
       });
     }
     if (filters.subjectGroupId != null) {
       chips.push({
         key: "group",
-        label: `گروه: ${labels.subjectGroup ?? filters.subjectGroupId}`,
+        label: `گروه: ${labels.subjectGroup ?? formatFaNumber(filters.subjectGroupId)}`,
         clear: () => toggleDimension("subjectGroup", filters.subjectGroupId),
       });
     }
     if (filters.from && filters.to) {
       chips.push({
         key: "month",
-        label: `ماه: ${labels.month ?? `${filters.from} → ${filters.to}`}`,
+        label: `ماه: ${
+          labels.month
+            ? formatFaMonthLabel(labels.month)
+            : `${formatFaDate(filters.from)} → ${formatFaDate(filters.to)}`
+        }`,
         clear: () => clearMonth(),
       });
     }
     if (filters.cookieStatusId != null) {
       chips.push({
         key: "step",
-        label: `گام: ${labels.cookieStatus ?? filters.cookieStatusId}`,
+        label: `گام: ${labels.cookieStatus ?? formatFaNumber(filters.cookieStatusId)}`,
         clear: () => toggleDimension("cookieStatus", filters.cookieStatusId),
       });
     }
     if (filters.flowUserId != null) {
       chips.push({
         key: "flowUser",
-        label: `اقدام‌کننده: ${labels.flowUser ?? filters.flowUserId}`,
+        label: `اقدام‌کننده: ${labels.flowUser ?? formatFaNumber(filters.flowUserId)}`,
         clear: () => toggleDimension("flowUser", filters.flowUserId),
       });
     }
     if (filters.referUserId != null) {
       chips.push({
         key: "referUser",
-        label: `ارجاع‌شونده: ${labels.referUser ?? filters.referUserId}`,
+        label: `ارجاع‌شونده: ${labels.referUser ?? formatFaNumber(filters.referUserId)}`,
         clear: () => toggleDimension("referUser", filters.referUserId),
       });
     }
     if (filters.cartableUserId != null) {
       chips.push({
         key: "cartable",
-        label: `کارتابل: ${labels.cartableUser ?? filters.cartableUserId}`,
+        label: `کارتابل: ${labels.cartableUser ?? formatFaNumber(filters.cartableUserId)}`,
         clear: () => toggleDimension("cartableUser", filters.cartableUserId),
       });
     }
     if (filters.callUserId != null) {
       chips.push({
         key: "call",
-        label: `تماس: ${labels.callUser ?? filters.callUserId}`,
+        label: `تماس: ${labels.callUser ?? formatFaNumber(filters.callUserId)}`,
         clear: () => toggleDimension("callUser", filters.callUserId),
       });
     }
     if (filters.caseUserId != null) {
       chips.push({
         key: "case",
-        label: `ثبت‌کننده: ${labels.caseUser ?? filters.caseUserId}`,
+        label: `ثبت‌کننده: ${labels.caseUser ?? formatFaNumber(filters.caseUserId)}`,
         clear: () => toggleDimension("caseUser", filters.caseUserId),
       });
     }
@@ -731,7 +751,7 @@ export function RequestAnalytics() {
       <section className="grid grid-cols-1 gap-4 xl:grid-cols-2">
         <ChartCard
           title="نقشه استان‌ها"
-          subtitle="رنگ = حجم درخواست · کلیک روی استان = فیلتر Inform.RegionId"
+          subtitle="رنگ = حجم درخواست"
         >
           <IranProvinceMap
             regions={data.byRegion}
@@ -740,7 +760,7 @@ export function RequestAnalytics() {
             onSelect={onMapRegionSelect}
           />
         </ChartCard>
-        <ChartCard title="توزیع استانی (میله)" subtitle="کلیک = فیلتر استان · بدون ستاد/نامشخص">
+        <ChartCard title="توزیع استانی" subtitle="بدون ستاد/نامشخص">
           <EChart
             option={regionOption}
             height={400}
@@ -757,10 +777,7 @@ export function RequestAnalytics() {
             onEvents={{ click: onGroupClick }}
           />
         </ChartCard>
-        <ChartCard
-          title="کانال ثبت"
-          subtitle="کلیک = فیلتر CookieChannel · افراد مرتبط پایین (کارتابل/تماس/پرونده) با همان فیلتر به‌روز می‌شوند — کانال خودش کاربر نیست"
-        >
+        <ChartCard title="کانال ثبت">
           <ul className="divide-y divide-slate-100">
             {data.byChannel.map((c) => {
               const selected = filters.channelId != null && c.id === filters.channelId;
@@ -787,22 +804,9 @@ export function RequestAnalytics() {
         </ChartCard>
       </section>
 
-      {scorecardView ? (
-        <UserScoreCardPanel
-          model={scorecardView.model}
-          periodLabel={data.meta.periodLabel}
-          role={scorecardView.role}
-          filters={filters}
-          isBestDefault={scorecardView.followBest}
-          onShowBest={showBestPerformer}
-          onFilter={applyScorecardFilter}
-        />
-      ) : null}
-
       <section className="grid grid-cols-1 gap-4 xl:grid-cols-3">
         <ChartCard
           title="گام‌های گردش کار"
-          subtitle="حجم CookieFlow بر اساس وضعیت · کلیک = فیلتر گام"
         >
           <EChart
             option={workflowStepOption}
@@ -812,7 +816,6 @@ export function RequestAnalytics() {
         </ChartCard>
         <ChartCard
           title="اقدام‌کننده روی گام"
-          subtitle="کلیک روی نام/میله = به‌روزرسانی کارت امتیاز بالا"
         >
           {(data.byFlowActor?.length ?? 0) === 0 ? (
             <p className="flex h-[340px] items-center justify-center px-4 text-center text-sm text-slate-500">
@@ -828,7 +831,6 @@ export function RequestAnalytics() {
         </ChartCard>
         <ChartCard
           title="ارجاع / بازدید روی گام"
-          subtitle="کلیک = به‌روزرسانی کارت امتیاز · COALESCE(ReferToUserId, CookieFlowVisitedUserId)"
         >
           {(data.byFlowReferred?.length ?? 0) === 0 ? (
             <p className="flex h-[340px] items-center justify-center px-4 text-center text-sm text-slate-500">
@@ -850,7 +852,7 @@ export function RequestAnalytics() {
             <div>
               <p className="text-sm font-semibold text-slate-900">راهنمای مناطق عملکرد</p>
               <p className="mt-0.5 text-[11px] text-slate-500">
-                کلیک روی هر منطقه = فیلتر کاربران همان عملکرد · نقطه خط‌چین = همه باز
+                کلیک روی هر کارت = فیلتر کاربران همان عملکرد
               </p>
             </div>
             {workloadZoneFilter !== "all" ? (
@@ -912,7 +914,6 @@ export function RequestAnalytics() {
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
           <ChartCard
             title="کارتابل — پراکندگی بار و زمان"
-            subtitle="رنگ = باند نسبت به میانه (Σحجم÷Σساعت) · کلیک = کارت امتیاز"
           >
             {(data.byCartableUser?.filter((r) => r.value > 0).length ?? 0) === 0 ? (
               <p className="flex h-[300px] items-center justify-center px-4 text-center text-sm text-slate-500">
@@ -933,7 +934,6 @@ export function RequestAnalytics() {
           </ChartCard>
           <ChartCard
             title="تماس‌ها — پراکندگی بار و زمان"
-            subtitle="رنگ = باند نسبت به میانه (Σحجم÷Σساعت) · کلیک = کارت امتیاز"
           >
             {(data.byCallUser?.filter((r) => r.value > 0).length ?? 0) === 0 ? (
               <p className="flex h-[300px] items-center justify-center px-4 text-center text-sm text-slate-500">
@@ -954,7 +954,6 @@ export function RequestAnalytics() {
           </ChartCard>
           <ChartCard
             title="ثبت پرونده — پراکندگی بار و زمان"
-            subtitle="رنگ = باند نسبت به میانه (Σحجم÷Σساعت) · کلیک = کارت امتیاز"
           >
             {(data.byCaseUser?.filter((r) => r.value > 0).length ?? 0) === 0 ? (
               <p className="flex h-[300px] items-center justify-center px-4 text-center text-sm text-slate-500">
@@ -1010,7 +1009,7 @@ export function RequestAnalytics() {
           />
         </ChartCard>
         <ChartCard
-          title="ثبت/لمس پرونده — عملکرد"
+          title="ثبت پرونده — عملکرد"
         >
           <WorkloadUserTable
             rows={data.byCaseUser}
@@ -1028,11 +1027,31 @@ export function RequestAnalytics() {
       </section>
 
       {scorecardView?.user.id != null ? (
-        <UserWorkDistributionRow
-          userId={scorecardView.user.id}
-          userName={scorecardView.user.name}
+        <>
+          <UserWorkDistributionRow
+            userId={scorecardView.user.id}
+            userName={scorecardView.user.name}
+            role={scorecardView.role}
+            filters={filters}
+          />
+          <UserRequestsPanel
+            userId={scorecardView.user.id}
+            userName={scorecardView.user.name}
+            role={scorecardView.role}
+            filters={filters}
+          />
+        </>
+      ) : null}
+
+      {scorecardView ? (
+        <UserScoreCardPanel
+          model={scorecardView.model}
+          periodLabel={data.meta.periodLabel}
           role={scorecardView.role}
           filters={filters}
+          isBestDefault={scorecardView.followBest}
+          onShowBest={showBestPerformer}
+          onFilter={applyScorecardFilter}
         />
       ) : null}
 

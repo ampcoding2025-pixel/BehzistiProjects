@@ -28,13 +28,13 @@ export function ResolutionPage() {
     if (!data) return {};
     return {
       tooltip: { trigger: "axis" },
-      legend: { data: ["ورودی", "خاتمه"], bottom: 0 },
+      legend: { data: ["ورودی", "مختومه"], bottom: 0 },
       grid: { left: 48, right: 16, top: 16, bottom: 48 },
       xAxis: { type: "category", data: data.throughputTrend.map((p) => p.label), axisLabel: { rotate: 40, fontSize: 10 } },
       yAxis: { type: "value" },
       series: [
         { name: "ورودی", type: "bar", data: data.throughputTrend.map((p) => p.inflow), color: "#1d4ed8" },
-        { name: "خاتمه", type: "line", data: data.throughputTrend.map((p) => p.finished), color: "#15803d" },
+        { name: "مختومه", type: "line", data: data.throughputTrend.map((p) => p.finished), color: "#15803d" },
       ],
     };
   }, [data]);
@@ -56,16 +56,13 @@ export function ResolutionPage() {
 
   return (
     <div className="space-y-5">
-      <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-2 text-xs text-amber-950">
-        {data.slaNote} · خاتمه زمانی و خاتمه وضعیتی جدا نگه داشته شده‌اند.
-      </div>
       <section className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
         {data.kpis.map((k) => (
           <KpiCard key={k.id} {...k} />
         ))}
       </section>
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-        <Panel title="روند خاتمه در برابر ورودی">
+        <Panel title="روند مختومه در برابر ورودی">
           <EChart option={trend} height={300} />
         </Panel>
         <Panel title="پیچیدگی گردش کار (توزیع تعداد مراحل)">

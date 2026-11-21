@@ -13,7 +13,7 @@ type RegionOption = { id: number; name: string };
 export function TopBar({ updatedAt }: { updatedAt?: string }) {
   const pathname = usePathname();
   const nav = navigation.find((n) => n.href === pathname);
-  const { filters, setPeriod, setRegionId, setSubjectClassId, reset } = useFilters();
+  const { filters, setPeriod, setRegionId, setSubjectClassId, setDepartmentId, reset } = useFilters();
   const [regions, setRegions] = useState<RegionOption[]>([]);
 
   useEffect(() => {
@@ -112,21 +112,50 @@ export function TopBar({ updatedAt }: { updatedAt?: string }) {
         </div>
       </div>
 
-      {(filters.regionId != null || filters.subjectClassId != null || filters.period !== "ytd") && (
+      {(filters.regionId != null ||
+        filters.subjectClassId != null ||
+        filters.departmentId != null ||
+        filters.period !== "ytd") && (
         <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
           <span className="text-[var(--muted)]">فیلترهای فعال:</span>
-          <span className="rounded bg-slate-100 px-2 py-1">
-            بازه: {PERIOD_OPTIONS.find((o) => o.value === filters.period)?.label}
-          </span>
+          {filters.period !== "ytd" ? (
+            <button
+              type="button"
+              onClick={() => setPeriod("ytd")}
+              className="rounded bg-slate-100 px-2 py-1 hover:bg-slate-200"
+              aria-label="پاک کردن فیلتر بازه زمانی"
+            >
+              بازه: {PERIOD_OPTIONS.find((o) => o.value === filters.period)?.label} ×
+            </button>
+          ) : null}
           {filters.regionId != null ? (
-            <span className="rounded bg-blue-50 px-2 py-1 text-blue-800">
-              استان: {regions.find((r) => r.id === filters.regionId)?.name ?? filters.regionId}
-            </span>
+            <button
+              type="button"
+              onClick={() => setRegionId(null)}
+              className="rounded bg-blue-50 px-2 py-1 text-blue-800 hover:bg-blue-100"
+              aria-label="پاک کردن فیلتر استان"
+            >
+              استان: {regions.find((r) => r.id === filters.regionId)?.name ?? filters.regionId} ×
+            </button>
           ) : null}
           {filters.subjectClassId != null ? (
-            <span className="rounded bg-blue-50 px-2 py-1 text-blue-800">
-              نوع: {SUBJECT_CLASS_OPTIONS.find((o) => o.id === filters.subjectClassId)?.label}
-            </span>
+            <button
+              type="button"
+              onClick={() => setSubjectClassId(null)}
+              className="rounded bg-blue-50 px-2 py-1 text-blue-800 hover:bg-blue-100"
+              aria-label="پاک کردن فیلتر نوع موضوع"
+            >
+              نوع: {SUBJECT_CLASS_OPTIONS.find((o) => o.id === filters.subjectClassId)?.label} ×
+            </button>
+          ) : null}
+          {filters.departmentId != null ? (
+            <button
+              type="button"
+              onClick={() => setDepartmentId(null)}
+              className="rounded bg-blue-50 px-2 py-1 text-blue-800 hover:bg-blue-100"
+            >
+              واحد سازمانی شناسه {filters.departmentId} ×
+            </button>
           ) : null}
           <button type="button" onClick={reset} className="text-blue-700 underline">
             پاک کردن همه

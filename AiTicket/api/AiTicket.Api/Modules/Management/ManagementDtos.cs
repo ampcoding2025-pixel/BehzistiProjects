@@ -65,9 +65,11 @@ public sealed record MgmtMapMetricDto(
 public sealed record ManagementDemandResponse(
     MetaDto Meta,
     IReadOnlyList<MgmtThroughputPointDto> InflowTrend,
-    IReadOnlyList<NamedValueDto> ByClass,
+    IReadOnlyList<MgmtClassValueDto> ByClass,
     IReadOnlyList<MgmtTopicChangeDto> Topics,
     IReadOnlyList<NamedValueDto> TopSubjects);
+
+public sealed record MgmtClassValueDto(int Id, string Name, long Value);
 
 public sealed record ManagementResolutionResponse(
     MetaDto Meta,
@@ -81,14 +83,73 @@ public sealed record ManagementBacklogResponse(
     IReadOnlyList<MgmtKpiCardDto> Kpis,
     IReadOnlyList<NamedValueDto> AgeBuckets,
     IReadOnlyList<MgmtUnitBacklogDto> Units,
+    IReadOnlyList<MgmtRegionBacklogDto> Regions,
+    IReadOnlyList<MgmtBacklogStageDto> Stages,
+    IReadOnlyList<MgmtBacklogStageOperatorDto> StageOperators,
+    IReadOnlyList<MgmtOperatorBacklogDto> Operators,
     IReadOnlyList<MgmtThroughputPointDto> ThroughputTrend);
 
 public sealed record MgmtUnitBacklogDto(
+    int? DepartmentId,
     string Name,
+    long InflowCount,
+    long FinishedCount,
+    double FinishRate,
+    double? AverageResolutionDays,
     long OpenCount,
-    double? MedianAgeDays,
+    double? AverageAgeDays,
+    long AgeLt7,
+    long Age7To30,
+    long Age30To90,
     long Over90,
     string Trend);
+
+public sealed record MgmtRegionBacklogDto(
+    int RegionId,
+    string RegionName,
+    int? DepartmentId,
+    long AgeLt7,
+    long Age7To30,
+    long Age30To90,
+    long Over90);
+
+public sealed record MgmtBacklogStageDto(
+    int? RegionId,
+    string RegionName,
+    int? StatusId,
+    string StageName,
+    long CaseCount,
+    long FlowCount,
+    double? AverageStageDurationHours);
+
+public sealed record MgmtBacklogStageOperatorDto(
+    int? RegionId,
+    string RegionName,
+    int? StatusId,
+    string StageName,
+    int OperatorId,
+    int? RoleId,
+    string RoleName,
+    int? DepartmentId,
+    string DepartmentName,
+    long CaseCount,
+    long FlowCount,
+    double? AverageStageDurationHours);
+
+public sealed record MgmtOperatorBacklogDto(
+    int OperatorId,
+    int? DepartmentId,
+    string DepartmentName,
+    long FlowCount,
+    long CasesHandled,
+    long CompletedFlows,
+    double? AverageElapsedHours,
+    long OpenCases,
+    double? AverageOpenAgeDays,
+    long OpenAgeLt7,
+    long OpenAge7To30,
+    long OpenAge30To90,
+    long OpenAge90Plus);
 
 public sealed record ManagementProvincesResponse(
     MetaDto Meta,

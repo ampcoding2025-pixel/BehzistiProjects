@@ -4,12 +4,14 @@ export type MgmtFilters = {
   period: PeriodKey;
   regionId: number | null;
   subjectClassId: number | null;
+  departmentId?: number | null;
 };
 
 export const DEFAULT_FILTERS: MgmtFilters = {
   period: "ytd",
   regionId: null,
   subjectClassId: null,
+  departmentId: null,
 };
 
 export const PERIOD_OPTIONS: { value: PeriodKey; label: string }[] = [
@@ -55,6 +57,7 @@ export function filtersToQuery(filters: MgmtFilters): string {
   if (range.to) params.set("to", range.to);
   if (filters.regionId != null) params.set("regionId", String(filters.regionId));
   if (filters.subjectClassId != null) params.set("subjectClassId", String(filters.subjectClassId));
+  if (filters.departmentId != null) params.set("departmentId", String(filters.departmentId));
   const qs = params.toString();
   return qs ? `?${qs}` : "";
 }

@@ -42,9 +42,21 @@ public sealed class ManagementController(
         [FromQuery] DateTime? from, [FromQuery] DateTime? to,
         [FromQuery] int? departmentId, [FromQuery] int? subjectClassId,
         [FromQuery] int? channelId, [FromQuery] int? regionId, [FromQuery] int? zoneId,
-        CancellationToken ct) =>
-        Run(from, to, departmentId, subjectClassId, channelId, regionId, zoneId,
-            f => management.GetBacklogAsync(f, ct));
+        [FromQuery] string? ageBucket, CancellationToken ct)
+    {
+        string[] allowedBuckets = ["age-lt7", "age-7-30", "age-30-90", "age-90p"];
+        if (ageBucket is not null && !allowedBuckets.Contains(ageBucket, StringComparer.Ordinal))
+        {
+            return Task.FromResult<ActionResult<ManagementBacklogResponse>>(BadRequest(new ProblemDto(
+                "https://aiticket.local/problems/invalid-age-bucket",
+                "Invalid age bucket", 400,
+                "Use age-lt7, age-7-30, age-30-90, or age-90p.",
+                "invalid_age_bucket")));
+        }
+
+        return Run(from, to, departmentId, subjectClassId, channelId, regionId, zoneId,
+            f => management.GetBacklogAsync(f, ageBucket, ct));
+    }
 
     [HttpGet("provinces")]
     public Task<ActionResult<ManagementProvincesResponse>> Provinces(

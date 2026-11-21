@@ -27,10 +27,6 @@ export function QualityPage() {
 
   return (
     <div className="space-y-5">
-      <div className="rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm">
-        نسخه قواعد: <span className="font-mono font-semibold">{data.ruleSetVersion}</span> ·{" "}
-        {data.meta.periodLabel}
-      </div>
       <section className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
         {data.metrics.map((m) => (
           <article key={m.id} className="rounded-lg border border-[var(--border)] bg-white p-4">

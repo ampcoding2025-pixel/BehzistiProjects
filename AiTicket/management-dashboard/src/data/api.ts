@@ -14,8 +14,14 @@ async function getJson<T>(path: string): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-function path(endpoint: string, filters: MgmtFilters) {
-  return `/api/v1/management/${endpoint}${filtersToQuery(filters)}`;
+function path(endpoint: string, filters: MgmtFilters, dateRange?: { from: string; to: string }) {
+  const params = new URLSearchParams(filtersToQuery(filters));
+  if (dateRange) {
+    params.set("from", dateRange.from);
+    params.set("to", dateRange.to);
+  }
+  const query = params.toString();
+  return `/api/v1/management/${endpoint}${query ? `?${query}` : ""}`;
 }
 
 export type ApiMeta = {
@@ -91,7 +97,7 @@ export type OverviewData = {
 export type DemandData = {
   meta: ApiMeta;
   inflowTrend: ApiThroughput[];
-  byClass: ApiNamed[];
+  byClass: { id: number; name: string; value: number }[];
   topics: ApiTopicChange[];
   topSubjects: ApiNamed[];
 };
@@ -109,11 +115,66 @@ export type BacklogData = {
   kpis: ApiKpi[];
   ageBuckets: ApiNamed[];
   units: {
+    departmentId: number | null;
     name: string;
+    inflowCount: number;
+    finishedCount: number;
+    finishRate: number;
+    averageResolutionDays: number | null;
     openCount: number;
-    medianAgeDays: number | null;
+    averageAgeDays: number | null;
+    ageLt7: number;
+    age7To30: number;
+    age30To90: number;
     over90: number;
     trend: string;
+  }[];
+  regions: {
+    regionId: number;
+    regionName: string;
+    departmentId: number | null;
+    ageLt7: number;
+    age7To30: number;
+    age30To90: number;
+    over90: number;
+  }[];
+  stages: {
+    regionId: number | null;
+    regionName: string;
+    statusId: number | null;
+    stageName: string;
+    caseCount: number;
+    flowCount: number;
+    averageStageDurationHours: number | null;
+  }[];
+  stageOperators: {
+    regionId: number | null;
+    regionName: string;
+    statusId: number | null;
+    stageName: string;
+    operatorId: number;
+    roleId: number | null;
+    roleName: string;
+    departmentId: number | null;
+    departmentName: string;
+    caseCount: number;
+    flowCount: number;
+    averageStageDurationHours: number | null;
+  }[];
+  operators: {
+    operatorId: number;
+    departmentId: number | null;
+    departmentName: string;
+    flowCount: number;
+    casesHandled: number;
+    completedFlows: number;
+    averageElapsedHours: number | null;
+    openCases: number;
+    averageOpenAgeDays: number | null;
+    openAgeLt7: number;
+    openAge7To30: number;
+    openAge30To90: number;
+    openAge90Plus: number;
   }[];
   throughputTrend: ApiThroughput[];
 };
@@ -156,9 +217,14 @@ export type CriticalData = {
 
 export const managementApi = {
   overview: (f: MgmtFilters) => getJson<OverviewData>(path("overview", f)),
-  demand: (f: MgmtFilters) => getJson<DemandData>(path("demand", f)),
+  demand: (f: MgmtFilters, dateRange?: { from: string; to: string }) =>
+    getJson<DemandData>(path("demand", f, dateRange)),
   resolution: (f: MgmtFilters) => getJson<ResolutionData>(path("resolution", f)),
-  backlog: (f: MgmtFilters) => getJson<BacklogData>(path("backlog", f)),
+  backlog: (f: MgmtFilters, ageBucket?: string | null) => {
+    const params = new URLSearchParams(filtersToQuery(f));
+    if (ageBucket) params.set("ageBucket", ageBucket);
+    return getJson<BacklogData>(`/api/v1/management/backlog?${params.toString()}`);
+  },
   provinces: (f: MgmtFilters) => getJson<ProvincesData>(path("provinces", f)),
   quality: (f: MgmtFilters) => getJson<QualityData>(path("quality", f)),
   critical: (f: MgmtFilters) => getJson<CriticalData>(path("critical", f)),

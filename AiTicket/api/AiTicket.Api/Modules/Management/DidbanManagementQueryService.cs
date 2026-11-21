@@ -12,7 +12,7 @@ public interface IManagementQueryService
     Task<ManagementOverviewResponse> GetOverviewAsync(PeriodFilter filter, CancellationToken ct);
     Task<ManagementDemandResponse> GetDemandAsync(PeriodFilter filter, CancellationToken ct);
     Task<ManagementResolutionResponse> GetResolutionAsync(PeriodFilter filter, CancellationToken ct);
-    Task<ManagementBacklogResponse> GetBacklogAsync(PeriodFilter filter, CancellationToken ct);
+    Task<ManagementBacklogResponse> GetBacklogAsync(PeriodFilter filter, string? ageBucket, CancellationToken ct);
     Task<ManagementProvincesResponse> GetProvincesAsync(PeriodFilter filter, CancellationToken ct);
     Task<ManagementQualityResponse> GetQualityAsync(PeriodFilter filter, CancellationToken ct);
     Task<ManagementCriticalResponse> GetCriticalAsync(PeriodFilter filter, CancellationToken ct);
@@ -39,11 +39,12 @@ public sealed class DidbanManagementQueryService(
 
         var openNow = await conn.ExecuteScalarAsync<long>(
             new CommandDefinition(
-                """
+                $"""
                 SELECT COUNT_BIG(*) FROM dbo.Cookie c
-                WHERE c.CookieTypeId = @cookieTypeId AND c.CookieFinishTime IS NULL
+                {whereSql}
+                  AND c.CookieFinishTime IS NULL
                 """,
-                new { cookieTypeId = _analytics.DefaultCookieTypeId },
+                dp,
                 cancellationToken: ct));
 
         var cartable = await conn.ExecuteScalarAsync<long>(
@@ -63,17 +64,22 @@ public sealed class DidbanManagementQueryService(
             Card("inflow", "کل پرونده‌های ثبت‌شده", cur.Total, "count", null, null, prior.Total,
                 Delta(cur.Total, prior.Total), "neutral",
                 "تعداد پرونده‌های واجد شرایط با CookieTime در بازه", "واقعیت آماری"),
-            Card("finished", "پرونده‌های خاتمه‌یافته", cur.Finished, "count", finishRate, "percent", prior.Finished,
+            Card("complaint-count", "تعداد شکایات ثبت‌شده", cur.Complaints, "count",
+                complaintShare, "percent", prior.Complaints, Delta(cur.Complaints, prior.Complaints), "neutral",
+                "تعداد SubjectClass=شکایت در بازه و فیلترهای فعال؛ مقدار دوم سهم از کل پرونده‌هاست",
+                "واقعیت آماری"),
+            Card("finished", "پرونده‌های مختومه", cur.Finished, "count", finishRate, "percent", prior.Finished,
                 Delta(cur.Finished, prior.Finished), "positive",
                 "دارای CookieFinishTime (خاتمه زمانی — نه لزوماً وضعیت مصوب)", "واقعیت آماری"),
             Card("open", "پرونده‌های باز", openNow, "count", null, null, null, null, "warning",
-                $"بدون FinishTime در تاریخ مرجع · کارتابل≈{cartable:N0}", "نیازمند قاعده"),
+                $"بدون FinishTime از پرونده‌های ورودی در بازه و فیلترهای فعال · کارتابل≈{cartable:N0}",
+                "نیازمند قاعده"),
             Card("complaint-share", "سهم شکایات", complaintShare, "percent", null, null, prevComplaintShare,
                 Delta(complaintShare, prevComplaintShare), "neutral",
                 "SubjectClass = شکایت ÷ کل واجد شرایط", "واقعیت آماری"),
             Card("median-days", "میانه زمان رسیدگی", cur.MedianDays, "days", null, null, prior.MedianDays,
                 Delta(cur.MedianDays, prior.MedianDays), "warning",
-                "میانه CookieTime تا FinishTime برای پرونده‌های دارای هر دو تاریخ", "واقعیت آماری"),
+                "میانه CookieTime تا FinishTime از حداکثر ۵۰۰۰ خاتمه اخیر در هر cohort", "نمونه محدود"),
             Card("pursuits", "پرونده‌های دارای پیگیری", cur.WithPursuits, "count", pursuitRate, "percent", prior.WithPursuits,
                 Delta(cur.WithPursuits, prior.WithPursuits), "neutral",
                 "CookiePersuitsCount > 0", "واقعیت آماری"),
@@ -107,13 +113,13 @@ public sealed class DidbanManagementQueryService(
         var prevDp = ToDynamic(prevParams);
 
         var trend = await QueryThroughput(conn, whereSql, dp, ct);
-        var byClass = (await conn.QueryAsync<NamedValueDto>(new CommandDefinition(
+        var byClass = (await conn.QueryAsync<MgmtClassValueDto>(new CommandDefinition(
             $"""
-             SELECT sc.SubjectClassName AS Name, COUNT_BIG(*) AS Value
+             SELECT sc.SubjectClassId AS Id, sc.SubjectClassName AS Name, COUNT_BIG(*) AS Value
              FROM dbo.Cookie c
              INNER JOIN dbo.SubjectClass sc ON sc.SubjectClassId = c.SubjectClassId
              {whereSql}
-             GROUP BY sc.SubjectClassName
+             GROUP BY sc.SubjectClassId, sc.SubjectClassName
              ORDER BY Value DESC
              """, dp, cancellationToken: ct))).ToList();
 
@@ -173,14 +179,18 @@ public sealed class DidbanManagementQueryService(
 
         var kpis = new List<MgmtKpiCardDto>
         {
-            Card("finished-count", "خاتمه‌یافته زمانی", cur.Finished, "count", null, null, null, null, "positive",
+            Card("finished-count", "مختومه زمانی", cur.Finished, "count", null, null, null, null, "positive",
                 "FinishTime پر", "واقعیت آماری"),
             Card("finish-rate", "نرخ خاتمه زمانی", Pct(cur.Finished, cur.Total), "percent", null, null, null, null, "neutral",
-                "Finished / Inflow cohort", "نیازمند قاعده"),
+                "پرونده‌های دارای FinishTime ÷ کل پرونده‌های ورودی در بازه؛ نرخ هم‌گروهی است، نه نرخ خروج روزانه", "نیازمند قاعده"),
+            Card("average-days", "میانگین زمان رسیدگی", cur.AverageDays, "days", null, null, null, null, "neutral",
+                "میانگین DATEDIFF روز بین CookieTime و CookieFinishTime برای پرونده‌های مختومه معتبر در بازه ورودی",
+                "واقعیت آماری"),
             Card("median", "میانه زمان رسیدگی", cur.MedianDays, "days", null, null, null, null, "warning",
-                "Median(Finish−CookieTime)", "واقعیت آماری"),
+                "میانه تا صدک ۹۰ از حداکثر ۵۰۰۰ خاتمه اخیر در بازه؛ نمونه‌گیری در محاسبه اعمال شده است",
+                "نمونه محدود"),
             Card("p90", "صدک ۹۰ زمان رسیدگی", cur.P90Days, "days", null, null, null, null, "warning",
-                "P90(Finish−CookieTime)", "واقعیت آماری"),
+                "صدک ۹۰ از حداکثر ۵۰۰۰ خاتمه اخیر در بازه", "نمونه محدود"),
             Card("avg-steps", "میانگین مراحل گردش", delayShare.AvgSteps is null ? null : Math.Round(delayShare.AvgSteps.Value, 2), "ratio",
                 null, null, null, null, "neutral", "Avg CookieFlow per Cookie", "واقعیت آماری"),
             Card("pursuit-rate", "نرخ پیگیری", Pct(cur.WithPursuits, cur.Total), "percent", null, null, null, null, "neutral",
@@ -197,15 +207,26 @@ public sealed class DidbanManagementQueryService(
             "فیلدهای مهلت SLA خالی‌اند؛ شاخص رعایت SLA نمایش داده نمی‌شود.");
     }
 
-    public async Task<ManagementBacklogResponse> GetBacklogAsync(PeriodFilter filter, CancellationToken ct)
+    public async Task<ManagementBacklogResponse> GetBacklogAsync(
+        PeriodFilter filter,
+        string? ageBucket,
+        CancellationToken ct)
     {
         await using var conn = await connectionFactory.OpenReadOnlyAsync(ct);
-        var (whereSql, parameters) = BuildWhere(filter with { From = null, To = null }); // open stock uses type filter only
-        // For age buckets use unfinished cookies (reference = now)
+        var (whereSql, parameters) = BuildWhere(filter);
         var dp = ToDynamic(parameters);
+        var stageAgeSql = ageBucket switch
+        {
+            "age-lt7" => "AND DATEDIFF(day, c.CookieTime, GETDATE()) < 7",
+            "age-7-30" => "AND DATEDIFF(day, c.CookieTime, GETDATE()) BETWEEN 7 AND 30",
+            "age-30-90" => "AND DATEDIFF(day, c.CookieTime, GETDATE()) BETWEEN 31 AND 90",
+            "age-90p" => "AND DATEDIFF(day, c.CookieTime, GETDATE()) > 90",
+            null => "",
+            _ => throw new ArgumentOutOfRangeException(nameof(ageBucket), "Unsupported backlog age bucket."),
+        };
 
         var age = await conn.QuerySingleAsync<AgeRow>(new CommandDefinition(
-            """
+            $"""
             SELECT
               COUNT_BIG(*) AS OpenTotal,
               SUM(CASE WHEN DATEDIFF(day, c.CookieTime, GETDATE()) < 7 THEN 1 ELSE 0 END) AS D0_7,
@@ -213,25 +234,265 @@ public sealed class DidbanManagementQueryService(
               SUM(CASE WHEN DATEDIFF(day, c.CookieTime, GETDATE()) BETWEEN 31 AND 90 THEN 1 ELSE 0 END) AS D31_90,
               SUM(CASE WHEN DATEDIFF(day, c.CookieTime, GETDATE()) > 90 THEN 1 ELSE 0 END) AS D90p
             FROM dbo.Cookie c
-            WHERE c.CookieTypeId = @cookieTypeId AND c.CookieFinishTime IS NULL
+            {whereSql}
+              AND c.CookieFinishTime IS NULL
             """,
-            new { cookieTypeId = _analytics.DefaultCookieTypeId },
+            dp,
             cancellationToken: ct));
 
         var units = (await conn.QueryAsync<UnitAgeRow>(new CommandDefinition(
-            """
-            SELECT TOP 15
-              d.DepartmentName AS Name,
-              COUNT_BIG(*) AS OpenCount,
-              AVG(CAST(DATEDIFF(day, c.CookieTime, GETDATE()) AS float)) AS MedianAgeDays,
-              SUM(CASE WHEN DATEDIFF(day, c.CookieTime, GETDATE()) > 90 THEN 1 ELSE 0 END) AS Over90
+            $"""
+            SELECT
+              c.DepartmentId AS DepartmentId,
+              COALESCE(d.DepartmentName, N'بدون واحد سازمانی') AS Name,
+              COUNT_BIG(*) AS InflowCount,
+              SUM(CASE WHEN c.CookieFinishTime IS NOT NULL THEN 1 ELSE 0 END) AS FinishedCount,
+              AVG(CASE WHEN c.CookieFinishTime IS NOT NULL AND c.CookieFinishTime >= c.CookieTime
+                       THEN CAST(DATEDIFF(day, c.CookieTime, c.CookieFinishTime) AS float) END) AS AverageResolutionDays,
+              SUM(CASE WHEN c.CookieFinishTime IS NULL THEN 1 ELSE 0 END) AS OpenCount,
+              AVG(CASE WHEN c.CookieFinishTime IS NULL
+                       THEN CAST(DATEDIFF(day, c.CookieTime, GETDATE()) AS float) END) AS AverageAgeDays,
+              SUM(CASE WHEN c.CookieFinishTime IS NULL AND DATEDIFF(day, c.CookieTime, GETDATE()) < 7
+                       THEN 1 ELSE 0 END) AS AgeLt7,
+              SUM(CASE WHEN c.CookieFinishTime IS NULL AND DATEDIFF(day, c.CookieTime, GETDATE()) BETWEEN 7 AND 30
+                       THEN 1 ELSE 0 END) AS Age7To30,
+              SUM(CASE WHEN c.CookieFinishTime IS NULL AND DATEDIFF(day, c.CookieTime, GETDATE()) BETWEEN 31 AND 90
+                       THEN 1 ELSE 0 END) AS Age30To90,
+              SUM(CASE WHEN c.CookieFinishTime IS NULL AND DATEDIFF(day, c.CookieTime, GETDATE()) > 90
+                       THEN 1 ELSE 0 END) AS Over90
             FROM dbo.Cookie c
-            INNER JOIN dbo.Department d ON d.DepartmentId = c.DepartmentId
-            WHERE c.CookieTypeId = @cookieTypeId AND c.CookieFinishTime IS NULL
-            GROUP BY d.DepartmentName
+            LEFT JOIN dbo.Department d ON d.DepartmentId = c.DepartmentId
+            {whereSql}
+            GROUP BY c.DepartmentId, COALESCE(d.DepartmentName, N'بدون واحد سازمانی')
+            HAVING SUM(CASE WHEN c.CookieFinishTime IS NULL THEN 1 ELSE 0 END) > 0
             ORDER BY OpenCount DESC
             """,
-            new { cookieTypeId = _analytics.DefaultCookieTypeId },
+            dp,
+            cancellationToken: ct))).ToList();
+
+        var regions = (await conn.QueryAsync<MgmtRegionBacklogDto>(new CommandDefinition(
+            $"""
+            SELECT
+              r.RegionId AS RegionId,
+              r.RegionName AS RegionName,
+              c.DepartmentId AS DepartmentId,
+              SUM(CASE WHEN DATEDIFF(day, c.CookieTime, GETDATE()) < 7 THEN CAST(1 AS bigint) ELSE CAST(0 AS bigint) END) AS AgeLt7,
+              SUM(CASE WHEN DATEDIFF(day, c.CookieTime, GETDATE()) BETWEEN 7 AND 30 THEN CAST(1 AS bigint) ELSE CAST(0 AS bigint) END) AS Age7To30,
+              SUM(CASE WHEN DATEDIFF(day, c.CookieTime, GETDATE()) BETWEEN 31 AND 90 THEN CAST(1 AS bigint) ELSE CAST(0 AS bigint) END) AS Age30To90,
+              SUM(CASE WHEN DATEDIFF(day, c.CookieTime, GETDATE()) > 90 THEN CAST(1 AS bigint) ELSE CAST(0 AS bigint) END) AS Over90
+            FROM dbo.Cookie c
+            INNER JOIN dbo.Inform i ON i.CookieId = c.CookieId
+            INNER JOIN dbo.Region r ON r.RegionId = i.RegionId
+            {whereSql}
+              AND c.CookieFinishTime IS NULL
+            GROUP BY r.RegionId, r.RegionName, c.DepartmentId
+            """,
+            dp,
+            cancellationToken: ct))).ToList();
+
+        var stageCases = (await conn.QueryAsync<MgmtBacklogStageDto>(new CommandDefinition(
+            $"""
+            WITH ScopedOpenCases AS (
+              SELECT c.CookieId, c.CookieTime, c.CookieFinishTime
+              FROM dbo.Cookie c
+              {whereSql}
+                AND c.CookieFinishTime IS NULL
+                {stageAgeSql}
+            ),
+            FlowEvents AS (
+              SELECT
+                c.CookieId,
+                c.CookieTime,
+                f.CookieFlowTime,
+                f.CookieFlowFinishTime,
+                c.CookieFinishTime,
+                f.CookieStatusId,
+                st.CookieStatusName,
+                LEAD(f.CookieFlowTime) OVER (
+                  PARTITION BY c.CookieId
+                  ORDER BY f.CookieFlowTime, f.CookieFlowId
+                ) AS NextFlowTime
+              FROM ScopedOpenCases c
+              INNER JOIN dbo.CookieFlow f ON f.CookieId = c.CookieId
+              LEFT JOIN dbo.CookieStatus st ON st.CookieStatusId = f.CookieStatusId
+            ),
+            TimedFlows AS (
+              SELECT *,
+                CASE
+                  WHEN CookieFlowFinishTime >= CookieFlowTime THEN CookieFlowFinishTime
+                  WHEN NextFlowTime >= CookieFlowTime THEN NextFlowTime
+                  WHEN CookieFinishTime >= CookieFlowTime THEN CookieFinishTime
+                  WHEN NextFlowTime IS NULL AND CookieFinishTime IS NULL THEN GETDATE()
+                  ELSE NULL
+                END AS EffectiveFinishTime
+              FROM FlowEvents
+            )
+            SELECT
+              r.RegionId,
+              COALESCE(r.RegionName, N'استان نامشخص') AS RegionName,
+              f.CookieStatusId AS StatusId,
+              COALESCE(f.CookieStatusName, N'وضعیت نامشخص') AS StageName,
+              COUNT_BIG(DISTINCT f.CookieId) AS CaseCount,
+              COUNT_BIG(*) AS FlowCount,
+              AVG(CASE WHEN f.EffectiveFinishTime >= f.CookieFlowTime
+                       THEN CAST(DATEDIFF_BIG(second, f.CookieFlowTime, f.EffectiveFinishTime) AS float) / 3600.0
+                  END) AS AverageStageDurationHours
+            FROM TimedFlows f
+            LEFT JOIN dbo.Inform i ON i.CookieId = f.CookieId
+            LEFT JOIN dbo.Region r ON r.RegionId = i.RegionId
+            GROUP BY r.RegionId, COALESCE(r.RegionName, N'استان نامشخص'),
+                     f.CookieStatusId, COALESCE(f.CookieStatusName, N'وضعیت نامشخص')
+            ORDER BY FlowCount DESC
+            """,
+            dp,
+            cancellationToken: ct))).ToList();
+
+        var stageOperators = (await conn.QueryAsync<MgmtBacklogStageOperatorDto>(new CommandDefinition(
+            $"""
+            WITH ScopedOpenCases AS (
+              SELECT c.CookieId, c.CookieTime, c.CookieFinishTime
+              FROM dbo.Cookie c
+              {whereSql}
+                AND c.CookieFinishTime IS NULL
+                {stageAgeSql}
+            ),
+            FlowEvents AS (
+              SELECT
+                c.CookieId,
+                f.CookieFlowTime,
+                f.CookieFlowFinishTime,
+                c.CookieFinishTime,
+                f.CookieStatusId,
+                st.CookieStatusName,
+                f.CookieFlowUserId AS OperatorId,
+                f.DepartmentId AS DepartmentId,
+                f.CookieFlowUserRoleId AS RoleId,
+                rle.RoleName,
+                LEAD(f.CookieFlowTime) OVER (
+                  PARTITION BY c.CookieId
+                  ORDER BY f.CookieFlowTime, f.CookieFlowId
+                ) AS NextFlowTime
+              FROM ScopedOpenCases c
+              INNER JOIN dbo.CookieFlow f ON f.CookieId = c.CookieId
+              LEFT JOIN dbo.CookieStatus st ON st.CookieStatusId = f.CookieStatusId
+              LEFT JOIN dbo.Role rle ON rle.RoleId = f.CookieFlowUserRoleId
+            ),
+            TimedFlows AS (
+              SELECT *,
+                CASE
+                  WHEN CookieFlowFinishTime >= CookieFlowTime THEN CookieFlowFinishTime
+                  WHEN NextFlowTime >= CookieFlowTime THEN NextFlowTime
+                  WHEN CookieFinishTime >= CookieFlowTime THEN CookieFinishTime
+                  WHEN NextFlowTime IS NULL AND CookieFinishTime IS NULL THEN GETDATE()
+                  ELSE NULL
+                END AS EffectiveFinishTime
+              FROM FlowEvents
+            )
+            SELECT
+              r.RegionId,
+              COALESCE(r.RegionName, N'استان نامشخص') AS RegionName,
+              f.CookieStatusId AS StatusId,
+              COALESCE(f.CookieStatusName, N'وضعیت نامشخص') AS StageName,
+              f.OperatorId,
+              f.RoleId,
+              COALESCE(f.RoleName, N'نقش ثبت‌نشده') AS RoleName,
+              f.DepartmentId,
+              COALESCE(d.DepartmentName, N'بدون واحد سازمانی') AS DepartmentName,
+              COUNT_BIG(DISTINCT f.CookieId) AS CaseCount,
+              COUNT_BIG(*) AS FlowCount,
+              AVG(CASE WHEN f.EffectiveFinishTime >= f.CookieFlowTime
+                       THEN CAST(DATEDIFF_BIG(second, f.CookieFlowTime, f.EffectiveFinishTime) AS float) / 3600.0
+                  END) AS AverageStageDurationHours
+            FROM TimedFlows f
+            LEFT JOIN dbo.Inform i ON i.CookieId = f.CookieId
+            LEFT JOIN dbo.Region r ON r.RegionId = i.RegionId
+            LEFT JOIN dbo.Department d ON d.DepartmentId = f.DepartmentId
+            WHERE f.OperatorId > 0
+            GROUP BY r.RegionId, COALESCE(r.RegionName, N'استان نامشخص'),
+                     f.CookieStatusId, COALESCE(f.CookieStatusName, N'وضعیت نامشخص'),
+                     f.OperatorId, f.RoleId, COALESCE(f.RoleName, N'نقش ثبت‌نشده'),
+                     f.DepartmentId, COALESCE(d.DepartmentName, N'بدون واحد سازمانی')
+            ORDER BY FlowCount DESC, AverageStageDurationHours DESC
+            """,
+            dp,
+            cancellationToken: ct))).ToList();
+
+        var operators = (await conn.QueryAsync<MgmtOperatorBacklogDto>(new CommandDefinition(
+            $"""
+            WITH ScopedCases AS (
+              SELECT c.CookieId, c.CookieTime, c.CookieFinishTime
+              FROM dbo.Cookie c
+              {whereSql}
+            ),
+            FlowMetrics AS (
+              SELECT
+                f.CookieFlowUserId AS OperatorId,
+                f.DepartmentId AS DepartmentId,
+                COUNT_BIG(*) AS FlowCount,
+                COUNT_BIG(DISTINCT c.CookieId) AS CasesHandled,
+                SUM(CASE WHEN f.CookieFlowFinishTime IS NOT NULL
+                           AND f.CookieFlowFinishTime >= f.CookieFlowTime
+                         THEN CAST(1 AS bigint) ELSE CAST(0 AS bigint) END) AS CompletedFlows,
+                AVG(CASE WHEN f.CookieFlowFinishTime IS NOT NULL
+                           AND f.CookieFlowFinishTime >= f.CookieFlowTime
+                         THEN CAST(DATEDIFF_BIG(minute, f.CookieFlowTime, f.CookieFlowFinishTime) AS float) / 60.0
+                    END) AS AverageElapsedHours
+              FROM dbo.CookieFlow f
+              INNER JOIN ScopedCases c ON c.CookieId = f.CookieId
+              WHERE f.CookieFlowUserId > 0
+              GROUP BY f.CookieFlowUserId, f.DepartmentId
+            ),
+            RankedOpenFlows AS (
+              SELECT
+                f.CookieId,
+                f.CookieFlowUserId AS OperatorId,
+                f.DepartmentId AS DepartmentId,
+                c.CookieTime,
+                ROW_NUMBER() OVER (
+                  PARTITION BY f.CookieId
+                  ORDER BY f.CookieFlowTime DESC, f.CookieFlowId DESC
+                ) AS FlowRank
+              FROM dbo.CookieFlow f
+              INNER JOIN ScopedCases c ON c.CookieId = f.CookieId
+              WHERE c.CookieFinishTime IS NULL
+            ),
+            OpenMetrics AS (
+              SELECT
+                OperatorId,
+                DepartmentId,
+                COUNT_BIG(*) AS OpenCases,
+                AVG(CAST(DATEDIFF(day, CookieTime, GETDATE()) AS float)) AS AverageOpenAgeDays,
+                SUM(CASE WHEN DATEDIFF(day, CookieTime, GETDATE()) < 7 THEN CAST(1 AS bigint) ELSE CAST(0 AS bigint) END) AS OpenAgeLt7,
+                SUM(CASE WHEN DATEDIFF(day, CookieTime, GETDATE()) BETWEEN 7 AND 30 THEN CAST(1 AS bigint) ELSE CAST(0 AS bigint) END) AS OpenAge7To30,
+                SUM(CASE WHEN DATEDIFF(day, CookieTime, GETDATE()) BETWEEN 31 AND 90 THEN CAST(1 AS bigint) ELSE CAST(0 AS bigint) END) AS OpenAge30To90,
+                SUM(CASE WHEN DATEDIFF(day, CookieTime, GETDATE()) > 90 THEN CAST(1 AS bigint) ELSE CAST(0 AS bigint) END) AS OpenAge90Plus
+              FROM RankedOpenFlows
+              WHERE FlowRank = 1
+                AND OperatorId > 0
+              GROUP BY OperatorId, DepartmentId
+            )
+            SELECT
+              f.OperatorId,
+              f.DepartmentId,
+              COALESCE(d.DepartmentName, N'بدون واحد سازمانی') AS DepartmentName,
+              f.FlowCount,
+              f.CasesHandled,
+              f.CompletedFlows,
+              f.AverageElapsedHours,
+              ISNULL(o.OpenCases, 0) AS OpenCases,
+              o.AverageOpenAgeDays,
+              ISNULL(o.OpenAgeLt7, 0) AS OpenAgeLt7,
+              ISNULL(o.OpenAge7To30, 0) AS OpenAge7To30,
+              ISNULL(o.OpenAge30To90, 0) AS OpenAge30To90,
+              ISNULL(o.OpenAge90Plus, 0) AS OpenAge90Plus
+            FROM FlowMetrics f
+            LEFT JOIN OpenMetrics o
+              ON o.OperatorId = f.OperatorId
+             AND (o.DepartmentId = f.DepartmentId OR (o.DepartmentId IS NULL AND f.DepartmentId IS NULL))
+            LEFT JOIN dbo.Department d ON d.DepartmentId = f.DepartmentId
+            ORDER BY OpenCases DESC, AverageElapsedHours DESC
+            """,
+            dp,
             cancellationToken: ct))).ToList();
 
         var (tw, tp) = BuildWhere(filter);
@@ -256,15 +517,24 @@ public sealed class DidbanManagementQueryService(
         };
 
         var unitRows = units.Select(u => new MgmtUnitBacklogDto(
+            u.DepartmentId,
             u.Name ?? "—",
+            u.InflowCount,
+            u.FinishedCount,
+            Pct(u.FinishedCount, u.InflowCount),
+            u.AverageResolutionDays is null ? null : Math.Round(u.AverageResolutionDays.Value, 1),
             u.OpenCount,
-            u.MedianAgeDays is null ? null : Math.Round(u.MedianAgeDays.Value, 1),
+            u.AverageAgeDays is null ? null : Math.Round(u.AverageAgeDays.Value, 1),
+            u.AgeLt7,
+            u.Age7To30,
+            u.Age30To90,
             u.Over90,
             "stable")).ToList();
 
         return new ManagementBacklogResponse(
-            new MetaDto("didban", DateTimeOffset.UtcNow, "تاریخ مرجع: اکنون (FinishTime خالی)"),
-            kpis, ageBuckets, unitRows, trend);
+            new MetaDto("didban", DateTimeOffset.UtcNow,
+                $"{SqlFilterBuilder.PeriodLabel(filter)} · موجودی باز تا امروز از پرونده‌های ورودی در همین بازه و فیلترها"),
+            kpis, ageBuckets, unitRows, regions, stageCases, stageOperators, operators, trend);
     }
 
     public async Task<ManagementProvincesResponse> GetProvincesAsync(PeriodFilter filter, CancellationToken ct)
@@ -362,7 +632,7 @@ public sealed class DidbanManagementQueryService(
         var defs = new List<string>
         {
             "واجد شرایط: CookieTypeId=پیام + فیلتر بازه/استان/طبقه",
-            "خاتمه‌یافته زمانی: CookieFinishTime IS NOT NULL",
+            "مختومه زمانی: CookieFinishTime IS NOT NULL",
             "باز (موقت): CookieFinishTime IS NULL در تاریخ مرجع",
             "پیگیری: CookiePersuitsCount > 0",
             "نشانه تأخیر: CookieFlowDelayTime > 0 (جانشین SLA)",
@@ -448,7 +718,7 @@ public sealed class DidbanManagementQueryService(
 
     private async Task<CoreRow> QueryCore(System.Data.IDbConnection conn, string whereSql, DynamicParameters dp, CancellationToken ct)
     {
-        // Median/P90 via ordered sample of duration days (SQL Server 2016-compatible).
+        // Median/P90 use the latest 5,000 valid completion durations; average is full-cohort SQL aggregate.
         var core = await conn.QuerySingleAsync<CoreRow>(new CommandDefinition(
             $"""
              SELECT
@@ -456,8 +726,8 @@ public sealed class DidbanManagementQueryService(
                SUM(CASE WHEN c.SubjectClassId = 1 THEN 1 ELSE 0 END) AS Complaints,
                SUM(CASE WHEN c.CookieFinishTime IS NOT NULL THEN 1 ELSE 0 END) AS Finished,
                SUM(CASE WHEN ISNULL(c.CookiePersuitsCount,0) > 0 THEN 1 ELSE 0 END) AS WithPursuits,
-               AVG(CASE WHEN c.CookieFinishTime IS NOT NULL
-                        THEN CAST(DATEDIFF(day, c.CookieTime, c.CookieFinishTime) AS float) END) AS MedianDays,
+               AVG(CASE WHEN c.CookieFinishTime IS NOT NULL AND c.CookieFinishTime >= c.CookieTime
+                        THEN CAST(DATEDIFF(day, c.CookieTime, c.CookieFinishTime) AS float) END) AS AverageDays,
                CAST(NULL AS float) AS P90Days
              FROM dbo.Cookie c
              {whereSql}
@@ -469,6 +739,7 @@ public sealed class DidbanManagementQueryService(
              FROM dbo.Cookie c
              {whereSql}
                AND c.CookieFinishTime IS NOT NULL
+               AND c.CookieFinishTime >= c.CookieTime
              ORDER BY c.CookieFinishTime DESC
              """, dp, cancellationToken: ct))).OrderBy(x => x).ToList();
 
@@ -476,8 +747,11 @@ public sealed class DidbanManagementQueryService(
         double? p90 = null;
         if (durations.Count > 0)
         {
-            median = durations[durations.Count / 2];
-            p90 = durations[(int)Math.Min(durations.Count - 1, Math.Floor(durations.Count * 0.9))];
+            var middle = durations.Count / 2;
+            median = durations.Count % 2 == 0
+                ? (durations[middle - 1] + durations[middle]) / 2
+                : durations[middle];
+            p90 = durations[Math.Max(0, (int)Math.Ceiling(durations.Count * 0.9) - 1)];
         }
 
         return new CoreRow
@@ -486,6 +760,7 @@ public sealed class DidbanManagementQueryService(
             Complaints = core.Complaints,
             Finished = core.Finished,
             WithPursuits = core.WithPursuits,
+            AverageDays = core.AverageDays,
             MedianDays = median,
             P90Days = p90
         };
@@ -695,6 +970,7 @@ public sealed class DidbanManagementQueryService(
         public long Complaints { get; init; }
         public long Finished { get; init; }
         public long WithPursuits { get; init; }
+        public double? AverageDays { get; init; }
         public double? MedianDays { get; init; }
         public double? P90Days { get; init; }
     }
@@ -731,9 +1007,16 @@ public sealed class DidbanManagementQueryService(
 
     private sealed class UnitAgeRow
     {
+        public int? DepartmentId { get; init; }
         public string? Name { get; init; }
+        public long InflowCount { get; init; }
+        public long FinishedCount { get; init; }
+        public double? AverageResolutionDays { get; init; }
         public long OpenCount { get; init; }
-        public double? MedianAgeDays { get; init; }
+        public double? AverageAgeDays { get; init; }
+        public long AgeLt7 { get; init; }
+        public long Age7To30 { get; init; }
+        public long Age30To90 { get; init; }
         public long Over90 { get; init; }
     }
 

@@ -18,6 +18,7 @@ type Ctx = {
   setPeriod: (p: PeriodKey) => void;
   setRegionId: (id: number | null) => void;
   setSubjectClassId: (id: number | null) => void;
+  setDepartmentId: (id: number | null) => void;
   reset: () => void;
 };
 
@@ -33,6 +34,7 @@ function readStored(): MgmtFilters {
       period: (parsed.period as PeriodKey) ?? DEFAULT_FILTERS.period,
       regionId: parsed.regionId ?? null,
       subjectClassId: parsed.subjectClassId ?? null,
+      departmentId: parsed.departmentId ?? null,
     };
   } catch {
     return DEFAULT_FILTERS;
@@ -62,14 +64,17 @@ export function FilterProvider({ children }: { children: ReactNode }) {
   const setSubjectClassId = useCallback((subjectClassId: number | null) => {
     setFilters((f) => ({ ...f, subjectClassId }));
   }, []);
+  const setDepartmentId = useCallback((departmentId: number | null) => {
+    setFilters((f) => ({ ...f, departmentId }));
+  }, []);
   const reset = useCallback(() => {
     setFilters(DEFAULT_FILTERS);
     window.sessionStorage.removeItem(STORAGE_KEY);
   }, []);
 
   const value = useMemo<Ctx>(
-    () => ({ filters, setPeriod, setRegionId, setSubjectClassId, reset }),
-    [filters, setPeriod, setRegionId, setSubjectClassId, reset],
+    () => ({ filters, setPeriod, setRegionId, setSubjectClassId, setDepartmentId, reset }),
+    [filters, setPeriod, setRegionId, setSubjectClassId, setDepartmentId, reset],
   );
 
   return <FilterContext.Provider value={value}>{children}</FilterContext.Provider>;

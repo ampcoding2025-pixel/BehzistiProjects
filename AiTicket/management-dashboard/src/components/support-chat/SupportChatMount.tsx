@@ -14,7 +14,7 @@ export function SupportChatMount() {
       apiBaseUrl={BOT_URL || ""}
       appId="aiticket-management"
       title="دستیار داشبورد مدیریتی دیدبان"
-      subtitle="پاسخ بر اساس شاخص‌های زنده و OpenRouter"
+      subtitle=""
       position="bottom-right"
       primaryColor="#00BAD1"
       logoSrc="/behzisti-logo.png"

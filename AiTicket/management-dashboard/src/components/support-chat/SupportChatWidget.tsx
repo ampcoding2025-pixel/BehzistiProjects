@@ -59,7 +59,7 @@ export function SupportChatWidget(props: SupportChatWidgetProps) {
     headers,
     onHandoff,
     className,
-    logoSrc = "/behzisti-logo.svg",
+    logoSrc = "/behzisti-logo.png",
     showFaqs = true,
   } = props;
 
@@ -203,9 +203,6 @@ export function SupportChatWidget(props: SupportChatWidgetProps) {
     ["--bzw-primary-soft" as string]: `${primaryColor}40`,
   };
 
-  const quickChips = faqs.slice(0, 4);
-  const listItems = faqs.slice(0, 10);
-
   return (
     <div className={`bzw-root ${className ?? ""}`} style={styleVars} data-app-id={appId}>
       {open && (
@@ -219,7 +216,7 @@ export function SupportChatWidget(props: SupportChatWidgetProps) {
             <img src={logoSrc} alt="" />
             <div>
               <h3>{title}</h3>
-              <p>{subtitle}</p>
+              {subtitle ? <p>{subtitle}</p> : null}
             </div>
             <div className="bzw-header-actions">
               <button
@@ -265,27 +262,12 @@ export function SupportChatWidget(props: SupportChatWidgetProps) {
                   </button>
                 </div>
 
-                <div className="bzw-faq__chips">
-                  {quickChips.map((f) => (
-                    <button
-                      key={`chip-${f.id}`}
-                      type="button"
-                      className="bzw-faq__chip"
-                      disabled={busy}
-                      onClick={() => void send(f.question)}
-                      title={f.title}
-                    >
-                      {f.title || f.question}
-                    </button>
-                  ))}
-                </div>
-
                 {faqExpanded && (
                   <div className="bzw-faq__list" style={{ marginTop: "0.55rem" }}>
-                    {listItems.length === 0 ? (
+                    {faqs.length === 0 ? (
                       <p className="bzw-faq__empty">فعلاً پرسشی ثبت نشده است.</p>
                     ) : (
-                      listItems.map((f) => (
+                      faqs.map((f) => (
                         <button
                           key={f.id}
                           type="button"
@@ -306,19 +288,19 @@ export function SupportChatWidget(props: SupportChatWidgetProps) {
           </div>
 
           <footer className="bzw-footer">
-            <div className="bzw-status">وضعیت: {STATUS_LABEL[status]} · دامنه دانش: {appId}</div>
-            <div className="bzw-actions">
-              {(handoffSuggested || status === "bot") && status !== "with_agent" && (
+            {sessionId && (handoffSuggested || status === "bot") && status !== "with_agent" ? (
+              <div className="bzw-handoff">
+                <span>پاسخ موردنظرتان را دریافت نکردید؟</span>
                 <button
                   type="button"
                   className="bzw-btn ghost"
-                  disabled={busy || !sessionId}
+                  disabled={busy}
                   onClick={requestHandoff}
                 >
-                  کارشناس زنده
+                  گفتگو با پشتیبانی
                 </button>
-              )}
-            </div>
+              </div>
+            ) : null}
             <form
               className="bzw-composer"
               onSubmit={(e) => {
@@ -346,27 +328,23 @@ export function SupportChatWidget(props: SupportChatWidgetProps) {
         </section>
       )}
 
-      <div className={`bzw-launcher-wrap ${isRight ? "is-right" : ""}`}>
-        <button
-          type="button"
-          className="bzw-launcher"
-          aria-label={open ? "بستن گفتگو" : "باز کردن گفتگو"}
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-        >
-          <span className="bzw-ping" aria-hidden />
-          <span className="bzw-ping is-delay" aria-hidden />
-          {open ? (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-              <path d="M6 6l12 12M18 6L6 18" />
-            </svg>
-          ) : (
+      {!open && (
+        <div className={`bzw-launcher-wrap ${isRight ? "is-right" : ""}`}>
+          <button
+            type="button"
+            className="bzw-launcher"
+            aria-label="باز کردن گفتگو"
+            aria-expanded={false}
+            onClick={() => setOpen(true)}
+          >
+            <span className="bzw-ping" aria-hidden />
+            <span className="bzw-ping is-delay" aria-hidden />
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M21 12c0 4.4-4.3 8-9.5 8-1.1 0-2.1-.1-3.1-.4L3 21l1.6-4.1C3.6 15.7 3 13.9 3 12c0-4.4 4.3-8 9.5-8S21 7.6 21 12z" />
             </svg>
-          )}
-        </button>
-      </div>
+          </button>
+        </div>
+      )}
     </div>
   );
 }

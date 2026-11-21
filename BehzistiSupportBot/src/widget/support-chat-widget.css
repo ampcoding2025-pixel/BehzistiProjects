@@ -168,7 +168,7 @@
 }
 
 .bzw-header img {
-  width: 36px;
+  width: 90px;
   height: auto;
   background: #fff;
   border-radius: 10px;
@@ -276,9 +276,13 @@
   gap: 0.45rem;
 }
 
-.bzw-actions {
+.bzw-handoff {
   display: flex;
-  gap: 0.4rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  color: var(--bzw-muted);
+  font-size: 0.75rem;
 }
 
 .bzw-btn {
@@ -325,12 +329,6 @@
 .bzw-composer textarea:focus {
   border-color: var(--bzw-primary);
   box-shadow: 0 0 0 3px var(--bzw-primary-soft);
-}
-
-.bzw-status {
-  font-size: 0.75rem;
-  color: var(--bzw-muted);
-  padding: 0 0.15rem;
 }
 
 /* FAQ list — same teal template as dashboard suggestion chips */

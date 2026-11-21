@@ -59,7 +59,7 @@ export function SupportChatWidget(props: SupportChatWidgetProps) {
     headers,
     onHandoff,
     className,
-    logoSrc = "/behzisti-logo.svg",
+    logoSrc = "/behzisti-logo.png",
     showFaqs = true,
   } = props;
 
@@ -219,7 +219,7 @@ export function SupportChatWidget(props: SupportChatWidgetProps) {
             <img src={logoSrc} alt="" />
             <div>
               <h3>{title}</h3>
-              <p>{subtitle}</p>
+              {subtitle ? <p>{subtitle}</p> : null}
             </div>
             <div className="bzw-header-actions">
               <button
@@ -306,19 +306,19 @@ export function SupportChatWidget(props: SupportChatWidgetProps) {
           </div>
 
           <footer className="bzw-footer">
-            <div className="bzw-status">وضعیت: {STATUS_LABEL[status]} · دامنه دانش: {appId}</div>
-            <div className="bzw-actions">
-              {(handoffSuggested || status === "bot") && status !== "with_agent" && (
+            {sessionId && (handoffSuggested || status === "bot") && status !== "with_agent" ? (
+              <div className="bzw-handoff">
+                <span>پاسخ موردنظرتان را دریافت نکردید؟</span>
                 <button
                   type="button"
                   className="bzw-btn ghost"
-                  disabled={busy || !sessionId}
+                  disabled={busy}
                   onClick={requestHandoff}
                 >
-                  کارشناس زنده
+                  گفتگو با پشتیبانی
                 </button>
-              )}
-            </div>
+              </div>
+            ) : null}
             <form
               className="bzw-composer"
               onSubmit={(e) => {
@@ -346,26 +346,22 @@ export function SupportChatWidget(props: SupportChatWidgetProps) {
         </section>
       )}
 
-      <div className={`bzw-launcher-wrap ${isRight ? "is-right" : ""}`}>
-        <button
-          type="button"
-          className="bzw-launcher"
-          aria-label={open ? "بستن گفتگو" : "باز کردن گفتگو"}
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-        >
-          <span className="bzw-ping" aria-hidden />
-          <span className="bzw-ping is-delay" aria-hidden />
-          {open ? (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-              <path d="M6 6l12 12M18 6L6 18" />
-            </svg>
-          ) : (
-            // eslint-disable-next-line @next/next/no-img-element
+      {!open && (
+        <div className={`bzw-launcher-wrap ${isRight ? "is-right" : ""}`}>
+          <button
+            type="button"
+            className="bzw-launcher"
+            aria-label="باز کردن گفتگو"
+            aria-expanded={false}
+            onClick={() => setOpen(true)}
+          >
+            <span className="bzw-ping" aria-hidden />
+            <span className="bzw-ping is-delay" aria-hidden />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img className="bzw-launcher__logo" src={logoSrc} alt="" />
-          )}
-        </button>
-      </div>
+          </button>
+        </div>
+      )}
     </div>
   );
 }

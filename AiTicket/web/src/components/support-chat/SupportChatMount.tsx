@@ -16,7 +16,7 @@ export function SupportChatMount() {
       subtitle="دانش سازمانی مرتبط با داشبورد تحلیلی"
       position="bottom-right"
       primaryColor="#00BAD1"
-      logoSrc="/behzisti-logo.svg"
+      logoSrc="/behzisti-logo.png"
       userLabel="کاربر داشبورد تحلیلی"
     />
   );

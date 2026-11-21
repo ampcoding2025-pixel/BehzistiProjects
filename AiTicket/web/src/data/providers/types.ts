@@ -536,6 +536,52 @@ export type UserWorkDistributionData = {
   byType: NamedValue[];
 };
 
+export type UserRequestItem = {
+  cookieId: number;
+  subject: string;
+  stepName: string;
+  hours: number | null;
+  isOpen: boolean;
+  startTime: string | null;
+  finishTime: string | null;
+};
+
+export type UserRequestsData = {
+  userId: number;
+  role: UserWorkloadRole;
+  name: string;
+  periodLabel: string;
+  items: UserRequestItem[];
+  stepHoursOpen: NamedValue[];
+  stepHoursClosed: NamedValue[];
+};
+
+export type CookieWorkflowStepState = "done" | "current" | "remaining" | "skipped";
+
+export type CookieWorkflowStep = {
+  order: number;
+  statusId: number;
+  name: string;
+  state: CookieWorkflowStepState;
+  startTime: string | null;
+  finishTime: string | null;
+  hours: number | null;
+  /** Sum of dwell through this step (done/current only) */
+  cumulativeHours: number | null;
+};
+
+export type CookieWorkflowData = {
+  cookieId: number;
+  subject: string;
+  subjectClassName: string;
+  isOpen: boolean;
+  currentStepName: string | null;
+  steps: CookieWorkflowStep[];
+  pathNote: string;
+  /** CookieTime → finish/now — total time in the system */
+  lifetimeHours: number | null;
+};
+
 export interface AnalyticsDataProvider {
   getExecutiveDashboard(
     filters?: AnalyticsQueryFilters,
@@ -552,6 +598,12 @@ export interface AnalyticsDataProvider {
     role: UserWorkloadRole,
     filters?: AnalyticsQueryFilters,
   ): Promise<UserWorkDistributionData>;
+  getUserRequests(
+    userId: number,
+    role: UserWorkloadRole,
+    filters?: AnalyticsQueryFilters,
+  ): Promise<UserRequestsData>;
+  getCookieWorkflow(cookieId: number): Promise<CookieWorkflowData>;
   getCategoryExplorer(filters?: AnalyticsQueryFilters): Promise<CategoryExplorerData>;
   getTopicExplorer(filters?: AnalyticsQueryFilters): Promise<TopicExplorerData>;
   getAnswerIntelligence(filters?: AnalyticsQueryFilters): Promise<AnswerIntelligenceData>;

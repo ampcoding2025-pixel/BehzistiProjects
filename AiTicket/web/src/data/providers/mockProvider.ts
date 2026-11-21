@@ -23,7 +23,9 @@ import type {
   ReportsCenterData,
   RequestAnalyticsData,
   TopicExplorerData,
+  CookieWorkflowData,
   UserRateTrendData,
+  UserRequestsData,
   UserWorkDistributionData,
   UserWorkloadRole,
 } from "@/data/providers/types";
@@ -96,6 +98,97 @@ export const mockAnalyticsProvider: AnalyticsDataProvider = {
         { name: "انجام شد", value: Math.round(total * 0.2) },
         { name: "سایر", value: Math.round(total * 0.15) },
       ],
+    };
+  },
+
+  async getCookieWorkflow(cookieId: number): Promise<CookieWorkflowData> {
+    await new Promise((r) => setTimeout(r, 50));
+    const isOpen = cookieId % 3 === 0;
+    const names = ["ثبت", "ارجاع", "رسیدگی", "تایید نهایی", "انجام شد"];
+    const currentIdx = isOpen ? 2 : names.length - 1;
+    const dwell = [4, 12, 30, 8, 6];
+    return {
+      cookieId,
+      subject: `موضوع نمونه ${cookieId}`,
+      subjectClassName: "شکایت",
+      isOpen,
+      currentStepName: names[currentIdx]!,
+      pathNote: "مسیر نمایشی از پرونده‌های بسته‌شده هم‌طبقه",
+      lifetimeHours: dwell.slice(0, currentIdx + 1).reduce((a, b) => a + b, 0) + (isOpen ? 5 : 0),
+      steps: names.map((name, i) => {
+        const skipped = i === 1 && currentIdx > 1;
+        const state = skipped
+          ? ("skipped" as const)
+          : !isOpen || i < currentIdx
+            ? ("done" as const)
+            : i === currentIdx
+              ? ("current" as const)
+              : ("remaining" as const);
+        return {
+          order: i + 1,
+          statusId: 10 + i,
+          name,
+          state,
+          startTime:
+            !skipped && i <= currentIdx ? new Date(2025, 9, 1 + i).toISOString() : null,
+          finishTime:
+            !skipped && (i < currentIdx || !isOpen)
+              ? new Date(2025, 9, 1 + i, 6).toISOString()
+              : null,
+          hours: !skipped && i <= currentIdx ? dwell[i]! : null,
+          cumulativeHours:
+            !skipped && i <= currentIdx
+              ? Number(
+                  dwell
+                    .slice(0, i + 1)
+                    .reduce((a, b, idx) => a + (idx === 1 && currentIdx > 1 ? 0 : b), 0)
+                    .toFixed(1),
+                )
+              : null,
+        };
+      }),
+    };
+  },
+
+  async getUserRequests(
+    userId: number,
+    role: UserWorkloadRole,
+    _filters?: AnalyticsQueryFilters,
+  ): Promise<UserRequestsData> {
+    await new Promise((r) => setTimeout(r, 70));
+    const actor =
+      mockRequestAnalytics.byFlowActor.find((u) => u.id === userId) ??
+      mockRequestAnalytics.byCartableUser.find((u) => u.id === userId);
+    const name = actor?.name ?? `کاربر ${userId}`;
+    const steps = ["رسیدگی توسط پردازش", "تایید نهایی", "انجام شد", "ارجاع"];
+    const items = Array.from({ length: 12 }, (_, i) => {
+      const isOpen = i % 3 === 0;
+      const start = new Date(2025, 9, 1 + i);
+      return {
+        cookieId: 1000 + userId * 10 + i,
+        subject: `موضوع نمونه ${i + 1}`,
+        stepName: steps[i % steps.length]!,
+        hours: Number((2 + (i % 5) * 1.4).toFixed(1)),
+        isOpen,
+        startTime: start.toISOString(),
+        finishTime: isOpen ? null : new Date(start.getTime() + 36e5 * (3 + i)).toISOString(),
+      };
+    });
+    const sumBy = (open: boolean) =>
+      steps.map((step) => ({
+        name: step,
+        value: items
+          .filter((x) => x.isOpen === open && x.stepName === step)
+          .reduce((s, x) => s + (x.hours ?? 0), 0),
+      })).filter((r) => r.value > 0);
+    return {
+      userId,
+      role,
+      name,
+      periodLabel: "بازه فعلی (mock)",
+      items,
+      stepHoursOpen: sumBy(true),
+      stepHoursClosed: sumBy(false),
     };
   },
 

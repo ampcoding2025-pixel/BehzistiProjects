@@ -114,9 +114,13 @@ export function periodToRange(period: PeriodKey): { from?: string; to?: string; 
   };
 }
 
-/** Parse chart month label `YYYY/MM` into inclusive ISO date range. */
+/** Parse chart month label `YYYY/MM` (Latin or Persian digits) into inclusive ISO date range. */
 export function monthLabelToRange(label: string): { from: string; to: string } | null {
-  const m = /^(\d{4})\/(\d{2})$/.exec(label.trim());
+  const normalized = label
+    .trim()
+    .replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))
+    .replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)));
+  const m = /^(\d{4})\/(\d{2})$/.exec(normalized);
   if (!m) return null;
   const year = Number(m[1]);
   const month = Number(m[2]);

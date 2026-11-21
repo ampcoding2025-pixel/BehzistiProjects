@@ -26,6 +26,9 @@ import type {
   TaxonomyLevel,
   TopicExplorerData,
   UserRateTrendData,
+  CookieWorkflowData,
+  CookieWorkflowStepState,
+  UserRequestsData,
   UserWorkDistributionData,
   UserWorkloadRole,
 } from "@/data/providers/types";
@@ -439,6 +442,94 @@ export const apiAnalyticsProvider: AnalyticsDataProvider = {
       periodLabel: data.meta.periodLabel,
       byState: mapNamed(data.byState ?? []),
       byType: mapNamed(data.byType ?? []),
+    };
+  },
+
+  async getUserRequests(
+    userId: number,
+    role: UserWorkloadRole,
+    filters?: AnalyticsQueryFilters,
+  ): Promise<UserRequestsData> {
+    const base = apiPath("/api/v1/analytics/requests/user-requests", filters);
+    const sep = base.includes("?") ? "&" : "?";
+    const data = await fetchJson<{
+      meta: { periodLabel: string };
+      userId: number;
+      role: string;
+      name: string;
+      items?: {
+        cookieId: number;
+        subject?: string;
+        stepName?: string;
+        hours?: number | null;
+        isOpen?: boolean;
+        startTime?: string | null;
+        finishTime?: string | null;
+      }[];
+      stepHoursOpen?: ApiNamed[];
+      stepHoursClosed?: ApiNamed[];
+    }>(`${base}${sep}userId=${userId}&role=${encodeURIComponent(role)}`);
+    return {
+      userId: data.userId,
+      role: (data.role as UserWorkloadRole) || role,
+      name: data.name,
+      periodLabel: data.meta.periodLabel,
+      items: (data.items ?? []).map((i) => ({
+        cookieId: Number(i.cookieId),
+        subject: i.subject ?? `پرونده ${i.cookieId}`,
+        stepName: i.stepName ?? "نامشخص",
+        hours: i.hours == null ? null : Number(i.hours),
+        isOpen: Boolean(i.isOpen),
+        startTime: i.startTime ?? null,
+        finishTime: i.finishTime ?? null,
+      })),
+      stepHoursOpen: mapNamed(data.stepHoursOpen ?? []),
+      stepHoursClosed: mapNamed(data.stepHoursClosed ?? []),
+    };
+  },
+
+  async getCookieWorkflow(cookieId: number): Promise<CookieWorkflowData> {
+    const data = await fetchJson<{
+      cookieId: number;
+      subject?: string;
+      subjectClassName?: string;
+      isOpen?: boolean;
+      currentStepName?: string | null;
+      pathNote?: string;
+      lifetimeHours?: number | null;
+      steps?: {
+        order: number;
+        statusId: number;
+        name?: string;
+        state?: string;
+        startTime?: string | null;
+        finishTime?: string | null;
+        hours?: number | null;
+        cumulativeHours?: number | null;
+      }[];
+    }>(`/api/v1/analytics/requests/cookie-workflow?cookieId=${cookieId}`);
+    const normalizeState = (s: string | undefined): CookieWorkflowStepState => {
+      if (s === "done" || s === "current" || s === "remaining" || s === "skipped") return s;
+      return "remaining";
+    };
+    return {
+      cookieId: Number(data.cookieId),
+      subject: data.subject ?? `پرونده ${cookieId}`,
+      subjectClassName: data.subjectClassName ?? "نامشخص",
+      isOpen: Boolean(data.isOpen),
+      currentStepName: data.currentStepName ?? null,
+      pathNote: data.pathNote ?? "",
+      lifetimeHours: data.lifetimeHours == null ? null : Number(data.lifetimeHours),
+      steps: (data.steps ?? []).map((s) => ({
+        order: Number(s.order),
+        statusId: Number(s.statusId),
+        name: s.name ?? "نامشخص",
+        state: normalizeState(s.state),
+        startTime: s.startTime ?? null,
+        finishTime: s.finishTime ?? null,
+        hours: s.hours == null ? null : Number(s.hours),
+        cumulativeHours: s.cumulativeHours == null ? null : Number(s.cumulativeHours),
+      })),
     };
   },
 

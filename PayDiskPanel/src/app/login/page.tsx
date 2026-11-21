@@ -42,7 +42,7 @@ function LoginForm() {
         <div className="mb-6 text-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/behzisti-logo.svg"
+            src="/behzisti-logo.png"
             alt="سازمان بهزیستی کشور"
             className="h-16 w-auto mx-auto mb-4"
           />

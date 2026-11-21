@@ -1,4 +1,4 @@
-import { mockAdminCenter } from "@/data/mock/admin";
+﻿import { mockAdminCenter } from "@/data/mock/admin";
 import { mockAiPerformance } from "@/data/mock/aiPerformance";
 import { mockAnswerIntelligence } from "@/data/mock/answers";
 import { mockCategoryExplorer } from "@/data/mock/categories";
@@ -23,6 +23,9 @@ import type {
   ReportsCenterData,
   RequestAnalyticsData,
   TopicExplorerData,
+  UserRateTrendData,
+  UserWorkDistributionData,
+  UserWorkloadRole,
 } from "@/data/providers/types";
 
 export const mockAnalyticsProvider: AnalyticsDataProvider = {
@@ -41,9 +44,151 @@ export const mockAnalyticsProvider: AnalyticsDataProvider = {
       })),
     };
   },
-  async getRequestAnalytics(_filters?: AnalyticsQueryFilters): Promise<RequestAnalyticsData> {
+  async getUserRateTrend(
+    userId: number,
+    role: UserWorkloadRole,
+    _filters?: AnalyticsQueryFilters,
+  ): Promise<UserRateTrendData> {
+    await new Promise((r) => setTimeout(r, 80));
+    const actor =
+      mockRequestAnalytics.byFlowActor.find((u) => u.id === userId) ??
+      mockRequestAnalytics.byCartableUser.find((u) => u.id === userId);
+    const baseLoad = actor?.value ?? 400;
+    const baseHours = actor?.avgHours ?? 2.5;
+    const months = ["2025/06", "2025/07", "2025/08", "2025/09", "2025/10", "2025/11"];
+    return {
+      userId,
+      role,
+      name: actor?.name ?? `کاربر ${userId}`,
+      formula: "نرخ = حجم ÷ میانگین ساعت (بار کاری بر واحد زمان)",
+      periodLabel: "۶ ماه اخیر (mock)",
+      points: months.map((label, i) => {
+        const load = Math.round(baseLoad * (0.75 + i * 0.05));
+        const avgHours = Math.max(0.8, Number(baseHours) + (i % 3) * 0.3 - 0.2);
+        return { label, load, avgHours, rate: load / avgHours };
+      }),
+    };
+  },
+
+  async getUserWorkDistribution(
+    userId: number,
+    role: UserWorkloadRole,
+    _filters?: AnalyticsQueryFilters,
+  ): Promise<UserWorkDistributionData> {
+    await new Promise((r) => setTimeout(r, 60));
+    const actor =
+      mockRequestAnalytics.byFlowActor.find((u) => u.id === userId) ??
+      mockRequestAnalytics.byCartableUser.find((u) => u.id === userId);
+    const total = actor?.value ?? 200;
+    const closed = Math.round(total * 0.62);
+    return {
+      userId,
+      role,
+      name: actor?.name ?? `کاربر ${userId}`,
+      periodLabel: "بازه فعلی (mock)",
+      byState: [
+        { name: "بسته‌شده", value: closed },
+        { name: "باز", value: Math.max(0, total - closed) },
+      ],
+      byType: [
+        { name: "رسیدگی توسط پردازش", value: Math.round(total * 0.4) },
+        { name: "تایید نهایی", value: Math.round(total * 0.25) },
+        { name: "انجام شد", value: Math.round(total * 0.2) },
+        { name: "سایر", value: Math.round(total * 0.15) },
+      ],
+    };
+  },
+
+  async getRequestAnalytics(filters?: AnalyticsQueryFilters): Promise<RequestAnalyticsData> {
     await new Promise((r) => setTimeout(r, 120));
-    return mockRequestAnalytics;
+    const base = mockRequestAnalytics;
+    if (!filters) return base;
+
+    const byClass =
+      filters.subjectClassId == null
+        ? base.byClass
+        : base.byClass.filter((c) => c.id === filters.subjectClassId);
+    const byChannel =
+      filters.channelId == null
+        ? base.byChannel
+        : base.byChannel.filter((c) => c.id === filters.channelId);
+    const byRegion =
+      filters.regionId == null
+        ? base.byRegion
+        : base.byRegion.filter((c) => c.id === filters.regionId);
+    const bySubjectGroup =
+      filters.subjectGroupId == null
+        ? base.bySubjectGroup
+        : base.bySubjectGroup.filter((c) => c.id === filters.subjectGroupId);
+
+    const total = byClass.reduce((s, r) => s + r.value, 0) || base.summary[0]?.value || 0;
+    const complaints =
+      byClass.find((c) => c.id === 1)?.value ??
+      (filters.subjectClassId === 1 ? total : Math.round(total * 0.24));
+    const guidance =
+      byClass.find((c) => c.name.includes("راهنمایی"))?.value ?? Math.round(total * 0.68);
+
+    const closed = Math.round(Number(total) * 0.85);
+    const open = Math.max(0, Number(total) - closed);
+
+    return {
+      ...base,
+      meta: {
+        ...base.meta,
+        label: `${base.meta.label} · فیلتر نمایشی`,
+      },
+      summary: [
+        { ...base.summary[0], value: total },
+        { ...base.summary[1], value: complaints },
+        {
+          ...base.summary[2],
+          value: total ? Math.round((1000 * complaints) / total) / 10 : 0,
+        },
+        {
+          ...base.summary[3],
+          value: total ? Math.round((1000 * guidance) / total) / 10 : 0,
+        },
+      ],
+      byClass,
+      byChannel,
+      byRegion,
+      bySubjectGroup,
+      openClosed: [
+        { name: "باز", value: open },
+        { name: "بسته‌شده", value: closed },
+      ],
+      openClosedTrend: base.openClosedTrend.map((p) => ({
+        ...p,
+        requests: Math.max(1, Math.round(p.requests * (Number(total) / 12480))),
+        closed: Math.max(0, Math.round(p.closed * (closed / 10620))),
+      })),
+      byWorkflowStep:
+        filters.cookieStatusId == null
+          ? base.byWorkflowStep
+          : base.byWorkflowStep.filter((s) => s.id === filters.cookieStatusId),
+      byFlowActor:
+        filters.flowUserId == null
+          ? base.byFlowActor
+          : base.byFlowActor.filter((s) => s.id === filters.flowUserId),
+      byFlowReferred: base.byFlowReferred,
+      byCartableUser:
+        filters.cartableUserId == null
+          ? base.byCartableUser
+          : base.byCartableUser.filter((s) => s.id === filters.cartableUserId),
+      byCallUser:
+        filters.callUserId == null
+          ? base.byCallUser
+          : base.byCallUser.filter((s) => s.id === filters.callUserId),
+      byCaseUser:
+        filters.caseUserId == null
+          ? base.byCaseUser
+          : base.byCaseUser.filter((s) => s.id === filters.caseUserId),
+      periodComparison: byClass.map((row) => ({
+        label: row.name,
+        current: row.value,
+        previous: Math.round(row.value * 1.02),
+      })),
+    };
   },
   async getCategoryExplorer(_filters?: AnalyticsQueryFilters): Promise<CategoryExplorerData> {
     await new Promise((r) => setTimeout(r, 120));

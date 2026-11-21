@@ -19,6 +19,12 @@
   --font-sans: var(--font-vazirmatn);
 }
 
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   background: var(--canvas);
   color: var(--foreground);

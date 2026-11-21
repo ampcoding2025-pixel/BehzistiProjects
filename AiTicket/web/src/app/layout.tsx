@@ -17,8 +17,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="fa" dir="rtl" className={`${vazirmatn.variable} h-full antialiased`}>
-      <body className="min-h-full font-sans">
+    <html lang="fa" dir="rtl" className={`${vazirmatn.variable} h-dvh overflow-hidden antialiased`}>
+      <body className="h-dvh overflow-hidden font-sans">
         <AppShell>{children}</AppShell>
       </body>
     </html>

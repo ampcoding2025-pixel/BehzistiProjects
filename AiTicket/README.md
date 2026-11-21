@@ -26,6 +26,8 @@ npm.cmd run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+**Run / deploy on a specific port:** see [`DEPLOY.md`](./DEPLOY.md) (API default `5088`, web default `3000`).
+
 Branding uses `web/public/behzisti-logo.png` in the sidebar.
 
 ### Live API mode (optional)

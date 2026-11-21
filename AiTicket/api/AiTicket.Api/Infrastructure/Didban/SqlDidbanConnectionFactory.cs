@@ -23,6 +23,22 @@ public sealed class SqlDidbanConnectionFactory(IOptions<DidbanOptions> options) 
             ApplicationIntent = ApplicationIntent.ReadOnly
         };
 
+        // Survive brief network blips on open; mid-query drops are retried in SqlTransient.
+        if (builder.ConnectRetryCount < 3)
+        {
+            builder.ConnectRetryCount = 3;
+        }
+
+        if (builder.ConnectRetryInterval < 5)
+        {
+            builder.ConnectRetryInterval = 5;
+        }
+
+        if (builder.ConnectTimeout < 30)
+        {
+            builder.ConnectTimeout = 30;
+        }
+
         if (_options.TrustServerCertificate)
         {
             builder.TrustServerCertificate = true;

@@ -6,6 +6,8 @@ public interface IAnalyticsQueryService
 {
     Task<ExecutiveDashboardResponse> GetExecutiveAsync(PeriodFilter filter, CancellationToken ct, bool bypassCache = false);
     Task<RequestAnalyticsResponse> GetRequestsAsync(PeriodFilter filter, CancellationToken ct);
+    Task<UserRateTrendResponse> GetUserRateTrendAsync(PeriodFilter filter, int userId, string role, CancellationToken ct);
+    Task<UserWorkDistributionResponse> GetUserWorkDistributionAsync(PeriodFilter filter, int userId, string role, CancellationToken ct);
     Task<KpiValuesResponse> GetKpiValuesAsync(PeriodFilter filter, IReadOnlyList<string>? codes, CancellationToken ct);
     Task<CategoryExplorerResponse> GetCategoryTreeAsync(PeriodFilter filter, CancellationToken ct);
     Task<TopicExplorerResponse> GetTopicsAsync(PeriodFilter filter, CancellationToken ct);

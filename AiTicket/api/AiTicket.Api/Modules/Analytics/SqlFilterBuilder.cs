@@ -52,6 +52,81 @@ internal static class SqlFilterBuilder
             parameters["zoneId"] = filter.ZoneId.Value;
         }
 
+        if (filter.SubjectGroupId is not null)
+        {
+            sql.Append($" AND {cookieAlias}.SubjectGroupId = @subjectGroupId ");
+            parameters["subjectGroupId"] = filter.SubjectGroupId.Value;
+        }
+
+        if (filter.RegionId is not null)
+        {
+            sql.Append($"""
+                 AND EXISTS (
+                   SELECT 1 FROM dbo.Inform ix
+                   WHERE ix.CookieId = {cookieAlias}.CookieId AND ix.RegionId = @regionId)
+                """);
+            parameters["regionId"] = filter.RegionId.Value;
+        }
+
+        if (filter.CookieStatusId is not null)
+        {
+            sql.Append($"""
+                 AND EXISTS (
+                   SELECT 1 FROM dbo.CookieFlow fx
+                   WHERE fx.CookieId = {cookieAlias}.CookieId AND fx.CookieStatusId = @cookieStatusId)
+                """);
+            parameters["cookieStatusId"] = filter.CookieStatusId.Value;
+        }
+
+        if (filter.FlowUserId is not null)
+        {
+            // Didban fills CookieFlowUserId; CookieFlow.UserId is often null
+            sql.Append($"""
+                 AND EXISTS (
+                   SELECT 1 FROM dbo.CookieFlow fx
+                   WHERE fx.CookieId = {cookieAlias}.CookieId
+                     AND COALESCE(fx.CookieFlowUserId, fx.UserId, fx.InsertUserId) = @flowUserId)
+                """);
+            parameters["flowUserId"] = filter.FlowUserId.Value;
+        }
+
+        if (filter.ReferUserId is not null)
+        {
+            sql.Append($"""
+                 AND EXISTS (
+                   SELECT 1 FROM dbo.CookieFlow fx
+                   WHERE fx.CookieId = {cookieAlias}.CookieId
+                     AND COALESCE(fx.ReferToUserId, fx.CookieFlowVisitedUserId) = @referUserId)
+                """);
+            parameters["referUserId"] = filter.ReferUserId.Value;
+        }
+
+        if (filter.CartableUserId is not null)
+        {
+            sql.Append($"""
+                 AND EXISTS (
+                   SELECT 1 FROM dbo.Cartable cx
+                   WHERE cx.CookieId = {cookieAlias}.CookieId AND cx.CartableUserId = @cartableUserId)
+                """);
+            parameters["cartableUserId"] = filter.CartableUserId.Value;
+        }
+
+        if (filter.CallUserId is not null)
+        {
+            sql.Append($"""
+                 AND EXISTS (
+                   SELECT 1 FROM dbo.CallRecord crx
+                   WHERE crx.CookieId = {cookieAlias}.CookieId AND crx.UserId = @callUserId)
+                """);
+            parameters["callUserId"] = filter.CallUserId.Value;
+        }
+
+        if (filter.CaseUserId is not null)
+        {
+            sql.Append($" AND COALESCE({cookieAlias}.CookieUserId, {cookieAlias}.UserId) = @caseUserId ");
+            parameters["caseUserId"] = filter.CaseUserId.Value;
+        }
+
         return (sql.ToString(), parameters);
     }
 

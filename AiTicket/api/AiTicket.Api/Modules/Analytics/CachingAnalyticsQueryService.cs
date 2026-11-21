@@ -26,6 +26,24 @@ public sealed class CachingAnalyticsQueryService(
     public Task<RequestAnalyticsResponse> GetRequestsAsync(PeriodFilter filter, CancellationToken ct) =>
         GetOrCreateAsync($"req:{Key(filter)}", () => inner.GetRequestsAsync(filter, ct));
 
+    public Task<UserRateTrendResponse> GetUserRateTrendAsync(
+        PeriodFilter filter,
+        int userId,
+        string role,
+        CancellationToken ct) =>
+        GetOrCreateAsync(
+            $"urate:{Key(filter)}:{userId}:{role}",
+            () => inner.GetUserRateTrendAsync(filter, userId, role, ct));
+
+    public Task<UserWorkDistributionResponse> GetUserWorkDistributionAsync(
+        PeriodFilter filter,
+        int userId,
+        string role,
+        CancellationToken ct) =>
+        GetOrCreateAsync(
+            $"uwork:{Key(filter)}:{userId}:{role}",
+            () => inner.GetUserWorkDistributionAsync(filter, userId, role, ct));
+
     public Task<KpiValuesResponse> GetKpiValuesAsync(PeriodFilter filter, IReadOnlyList<string>? codes, CancellationToken ct)
     {
         var codeKey = codes is null ? "*" : string.Join(',', codes);
@@ -46,5 +64,5 @@ public sealed class CachingAnalyticsQueryService(
         })!;
 
     private static string Key(PeriodFilter filter) =>
-        $"{filter.From:o}|{filter.To:o}|{filter.DepartmentId}|{filter.SubjectClassId}|{filter.ChannelId}|{filter.ZoneId}|{filter.RegionId}";
+        $"{filter.From:o}|{filter.To:o}|{filter.DepartmentId}|{filter.SubjectClassId}|{filter.ChannelId}|{filter.ZoneId}|{filter.RegionId}|{filter.SubjectGroupId}|{filter.CookieStatusId}|{filter.FlowUserId}|{filter.ReferUserId}|{filter.CartableUserId}|{filter.CallUserId}|{filter.CaseUserId}";
 }

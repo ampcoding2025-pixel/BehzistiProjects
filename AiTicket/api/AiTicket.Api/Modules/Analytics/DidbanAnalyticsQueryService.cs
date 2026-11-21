@@ -9,9 +9,11 @@ namespace AiTicket.Api.Modules.Analytics;
 public sealed partial class DidbanAnalyticsQueryService(
     IDidbanConnectionFactory connectionFactory,
     IOptions<AnalyticsOptions> analyticsOptions,
+    IOptions<DidbanOptions> didbanOptions,
     ILogger<DidbanAnalyticsQueryService> logger) : IAnalyticsQueryService
 {
     private readonly AnalyticsOptions _analytics = analyticsOptions.Value;
+    private readonly DidbanOptions _didban = didbanOptions.Value;
 
     /// <summary>SubjectId 357 = پیامهای صوتی غیر قابل پیگیری (docs/12).</summary>
     private const int VoiceNoiseSubjectId = 357;
@@ -308,14 +310,19 @@ public sealed partial class DidbanAnalyticsQueryService(
         return new DecisionBriefDto(bigIdea, insights);
     }
 
-    public async Task<RequestAnalyticsResponse> GetRequestsAsync(PeriodFilter filter, CancellationToken ct)
+    public Task<RequestAnalyticsResponse> GetRequestsAsync(PeriodFilter filter, CancellationToken ct) =>
+        SqlTransient.ExecuteAsync(() => GetRequestsCoreAsync(filter, ct), logger, ct);
+
+    private async Task<RequestAnalyticsResponse> GetRequestsCoreAsync(PeriodFilter filter, CancellationToken ct)
     {
         await using var connection = await connectionFactory.OpenReadOnlyAsync(ct);
         var (whereSql, parameters) = SqlFilterBuilder.BuildCookieWhere(filter, _analytics.DefaultCookieTypeId);
         var dp = ToDynamic(parameters);
+        CommandDefinition Cmd(string sql) =>
+            new(sql, dp, commandTimeout: _didban.CommandTimeoutSeconds, cancellationToken: ct);
 
         var totals = await connection.QuerySingleAsync<VolumeRow>(
-            new CommandDefinition(
+            Cmd(
                 $"""
                 SELECT
                   COUNT_BIG(*) AS Total,
@@ -326,69 +333,250 @@ public sealed partial class DidbanAnalyticsQueryService(
                   CAST(NULL AS float) AS AvgResolutionDays
                 FROM dbo.Cookie c
                 {whereSql}
-                """,
-                dp,
-                cancellationToken: ct));
+                """));
 
         var byClass = (await connection.QueryAsync<NamedValueDto>(
-            new CommandDefinition(
+            Cmd(
                 $"""
-                SELECT sc.SubjectClassName AS Name, COUNT_BIG(*) AS Value
+                SELECT sc.SubjectClassId AS Id, sc.SubjectClassName AS Name, COUNT_BIG(*) AS Value
                 FROM dbo.Cookie c
                 INNER JOIN dbo.SubjectClass sc ON sc.SubjectClassId = c.SubjectClassId
                 {whereSql}
-                GROUP BY sc.SubjectClassName
+                GROUP BY sc.SubjectClassId, sc.SubjectClassName
                 ORDER BY Value DESC
-                """,
-                dp,
-                cancellationToken: ct))).ToList();
+                """))).ToList();
 
         var byChannel = (await connection.QueryAsync<NamedValueDto>(
-            new CommandDefinition(
+            Cmd(
                 $"""
-                SELECT ch.CookieChannelName AS Name, COUNT_BIG(*) AS Value
+                SELECT ch.CookieChannelId AS Id, ch.CookieChannelName AS Name, COUNT_BIG(*) AS Value
                 FROM dbo.Cookie c
                 INNER JOIN dbo.CookieChannel ch ON ch.CookieChannelId = c.CookieChannelId
                 {whereSql}
-                GROUP BY ch.CookieChannelName
+                GROUP BY ch.CookieChannelId, ch.CookieChannelName
                 ORDER BY Value DESC
-                """,
-                dp,
-                cancellationToken: ct))).ToList();
+                """))).ToList();
 
-        var regionWhere = whereSql;
         var byRegion = (await connection.QueryAsync<NamedValueDto>(
-            new CommandDefinition(
+            Cmd(
                 $"""
-                SELECT TOP 15 r.RegionName AS Name, COUNT_BIG(*) AS Value
+                SELECT r.RegionId AS Id, r.RegionName AS Name, COUNT_BIG(*) AS Value
                 FROM dbo.Cookie c
                 INNER JOIN dbo.Inform i ON i.CookieId = c.CookieId
                 INNER JOIN dbo.Region r ON r.RegionId = i.RegionId
-                {regionWhere}
-                GROUP BY r.RegionName
+                {whereSql}
+                GROUP BY r.RegionId, r.RegionName
                 ORDER BY Value DESC
-                """,
-                dp,
-                cancellationToken: ct))).ToList();
+                """))).ToList();
 
         var byGroup = (await connection.QueryAsync<NamedValueDto>(
-            new CommandDefinition(
+            Cmd(
                 $"""
-                SELECT TOP 15 sg.SubjectGroupName AS Name, COUNT_BIG(*) AS Value
+                SELECT TOP 15 sg.SubjectGroupId AS Id, sg.SubjectGroupName AS Name, COUNT_BIG(*) AS Value
                 FROM dbo.Cookie c
                 INNER JOIN dbo.SubjectGroup sg ON sg.SubjectGroupId = c.SubjectGroupId
                 {whereSql}
-                GROUP BY sg.SubjectGroupName
+                GROUP BY sg.SubjectGroupId, sg.SubjectGroupName
                 ORDER BY Value DESC
-                """,
-                dp,
-                cancellationToken: ct))).ToList();
+                """))).ToList();
 
         var complaintShare = totals.Total == 0 ? 0 : Math.Round(100.0 * totals.Complaints / totals.Total, 1);
         var guidance = byClass.FirstOrDefault(x => x.Name.Contains("راهنمایی", StringComparison.Ordinal));
         var guidanceShare = totals.Total == 0 || guidance is null
             ? 0
             : Math.Round(100.0 * guidance.Value / totals.Total, 1);
+
+        var openClosed = new List<NamedValueDto>
+        {
+            new("باز", totals.Unfinished),
+            new("بسته‌شده", totals.Finished),
+        };
+
+        var openClosedTrend = (await connection.QueryAsync<OpenClosedTrendRow>(
+            Cmd(
+                $"""
+                SELECT
+                  CONCAT(
+                    CAST(YEAR(c.CookieTime) AS nvarchar(4)),
+                    N'/',
+                    RIGHT(CONCAT(N'0', CAST(MONTH(c.CookieTime) AS nvarchar(2))), 2)
+                  ) AS Label,
+                  COUNT_BIG(*) AS Requests,
+                  SUM(CASE WHEN c.CookieFinishTime IS NOT NULL THEN 1 ELSE 0 END) AS Closed
+                FROM dbo.Cookie c
+                {whereSql}
+                GROUP BY YEAR(c.CookieTime), MONTH(c.CookieTime)
+                ORDER BY YEAR(c.CookieTime), MONTH(c.CookieTime)
+                """))).ToList();
+
+        var flowStatusExtra = filter.CookieStatusId is null
+            ? ""
+            : " AND f.CookieStatusId = @cookieStatusId ";
+
+        var byWorkflowStep = (await connection.QueryAsync<NamedValueDto>(
+            Cmd(
+                $"""
+                SELECT TOP 15 s.CookieStatusId AS Id, s.CookieStatusName AS Name, COUNT_BIG(*) AS Value
+                FROM dbo.Cookie c
+                INNER JOIN dbo.CookieFlow f ON f.CookieId = c.CookieId
+                INNER JOIN dbo.CookieStatus s ON s.CookieStatusId = f.CookieStatusId
+                {whereSql}
+                GROUP BY s.CookieStatusId, s.CookieStatusName
+                ORDER BY Value DESC
+                """))).ToList();
+
+        // Ratio zone formula: Value / TotalHours = sum(volume) / sum(time spent), open included where applicable.
+        var byFlowActor = (await connection.QueryAsync<WorkloadUserDto>(
+            Cmd(
+                $"""
+                SELECT TOP 12
+                  u.UserId AS Id,
+                  COALESCE(NULLIF(LTRIM(RTRIM(CONCAT(ISNULL(u.UserFirstName, N''), N' ', ISNULL(u.UserLastName, N'')))), N''), u.UserName, N'کاربر ' + CAST(u.UserId AS nvarchar(20))) AS Name,
+                  COUNT_BIG(*) AS Value,
+                  AVG(CASE
+                        WHEN f.CookieFlowFinishTime IS NOT NULL AND f.CookieFlowTime IS NOT NULL
+                         AND f.CookieFlowFinishTime >= f.CookieFlowTime
+                        THEN CAST(DATEDIFF(hour, f.CookieFlowTime, f.CookieFlowFinishTime) AS float)
+                      END) AS AvgHours,
+                  SUM(CASE
+                        WHEN f.CookieFlowFinishTime IS NOT NULL AND f.CookieFlowTime IS NOT NULL
+                         AND f.CookieFlowFinishTime >= f.CookieFlowTime
+                        THEN CAST(DATEDIFF(hour, f.CookieFlowTime, f.CookieFlowFinishTime) AS float)
+                      END) AS TotalHours,
+                  SUM(CASE WHEN f.CookieFlowFinishTime IS NOT NULL THEN 1 ELSE 0 END) AS FinishedCount,
+                  AVG(CASE
+                        WHEN f.CookieFlowFinishTime IS NOT NULL AND f.CookieFlowTime IS NOT NULL
+                         AND f.CookieFlowFinishTime >= f.CookieFlowTime
+                        THEN CAST(DATEDIFF(hour, f.CookieFlowTime, f.CookieFlowFinishTime) AS float)
+                      END) AS AvgHoursFinished
+                FROM dbo.Cookie c
+                INNER JOIN dbo.CookieFlow f ON f.CookieId = c.CookieId
+                INNER JOIN dbo.UserInfo u ON u.UserId = COALESCE(f.CookieFlowUserId, f.UserId, f.InsertUserId)
+                {whereSql}
+                {flowStatusExtra}
+                GROUP BY u.UserId, u.UserFirstName, u.UserLastName, u.UserName
+                ORDER BY Value DESC
+                """))).ToList();
+
+        var byFlowReferred = (await connection.QueryAsync<WorkloadUserDto>(
+            Cmd(
+                $"""
+                SELECT TOP 12
+                  u.UserId AS Id,
+                  COALESCE(NULLIF(LTRIM(RTRIM(CONCAT(ISNULL(u.UserFirstName, N''), N' ', ISNULL(u.UserLastName, N'')))), N''), u.UserName, N'کاربر ' + CAST(u.UserId AS nvarchar(20))) AS Name,
+                  COUNT_BIG(*) AS Value,
+                  AVG(CASE
+                        WHEN f.CookieFlowFinishTime IS NOT NULL AND f.CookieFlowTime IS NOT NULL
+                         AND f.CookieFlowFinishTime >= f.CookieFlowTime
+                        THEN CAST(DATEDIFF(hour, f.CookieFlowTime, f.CookieFlowFinishTime) AS float)
+                      END) AS AvgHours,
+                  SUM(CASE
+                        WHEN f.CookieFlowFinishTime IS NOT NULL AND f.CookieFlowTime IS NOT NULL
+                         AND f.CookieFlowFinishTime >= f.CookieFlowTime
+                        THEN CAST(DATEDIFF(hour, f.CookieFlowTime, f.CookieFlowFinishTime) AS float)
+                      END) AS TotalHours,
+                  SUM(CASE WHEN f.CookieFlowFinishTime IS NOT NULL THEN 1 ELSE 0 END) AS FinishedCount,
+                  AVG(CASE
+                        WHEN f.CookieFlowFinishTime IS NOT NULL AND f.CookieFlowTime IS NOT NULL
+                         AND f.CookieFlowFinishTime >= f.CookieFlowTime
+                        THEN CAST(DATEDIFF(hour, f.CookieFlowTime, f.CookieFlowFinishTime) AS float)
+                      END) AS AvgHoursFinished
+                FROM dbo.Cookie c
+                INNER JOIN dbo.CookieFlow f ON f.CookieId = c.CookieId
+                INNER JOIN dbo.UserInfo u ON u.UserId = COALESCE(f.ReferToUserId, f.CookieFlowVisitedUserId)
+                {whereSql}
+                {flowStatusExtra}
+                GROUP BY u.UserId, u.UserFirstName, u.UserLastName, u.UserName
+                ORDER BY Value DESC
+                """))).ToList();
+
+        // No TOP — tables need full cohort for search/filter; scatter plots a display subset client-side.
+        // TotalHours sums elapsed for finished + still-open (Finish→GETDATE)
+        var byCartableUser = (await connection.QueryAsync<WorkloadUserDto>(
+            Cmd(
+                $"""
+                SELECT
+                  u.UserId AS Id,
+                  COALESCE(NULLIF(LTRIM(RTRIM(CONCAT(ISNULL(u.UserFirstName, N''), N' ', ISNULL(u.UserLastName, N'')))), N''), u.UserName, N'کاربر ' + CAST(u.UserId AS nvarchar(20))) AS Name,
+                  COUNT_BIG(*) AS Value,
+                  AVG(CASE
+                        WHEN ct.CartableTime IS NOT NULL
+                        THEN CAST(DATEDIFF(hour, ct.CartableTime, COALESCE(ct.CartableFinishTime, GETDATE())) AS float)
+                      END) AS AvgHours,
+                  SUM(CASE
+                        WHEN ct.CartableTime IS NOT NULL
+                        THEN CAST(DATEDIFF(hour, ct.CartableTime, COALESCE(ct.CartableFinishTime, GETDATE())) AS float)
+                      END) AS TotalHours,
+                  SUM(CASE WHEN ct.CartableFinishTime IS NOT NULL THEN 1 ELSE 0 END) AS FinishedCount,
+                  AVG(CASE
+                        WHEN ct.CartableFinishTime IS NOT NULL AND ct.CartableTime IS NOT NULL
+                         AND ct.CartableFinishTime >= ct.CartableTime
+                        THEN CAST(DATEDIFF(hour, ct.CartableTime, ct.CartableFinishTime) AS float)
+                      END) AS AvgHoursFinished
+                FROM dbo.Cookie c
+                INNER JOIN dbo.Cartable ct ON ct.CookieId = c.CookieId
+                INNER JOIN dbo.UserInfo u ON u.UserId = ct.CartableUserId
+                {whereSql}
+                GROUP BY u.UserId, u.UserFirstName, u.UserLastName, u.UserName
+                ORDER BY Value DESC
+                """))).ToList();
+
+        var byCallUser = (await connection.QueryAsync<WorkloadUserDto>(
+            Cmd(
+                $"""
+                SELECT
+                  u.UserId AS Id,
+                  COALESCE(NULLIF(LTRIM(RTRIM(CONCAT(ISNULL(u.UserFirstName, N''), N' ', ISNULL(u.UserLastName, N'')))), N''), u.UserName, N'کاربر ' + CAST(u.UserId AS nvarchar(20))) AS Name,
+                  COUNT_BIG(*) AS Value,
+                  AVG(CASE
+                        WHEN c.CookieTime IS NOT NULL
+                        THEN CAST(DATEDIFF(hour, c.CookieTime, COALESCE(c.CookieFinishTime, GETDATE())) AS float)
+                      END) AS AvgHours,
+                  SUM(CASE
+                        WHEN c.CookieTime IS NOT NULL
+                        THEN CAST(DATEDIFF(hour, c.CookieTime, COALESCE(c.CookieFinishTime, GETDATE())) AS float)
+                      END) AS TotalHours,
+                  SUM(CASE WHEN c.CookieFinishTime IS NOT NULL THEN 1 ELSE 0 END) AS FinishedCount,
+                  AVG(CASE
+                        WHEN c.CookieFinishTime IS NOT NULL AND c.CookieTime IS NOT NULL
+                         AND c.CookieFinishTime >= c.CookieTime
+                        THEN CAST(DATEDIFF(hour, c.CookieTime, c.CookieFinishTime) AS float)
+                      END) AS AvgHoursFinished
+                FROM dbo.Cookie c
+                INNER JOIN dbo.CallRecord cr ON cr.CookieId = c.CookieId
+                INNER JOIN dbo.UserInfo u ON u.UserId = cr.UserId
+                {whereSql}
+                GROUP BY u.UserId, u.UserFirstName, u.UserLastName, u.UserName
+                ORDER BY Value DESC
+                """))).ToList();
+
+        var byCaseUser = (await connection.QueryAsync<WorkloadUserDto>(
+            Cmd(
+                $"""
+                SELECT
+                  u.UserId AS Id,
+                  COALESCE(NULLIF(LTRIM(RTRIM(CONCAT(ISNULL(u.UserFirstName, N''), N' ', ISNULL(u.UserLastName, N'')))), N''), u.UserName, N'کاربر ' + CAST(u.UserId AS nvarchar(20))) AS Name,
+                  COUNT_BIG(*) AS Value,
+                  AVG(CASE
+                        WHEN c.CookieTime IS NOT NULL
+                        THEN CAST(DATEDIFF(hour, c.CookieTime, COALESCE(c.CookieFinishTime, GETDATE())) AS float)
+                      END) AS AvgHours,
+                  SUM(CASE
+                        WHEN c.CookieTime IS NOT NULL
+                        THEN CAST(DATEDIFF(hour, c.CookieTime, COALESCE(c.CookieFinishTime, GETDATE())) AS float)
+                      END) AS TotalHours,
+                  SUM(CASE WHEN c.CookieFinishTime IS NOT NULL THEN 1 ELSE 0 END) AS FinishedCount,
+                  AVG(CASE
+                        WHEN c.CookieFinishTime IS NOT NULL AND c.CookieTime IS NOT NULL
+                         AND c.CookieFinishTime >= c.CookieTime
+                        THEN CAST(DATEDIFF(hour, c.CookieTime, c.CookieFinishTime) AS float)
+                      END) AS AvgHoursFinished
+                FROM dbo.Cookie c
+                INNER JOIN dbo.UserInfo u ON u.UserId = COALESCE(c.CookieUserId, c.UserId)
+                {whereSql}
+                GROUP BY u.UserId, u.UserFirstName, u.UserLastName, u.UserName
+                ORDER BY Value DESC
+                """))).ToList();
 
         var summary = new List<KpiCardDto>
         {
@@ -405,7 +593,15 @@ public sealed partial class DidbanAnalyticsQueryService(
             byClass,
             byChannel,
             byRegion,
-            byGroup);
+            byGroup,
+            openClosed,
+            openClosedTrend.Select(r => new OpenClosedTrendPointDto(r.Label ?? "", r.Requests, r.Closed)).ToList(),
+            byWorkflowStep,
+            byFlowActor,
+            byFlowReferred,
+            byCartableUser,
+            byCallUser,
+            byCaseUser);
     }
 
     public async Task<KpiValuesResponse> GetKpiValuesAsync(
@@ -488,5 +684,12 @@ public sealed partial class DidbanAnalyticsQueryService(
         public string? Label { get; init; }
         public long Requests { get; init; }
         public long Complaints { get; init; }
+    }
+
+    private sealed class OpenClosedTrendRow
+    {
+        public string? Label { get; init; }
+        public long Requests { get; init; }
+        public long Closed { get; init; }
     }
 }

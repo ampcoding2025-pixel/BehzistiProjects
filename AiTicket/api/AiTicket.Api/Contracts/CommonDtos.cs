@@ -13,7 +13,14 @@ public sealed record PeriodFilter(
     int? SubjectClassId,
     int? ChannelId,
     int? RegionId,
-    int? ZoneId);
+    int? ZoneId,
+    int? SubjectGroupId = null,
+    int? CookieStatusId = null,
+    int? FlowUserId = null,
+    int? ReferUserId = null,
+    int? CartableUserId = null,
+    int? CallUserId = null,
+    int? CaseUserId = null);
 
 public sealed record KpiCardDto(
     string Id,
@@ -25,8 +32,24 @@ public sealed record KpiCardDto(
     string? Hint,
     string Feasibility);
 
-// long matches SQL COUNT_BIG for Dapper materialization
-public sealed record NamedValueDto(string Name, long Value);
+/// <summary>long Value matches SQL COUNT_BIG. Id is optional for cross-filter clicks.</summary>
+public sealed class NamedValueDto
+{
+    public string Name { get; init; } = "";
+    public long Value { get; init; }
+    public int? Id { get; init; }
+
+    public NamedValueDto()
+    {
+    }
+
+    public NamedValueDto(string name, long value, int? id = null)
+    {
+        Name = name;
+        Value = value;
+        Id = id;
+    }
+}
 
 public sealed record ProblemDto(
     string Type,

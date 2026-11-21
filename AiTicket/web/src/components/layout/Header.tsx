@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 
 /** Static labels for chips — avoid `periodToRange()` (uses `new Date`) during render/prerender */
 const PERIOD_CHIP_LABELS: Record<PeriodKey, string> = {
+  "1m": "ماه گذشته",
   all: "کل دوره تاریخی",
   "30d": "۳۰ روز اخیر",
   "90d": "۹۰ روز اخیر",
@@ -82,7 +83,7 @@ const selectFocus =
 
 export function Header() {
   const pathname = usePathname();
-  const { filters, setPeriod, setSubjectClassId, resetFilters, isDefaultFilters } =
+  const { filters, labels, setPeriod, setSubjectClassId, resetFilters, isDefaultFilters } =
     useDashboardFilters();
   const meta = titles[pathname] ?? {
     title: "پلتفرم هوش تحلیلی",
@@ -90,7 +91,14 @@ export function Header() {
   };
 
   const classOption =
-    SUBJECT_CLASS_OPTIONS.find((o) => o.id === filters.subjectClassId) ?? SUBJECT_CLASS_OPTIONS[0];
+    SUBJECT_CLASS_OPTIONS.find((o) => o.id === filters.subjectClassId) ??
+    (filters.subjectClassId != null
+      ? {
+          value: String(filters.subjectClassId),
+          label: labels.subjectClass ?? `طبقه ${filters.subjectClassId}`,
+          id: filters.subjectClassId,
+        }
+      : SUBJECT_CLASS_OPTIONS[0]);
   const periodLabel = PERIOD_CHIP_LABELS[filters.period];
 
   return (
@@ -110,10 +118,11 @@ export function Header() {
               aria-label="بازه زمانی"
               onChange={(e) => setPeriod(e.target.value as PeriodKey)}
             >
-              <option value="all">کل دوره تاریخی</option>
+              <option value="1m">ماه گذشته</option>
               <option value="30d">۳۰ روز اخیر</option>
               <option value="90d">۹۰ روز اخیر</option>
               <option value="ytd">از ابتدای سال</option>
+              <option value="all">کل دوره تاریخی</option>
             </select>
           </label>
 
@@ -135,9 +144,13 @@ export function Header() {
               aria-label="طبقه درخواست"
               onChange={(e) => {
                 const opt = SUBJECT_CLASS_OPTIONS.find((o) => o.value === e.target.value);
-                setSubjectClassId(opt?.id ?? null);
+                setSubjectClassId(opt?.id ?? null, opt?.label ?? null);
               }}
             >
+              {filters.subjectClassId != null &&
+              !SUBJECT_CLASS_OPTIONS.some((o) => o.id === filters.subjectClassId) ? (
+                <option value={classOption.value}>{classOption.label}</option>
+              ) : null}
               {SUBJECT_CLASS_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>
                   {o.label}
@@ -154,7 +167,7 @@ export function Header() {
             title={
               isDefaultFilters
                 ? "فیلترها در حالت پیش‌فرض هستند"
-                : "بازگشت به کل دوره تاریخی و همه طبقات"
+                : "بازگشت به ماه گذشته و همه طبقات"
             }
             className={cn(
               "inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium transition",
@@ -192,6 +205,26 @@ export function Header() {
         <span className="rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-800">
           طبقه: {classOption.label}
         </span>
+        {filters.channelId != null ? (
+          <span className="rounded bg-sky-50 px-2 py-1 text-xs font-medium text-sky-900">
+            کانال: {labels.channel ?? filters.channelId}
+          </span>
+        ) : null}
+        {filters.regionId != null ? (
+          <span className="rounded bg-sky-50 px-2 py-1 text-xs font-medium text-sky-900">
+            استان: {labels.region ?? filters.regionId}
+          </span>
+        ) : null}
+        {filters.subjectGroupId != null ? (
+          <span className="rounded bg-sky-50 px-2 py-1 text-xs font-medium text-sky-900">
+            گروه: {labels.subjectGroup ?? filters.subjectGroupId}
+          </span>
+        ) : null}
+        {filters.from && filters.to ? (
+          <span className="rounded bg-sky-50 px-2 py-1 text-xs font-medium text-sky-900">
+            ماه: {labels.month ?? `${filters.from} → ${filters.to}`}
+          </span>
+        ) : null}
         <span className="rounded border border-dashed border-slate-300 px-2 py-1 text-xs text-slate-400">
           واحد: همه (غیرفعال)
         </span>

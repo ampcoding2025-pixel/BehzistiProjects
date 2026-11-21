@@ -39,6 +39,8 @@ export function KpiCard({
   compact,
   emphasis = "primary",
   exception,
+  selected,
+  className,
 }: {
   kpi: ExecutiveKpi;
   onOpen?: (id: string) => void;
@@ -46,6 +48,8 @@ export function KpiCard({
   emphasis?: KpiEmphasis;
   /** Marks a business exception that should draw attention */
   exception?: boolean;
+  selected?: boolean;
+  className?: string;
 }) {
   const hasDelta = typeof kpi.deltaPercent === "number" && Number.isFinite(kpi.deltaPercent);
   const up = (kpi.deltaPercent ?? 0) >= 0;
@@ -74,14 +78,17 @@ export function KpiCard({
       type="button"
       onClick={() => onOpen?.(kpi.id)}
       aria-label={`${kpi.label}: ${formatValue(kpi)} — برای جزئیات کلیک کنید`}
+      aria-pressed={selected || undefined}
       className={cn(
-        "cursor-pointer text-right transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)]",
+        "h-full w-full cursor-pointer text-right transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)]",
         isSpotlight &&
           "rounded-lg border-2 border-amber-400 bg-white p-5 ring-1 ring-amber-100 hover:border-amber-500",
         emphasis === "primary" &&
           "rounded-lg border border-[var(--border)] bg-white p-4 hover:border-slate-300",
         isSecondary && "rounded-md border border-transparent bg-slate-50/80 p-3 hover:bg-slate-50",
         exception && !isSpotlight && "border-amber-300",
+        selected && "border-sky-500 bg-sky-50/40",
+        className,
       )}
     >
       <div className="flex items-start justify-between gap-2">

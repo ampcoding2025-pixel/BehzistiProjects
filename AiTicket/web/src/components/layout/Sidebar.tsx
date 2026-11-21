@@ -34,14 +34,14 @@ export function Sidebar() {
 
   return (
     <aside className="flex h-full w-72 shrink-0 flex-col border-l border-[var(--border)] bg-[var(--sidebar)] text-[var(--sidebar-fg)]">
-      <div className="flex items-center justify-center border-b border-[var(--border)] px-5 py-5">
+      <div className="flex items-center justify-center border-b border-[var(--border)] px-5 py-6">
         <Image
           src="/behzisti-logo.png"
           alt="لوگوی سازمان بهزیستی کشور"
-          width={72}
-          height={72}
+          width={128}
+          height={128}
           priority
-          className="h-[72px] w-[72px] object-contain"
+          className="h-28 w-28 object-contain sm:h-32 sm:w-32"
         />
       </div>
 

@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { FaDataTable } from "@/components/FaDataTable";
 import { LoadingBlock, LoadingSpinner } from "@/components/LoadingSpinner";
 import { PersianDatePicker } from "@/components/PersianDatePicker";
+import { SayahMatchPanel } from "@/components/SayahMatchPanel";
 import {
   defaultYaraneTxnTitle,
   formatFaDateForTitle,
@@ -171,23 +172,7 @@ export function YaraneWizard() {
   >(null);
   const [sayahChecked, setSayahChecked] = useState(false);
   const [sayahGateOk, setSayahGateOk] = useState(false);
-  const [sayahMsg, setSayahMsg] = useState<string | null>(null);
   const [sayahOverride, setSayahOverride] = useState(false);
-  const [sayahStats, setSayahStats] = useState<{
-    checked: number;
-    matchCount: number;
-    mismatchCount: number;
-    errorCount: number;
-    totalEligible: number;
-  } | null>(null);
-  const [sayahMismatches, setSayahMismatches] = useState<
-    Array<{
-      nationalId: string;
-      shebaId: string;
-      result: { message: string | null };
-    }>
-  >([]);
-  const [sayahLimit, setSayahLimit] = useState(30);
   const [compareBusy, setCompareBusy] = useState(false);
   const [compareOpen, setCompareOpen] = useState(false);
   const [compareError, setCompareError] = useState<string | null>(null);
@@ -910,152 +895,32 @@ export function YaraneWizard() {
       ) : null}
 
       {step === "sayahMatch" ? (
-        <div className="panel p-5 space-y-4">
-          <h2 className="font-[family-name:var(--font-display)] text-2xl">
-            تطبیق شبا (سیاح)
-          </h2>
-          <p className="text-sm text-[var(--ink-soft)] leading-7">
-            قبل از محاسبه، شناسه ملی/حقوقی مراکز ↔ شبا در سامانه سیاح بانک مرکزی
-            بررسی می‌شود تا دیسکت یارانه با عدم تطابق صادر نشود.
-          </p>
-          <div className="flex flex-wrap items-center gap-3 text-sm">
-            <label className="flex items-center gap-2">
-              <span className="text-[var(--ink-soft)]">تعداد نمونه</span>
-              <select
-                className="rounded-lg border border-[var(--line)] px-2 py-1 bg-white"
-                value={sayahLimit}
-                disabled={busy}
-                onChange={(e) => setSayahLimit(Number(e.target.value) || 30)}
-              >
-                {[10, 20, 30, 50].map((n) => (
-                  <option key={n} value={n}>
-                    {n.toLocaleString("fa-IR")}
-                  </option>
-                ))}
-              </select>
-            </label>
-            {sayahStats ? (
-              <span className="text-xs text-[var(--ink-soft)]">
-                واجد شرایط: {sayahStats.totalEligible.toLocaleString("fa-IR")} ·
-                بررسی: {sayahStats.checked.toLocaleString("fa-IR")} · تطبیق:{" "}
-                {sayahStats.matchCount.toLocaleString("fa-IR")} · عدم تطبیق:{" "}
-                {sayahStats.mismatchCount.toLocaleString("fa-IR")}
-              </span>
-            ) : null}
-          </div>
-          {sayahMsg ? (
-            <div
-              className={`rounded-xl px-4 py-3 text-sm ${
-                sayahGateOk
-                  ? "bg-[#e8f4ee] text-[#1f7a4d]"
-                  : "bg-[#fdecea] text-[#a33]"
-              }`}
-            >
-              {sayahMsg}
-            </div>
-          ) : !sayahChecked ? (
-            <p className="text-xs text-[var(--ink-soft)]">
-              هنوز بررسی انجام نشده — «اجرای تطبیق سیاح» را بزنید.
-            </p>
-          ) : null}
-          {sayahMismatches.length > 0 ? (
-            <FaDataTable
-              columns={["nationalId", "shebaId", "message"]}
-              columnTitles={{
-                nationalId: "شناسه",
-                shebaId: "شبا",
-                message: "نتیجه",
-              }}
-              rows={sayahMismatches.slice(0, 50).map((r) => ({
-                nationalId: r.nationalId,
-                shebaId: r.shebaId,
-                message: r.result.message || "عدم تطبیق",
-              }))}
-              empty="—"
-            />
-          ) : null}
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              className="btn btn-ghost"
-              disabled={busy}
-              onClick={() => setStep("type")}
-            >
-              قبلی
-            </button>
-            <button
-              type="button"
-              className="btn btn-primary"
-              disabled={busy}
-              onClick={async () => {
-                setBusy(true);
-                setError(null);
-                setSayahMsg(null);
-                try {
-                  const res = await fetch("/api/sayah/match", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      action: "batch",
-                      scope: "yarane-center",
-                      limit: sayahLimit,
-                    }),
-                  });
-                  const data = await res.json();
-                  if (!res.ok || !data.ok) {
-                    setSayahChecked(true);
-                    setSayahGateOk(false);
-                    setSayahMsg(data.message || "خطا در فراخوانی سیاح");
-                    setError(data.message || "خطا در فراخوانی سیاح");
-                    return;
-                  }
-                  setSayahChecked(true);
-                  setSayahGateOk(!!data.gateOk);
-                  setSayahMsg(data.message || null);
-                  setSayahStats({
-                    checked: Number(data.checked || 0),
-                    matchCount: Number(data.matchCount || 0),
-                    mismatchCount: Number(data.mismatchCount || 0),
-                    errorCount: Number(data.errorCount || 0),
-                    totalEligible: Number(data.totalEligible || 0),
-                  });
-                  setSayahMismatches(
-                    Array.isArray(data.mismatches) ? data.mismatches : [],
-                  );
-                } catch {
-                  setSayahChecked(true);
-                  setSayahGateOk(false);
-                  setError("خطای شبکه در تطبیق سیاح");
-                } finally {
-                  setBusy(false);
-                }
-              }}
-            >
-              {busy ? <LoadingSpinner size="sm" inline /> : null}
-              اجرای تطبیق سیاح
-            </button>
-            <button
-              type="button"
-              className="btn btn-ghost"
-              disabled={
-                busy ||
-                !sayahChecked ||
-                (!sayahGateOk && !isAdmin && !sayahOverride)
-              }
-              onClick={() => {
-                if (!sayahGateOk && isAdmin) setSayahOverride(true);
-                goToStep("calculate");
-              }}
-            >
-              ادامه به محاسبه
-            </button>
-          </div>
-          {!sayahGateOk && sayahChecked && isAdmin ? (
-            <p className="text-xs text-[var(--ink-soft)]">
-              به‌عنوان ادمین می‌توانید با وجود عدم تطبیق ادامه دهید.
-            </p>
-          ) : null}
-        </div>
+        <SayahMatchPanel
+          scope="yarane-center"
+          isAdmin={isAdmin}
+          busy={busy}
+          onBusy={setBusy}
+          onError={setError}
+          gateOk={sayahGateOk}
+          onGateChange={setSayahGateOk}
+          checked={sayahChecked}
+          onCheckedChange={setSayahChecked}
+          hint={
+            <>
+              قبل از محاسبه، شناسه ملی/حقوقی مراکز ↔ شبا در سامانه سیاح بررسی
+              می‌شود تا دیسکت یارانه با عدم تطابق صادر نشود.
+            </>
+          }
+          onPrev={() => setStep("type")}
+          nextLabel="ادامه به محاسبه"
+          nextDisabled={
+            !sayahChecked || (!sayahGateOk && !isAdmin && !sayahOverride)
+          }
+          onNext={() => {
+            if (!sayahGateOk && isAdmin) setSayahOverride(true);
+            goToStep("calculate");
+          }}
+        />
       ) : null}
 
       {step === "calculate" ? (

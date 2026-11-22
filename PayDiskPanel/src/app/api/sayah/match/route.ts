@@ -9,11 +9,14 @@ import {
 import {
   customerHasShebaId,
   customerHasShebaIdBatch,
+  getSayahMode,
   isSayahTatbighConfigured,
   normalizeNationalId,
   normalizeShebaId,
+  sayahTransportStatus,
   type SayahAccountOwnerType,
   type SayahMatchRequest,
+  type SayahMode,
 } from "@/lib/sayah/tatbigh";
 
 export async function GET() {
@@ -21,6 +24,7 @@ export async function GET() {
   if (!user) return unauthorized();
   return NextResponse.json({
     ok: true,
+    ...sayahTransportStatus(),
     configured: isSayahTatbighConfigured(),
     dbLabel: getActiveDbLabel(),
   });
@@ -53,11 +57,18 @@ export async function POST(req: Request) {
     shebaId?: string;
     legalId?: string;
     accountOwnerType?: string;
+    /** auto | rest | soap — override PAYDISK_SAYAH_MODE for this call */
+    mode?: string;
   } | null;
 
   const action = String(body?.action || "batch").toLowerCase();
   const limit = Math.min(100, Math.max(1, Number(body?.limit) || 30));
   const delayMs = Math.min(2000, Math.max(0, Number(body?.delayMs) || 250));
+  const modeRaw = String(body?.mode || getSayahMode()).toLowerCase();
+  const mode: SayahMode =
+    modeRaw === "rest" || modeRaw === "soap" || modeRaw === "auto"
+      ? modeRaw
+      : "auto";
 
   try {
     if (action === "single" || body?.scope === "single") {
@@ -85,10 +96,13 @@ export async function POST(req: Request) {
           { status: 400 },
         );
       }
-      const result = await customerHasShebaId(reqBody);
+      const result = await customerHasShebaId(reqBody, { mode });
       return NextResponse.json({
         ok: result.ok,
         matched: result.matched,
+        mode,
+        transport: result.transport,
+        tried: result.tried,
         result,
         dbLabel: getActiveDbLabel(),
       });
@@ -137,18 +151,24 @@ export async function POST(req: Request) {
       limit,
       delayMs,
       timeoutMs: 30_000,
+      mode,
     });
 
     const gateOk = batch.mismatchCount === 0 && batch.errorCount === 0;
+    const via =
+      batch.transports.length > 0
+        ? ` · ${batch.transports.join("+")}`
+        : "";
 
     return NextResponse.json({
       ok: true,
       scope,
+      mode,
       totalEligible: loaded.totalEligible,
       ...batch,
       gateOk,
       message: gateOk
-        ? `تطبیق موفق: ${batch.matchCount.toLocaleString("fa-IR")} از ${batch.checked.toLocaleString("fa-IR")}`
+        ? `تطبیق موفق: ${batch.matchCount.toLocaleString("fa-IR")} از ${batch.checked.toLocaleString("fa-IR")}${via}`
         : batch.mismatchCount > 0
           ? `${batch.mismatchCount.toLocaleString("fa-IR")} عدم تطبیق شبا↔کد ملی — قبل از محاسبه رفع کنید`
           : `${batch.errorCount.toLocaleString("fa-IR")} خطا از سرویس سیاح — دوباره تلاش کنید`,

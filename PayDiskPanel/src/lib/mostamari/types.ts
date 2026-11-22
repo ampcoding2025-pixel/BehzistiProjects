@@ -15,6 +15,7 @@ export type MostamariTypeId =
 export type MostamariStepId =
   | "type"
   | "define"
+  | "sayahMatch"
   | "calculate"
   | "report"
   | "ibn"
@@ -47,6 +48,15 @@ export const MOSTAMARI_STEP_CATALOG: Record<MostamariStepId, MostamariStepDef> =
     id: "define",
     label: "تعریف",
     labelEn: "Define",
+  },
+  sayahMatch: {
+    id: "sayahMatch",
+    label: "تطبیق شبا",
+    labelEn: "Sayah Sheba match",
+    hintFa:
+      "قبل از محاسبه، تطبیق شبا و کد ملی در سامانه سیاح (بانک مرکزی) تا از عدم تطابق جلوگیری شود.",
+    hintEn:
+      "CBI Sayah Sheba↔NID match via NIX before Calculate — catch mismatches early.",
   },
   calculate: {
     id: "calculate",
@@ -137,6 +147,7 @@ export const MOSTAMARI_TYPES: MostamariTypeDef[] = [
     pipeline: [
       "type",
       "define",
+      "sayahMatch",
       "calculate",
       "report",
       "payList",
@@ -156,6 +167,7 @@ export const MOSTAMARI_TYPES: MostamariTypeDef[] = [
     pipeline: [
       "type",
       "define",
+      "sayahMatch",
       "calculate",
       "report",
       "pairSync",
@@ -173,6 +185,7 @@ export const MOSTAMARI_TYPES: MostamariTypeDef[] = [
     pipeline: [
       "type",
       "define",
+      "sayahMatch",
       "calculate",
       "report",
       "ibn",
@@ -192,6 +205,7 @@ export const MOSTAMARI_TYPES: MostamariTypeDef[] = [
     pipeline: [
       "type",
       "define",
+      "sayahMatch",
       "calculate",
       "report",
       "ibn",
@@ -211,6 +225,7 @@ export const MOSTAMARI_TYPES: MostamariTypeDef[] = [
     pipeline: [
       "type",
       "define",
+      "sayahMatch",
       "calculate",
       "report",
       "ibn",
@@ -282,7 +297,9 @@ export function inferMostamariType(opts: {
 
 export function pipelineForType(typeId: MostamariTypeId | "" | null | undefined): MostamariStepDef[] {
   const t = typeId ? getMostamariType(typeId) : null;
-  const ids = t?.pipeline ?? ["type", "define", "calculate", "report", "payList", "approve"];
+  const ids =
+    t?.pipeline ??
+    ["type", "define", "sayahMatch", "calculate", "report", "payList", "approve"];
   return ids.map((id) => MOSTAMARI_STEP_CATALOG[id]);
 }
 

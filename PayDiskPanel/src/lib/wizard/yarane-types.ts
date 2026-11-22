@@ -50,6 +50,7 @@ export function isKnownYaraneSupply(supplyLocationId: number) {
 export const WIZARD_STEPS = [
   { id: "family", label: "خانواده دیسکت", optional: false },
   { id: "type", label: "محل تأمین اعتبار", optional: false },
+  { id: "sayahMatch", label: "تطبیق شبا", optional: false },
   { id: "calculate", label: "محاسبه", optional: false },
   { id: "check", label: "بررسی صحت", optional: false },
   { id: "list", label: "لیست افراد", optional: true },
@@ -68,7 +69,7 @@ export function inferWizardStep(opts: {
   const hasList = opts.key2 != null && String(opts.key2).trim() !== "";
   if (hasList) return "approve";
   if (Number(opts.payedRows) > 0) return "check";
-  return "calculate";
+  return "sayahMatch";
 }
 
 export function nextWizardStep(id: WizardStepId): WizardStepId | null {

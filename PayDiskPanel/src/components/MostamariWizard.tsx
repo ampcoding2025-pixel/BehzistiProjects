@@ -237,6 +237,26 @@ export function MostamariWizard() {
   const [bankActionActive, setBankActionActive] = useState<
     "missing-ibn" | "download" | null
   >(null);
+  /** CBI Sayah Sheba↔NID gate (before calculate). */
+  const [sayahChecked, setSayahChecked] = useState(false);
+  const [sayahGateOk, setSayahGateOk] = useState(false);
+  const [sayahMsg, setSayahMsg] = useState<string | null>(null);
+  const [sayahStats, setSayahStats] = useState<{
+    checked: number;
+    matchCount: number;
+    mismatchCount: number;
+    errorCount: number;
+    totalEligible: number;
+  } | null>(null);
+  const [sayahMismatches, setSayahMismatches] = useState<
+    Array<{
+      id?: string | number;
+      nationalId: string;
+      shebaId: string;
+      result: { message: string | null; matched: boolean | null };
+    }>
+  >([]);
+  const [sayahLimit, setSayahLimit] = useState(30);
 
   const selectedType = useMemo(
     () => (typeId ? getMostamariType(typeId) : null),
@@ -937,6 +957,151 @@ export function MostamariWizard() {
         </div>
       ) : null}
 
+      {step === "sayahMatch" ? (
+        <div className="panel p-5 space-y-4">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl">
+            تطبیق شبا (سیاح)
+          </h2>
+          <p className="text-sm text-[var(--ink-soft)] leading-7">
+            قبل از محاسبه، نمونهٔ کد ملی ↔ شبا از{" "}
+            <code className="text-xs">IBN_AccountNumber</code> در سامانه سیاح بانک
+            مرکزی بررسی می‌شود تا عدم تطابق پرداخت نشود.
+            {payedRows > 0
+              ? " برای تراکنش محاسبه‌شده می‌توانید نمونهٔ لیست پرداخت را هم چک کنید."
+              : null}
+          </p>
+          <div className="flex flex-wrap items-center gap-3 text-sm">
+            <label className="flex items-center gap-2">
+              <span className="text-[var(--ink-soft)]">تعداد نمونه</span>
+              <select
+                className="rounded-lg border border-[var(--line)] px-2 py-1 bg-white"
+                value={sayahLimit}
+                disabled={busy}
+                onChange={(e) => setSayahLimit(Number(e.target.value) || 30)}
+              >
+                {[10, 20, 30, 50].map((n) => (
+                  <option key={n} value={n}>
+                    {n.toLocaleString("fa-IR")}
+                  </option>
+                ))}
+              </select>
+            </label>
+            {sayahStats ? (
+              <span className="text-xs text-[var(--ink-soft)]">
+                واجد شرایط در DB:{" "}
+                {sayahStats.totalEligible.toLocaleString("fa-IR")} · بررسی‌شده:{" "}
+                {sayahStats.checked.toLocaleString("fa-IR")} · تطبیق:{" "}
+                {sayahStats.matchCount.toLocaleString("fa-IR")} · عدم تطبیق:{" "}
+                {sayahStats.mismatchCount.toLocaleString("fa-IR")}
+                {sayahStats.errorCount
+                  ? ` · خطا: ${sayahStats.errorCount.toLocaleString("fa-IR")}`
+                  : ""}
+              </span>
+            ) : null}
+          </div>
+          {sayahMsg ? (
+            <div
+              className={`rounded-xl px-4 py-3 text-sm ${
+                sayahGateOk
+                  ? "bg-[#e8f4ee] text-[#1f7a4d]"
+                  : "bg-[#fdecea] text-[#a33]"
+              }`}
+            >
+              {sayahMsg}
+            </div>
+          ) : !sayahChecked ? (
+            <p className="text-xs text-[var(--ink-soft)]">
+              هنوز بررسی انجام نشده — «اجرای تطبیق سیاح» را بزنید.
+            </p>
+          ) : null}
+          {sayahMismatches.length > 0 ? (
+            <FaDataTable
+              columns={["nationalId", "shebaId", "message"]}
+              columnTitles={{
+                nationalId: "کد ملی",
+                shebaId: "شبا",
+                message: "نتیجه",
+              }}
+              rows={sayahMismatches.slice(0, 50).map((r) => ({
+                nationalId: r.nationalId,
+                shebaId: r.shebaId,
+                message: r.result.message || "عدم تطبیق",
+              }))}
+              empty="—"
+            />
+          ) : null}
+          <NavButtons
+            onPrev={goPrev}
+            actionLabel="اجرای تطبیق سیاح"
+            actionPrimary
+            busy={busy}
+            onAction={async () => {
+              setBusy(true);
+              setError(null);
+              setSayahMsg(null);
+              try {
+                const scope =
+                  payedRows > 0 && trId ? "mostamari-pay" : "mostamari-ibn";
+                const res = await fetch("/api/sayah/match", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    action: "batch",
+                    scope,
+                    trId: trId || undefined,
+                    limit: sayahLimit,
+                  }),
+                });
+                const data = await res.json();
+                if (!res.ok || !data.ok) {
+                  setSayahChecked(true);
+                  setSayahGateOk(false);
+                  setSayahMsg(data.message || "خطا در فراخوانی سیاح");
+                  setError(data.message || "خطا در فراخوانی سیاح");
+                  return;
+                }
+                setSayahChecked(true);
+                setSayahGateOk(!!data.gateOk);
+                setSayahMsg(data.message || null);
+                setSayahStats({
+                  checked: Number(data.checked || 0),
+                  matchCount: Number(data.matchCount || 0),
+                  mismatchCount: Number(data.mismatchCount || 0),
+                  errorCount: Number(data.errorCount || 0),
+                  totalEligible: Number(data.totalEligible || 0),
+                });
+                setSayahMismatches(
+                  Array.isArray(data.mismatches) ? data.mismatches : [],
+                );
+              } catch {
+                setSayahChecked(true);
+                setSayahGateOk(false);
+                setError("خطای شبکه در تطبیق سیاح");
+              } finally {
+                setBusy(false);
+              }
+            }}
+            nextLabel="ادامه به محاسبه"
+            nextDisabled={
+              !sayahChecked ||
+              (!sayahGateOk && !isAdmin && !skipped.sayahMatch)
+            }
+            onNext={() => {
+              if (!sayahGateOk && isAdmin) {
+                setSkipped((s) => ({ ...s, sayahMatch: true }));
+              }
+              goNext();
+            }}
+          />
+          {!sayahGateOk && sayahChecked && isAdmin ? (
+            <p className="text-xs text-[var(--ink-soft)]">
+              به‌عنوان ادمین می‌توانید با وجود عدم تطبیق/خطا ادامه دهید (مسئولیت رفع
+              داده با شماست).
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+
       {step === "calculate" ? (
         <div className="panel p-5 space-y-4">
           <h2 className="font-[family-name:var(--font-display)] text-2xl">محاسبه</h2>
@@ -982,11 +1147,21 @@ export function MostamariWizard() {
               در حال محاسبهٔ {selectedType?.shortFa}… این تب را باز نگه دارید.
             </div>
           ) : null}
+          {!sayahGateOk && !skipped.sayahMatch && payedRows <= 0 ? (
+            <div className="rounded-xl bg-[#fff8e6] text-[#8a6d1d] px-4 py-3 text-sm">
+              ابتدا مرحلهٔ «تطبیق شبا» را با موفقیت انجام دهید (یا از آن مرحله برگردید).
+            </div>
+          ) : null}
           <NavButtons
             onPrev={goPrev}
             actionLabel={payedRows > 0 ? "اجرای مجدد" : "اجرای محاسبه"}
             actionPrimary
-            actionDisabled={!trId || !typeId || !labOk}
+            actionDisabled={
+              !trId ||
+              !typeId ||
+              !labOk ||
+              (!sayahGateOk && !skipped.sayahMatch && payedRows <= 0)
+            }
             busy={busy}
             onAction={async () => {
               if (!trId || !typeId) return;

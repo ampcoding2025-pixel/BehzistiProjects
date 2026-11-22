@@ -22,7 +22,21 @@ export type ExecutiveKpi = {
 
 export type TimePoint = { label: string; requests: number; complaints: number };
 
-export type NamedValue = { name: string; value: number };
+export type NamedValue = { name: string; value: number; id?: number | null };
+
+export type WorkloadUser = {
+  id?: number | null;
+  name: string;
+  value: number;
+  /** Average elapsed hours including still-open items (display). */
+  avgHours?: number | null;
+  /** Sum of elapsed hours across all items — zone ratio = value / totalHours. */
+  totalHours?: number | null;
+  /** Finished items in this aggregate; 0 = open-only. */
+  finishedCount?: number;
+  /** Average hours on finished items only — scorecard speed when available. */
+  avgHoursFinished?: number | null;
+};
 
 export type Insight = {
   id: string;
@@ -93,7 +107,17 @@ export type RequestAnalyticsData = {
   bySubjectGroup: NamedValue[];
   byChannel: NamedValue[];
   byRegion: NamedValue[];
+  /** Totals proxy: باز = CookieFinishTime null · بسته‌شده = filled */
+  openClosed: NamedValue[];
+  /** Monthly buckets by CookieTime: requests registered vs closed (FinishTime filled) */
+  openClosedTrend: { label: string; requests: number; closed: number }[];
   periodComparison: { label: string; current: number; previous: number }[];
+  byWorkflowStep: NamedValue[];
+  byFlowActor: WorkloadUser[];
+  byFlowReferred: WorkloadUser[];
+  byCartableUser: WorkloadUser[];
+  byCallUser: WorkloadUser[];
+  byCaseUser: WorkloadUser[];
   repeatedCandidates: {
     id: string;
     subject: string;
@@ -477,12 +501,109 @@ export type AdminCenterData = {
   settings: AdminSettings;
 };
 
+export type UserWorkloadRole =
+  | "flowActor"
+  | "referUser"
+  | "cartableUser"
+  | "callUser"
+  | "caseUser";
+
+export type UserRatePoint = {
+  label: string;
+  load: number;
+  avgHours: number | null;
+  /** load / avgHours when avgHours > 0 */
+  rate: number | null;
+};
+
+export type UserRateTrendData = {
+  userId: number;
+  role: UserWorkloadRole;
+  name: string;
+  formula: string;
+  periodLabel: string;
+  points: UserRatePoint[];
+};
+
+export type UserWorkDistributionData = {
+  userId: number;
+  role: UserWorkloadRole;
+  name: string;
+  periodLabel: string;
+  /** باز / بسته‌شده */
+  byState: NamedValue[];
+  /** CookieStatus or SubjectClass mix */
+  byType: NamedValue[];
+};
+
+export type UserRequestItem = {
+  cookieId: number;
+  subject: string;
+  stepName: string;
+  hours: number | null;
+  isOpen: boolean;
+  startTime: string | null;
+  finishTime: string | null;
+};
+
+export type UserRequestsData = {
+  userId: number;
+  role: UserWorkloadRole;
+  name: string;
+  periodLabel: string;
+  items: UserRequestItem[];
+  stepHoursOpen: NamedValue[];
+  stepHoursClosed: NamedValue[];
+};
+
+export type CookieWorkflowStepState = "done" | "current" | "remaining" | "skipped";
+
+export type CookieWorkflowStep = {
+  order: number;
+  statusId: number;
+  name: string;
+  state: CookieWorkflowStepState;
+  startTime: string | null;
+  finishTime: string | null;
+  hours: number | null;
+  /** Sum of dwell through this step (done/current only) */
+  cumulativeHours: number | null;
+};
+
+export type CookieWorkflowData = {
+  cookieId: number;
+  subject: string;
+  subjectClassName: string;
+  isOpen: boolean;
+  currentStepName: string | null;
+  steps: CookieWorkflowStep[];
+  pathNote: string;
+  /** CookieTime → finish/now — total time in the system */
+  lifetimeHours: number | null;
+};
+
 export interface AnalyticsDataProvider {
   getExecutiveDashboard(
     filters?: AnalyticsQueryFilters,
     opts?: { fresh?: boolean },
   ): Promise<ExecutiveDashboardData>;
   getRequestAnalytics(filters?: AnalyticsQueryFilters): Promise<RequestAnalyticsData>;
+  getUserRateTrend(
+    userId: number,
+    role: UserWorkloadRole,
+    filters?: AnalyticsQueryFilters,
+  ): Promise<UserRateTrendData>;
+  getUserWorkDistribution(
+    userId: number,
+    role: UserWorkloadRole,
+    filters?: AnalyticsQueryFilters,
+  ): Promise<UserWorkDistributionData>;
+  getUserRequests(
+    userId: number,
+    role: UserWorkloadRole,
+    filters?: AnalyticsQueryFilters,
+  ): Promise<UserRequestsData>;
+  getCookieWorkflow(cookieId: number): Promise<CookieWorkflowData>;
   getCategoryExplorer(filters?: AnalyticsQueryFilters): Promise<CategoryExplorerData>;
   getTopicExplorer(filters?: AnalyticsQueryFilters): Promise<TopicExplorerData>;
   getAnswerIntelligence(filters?: AnalyticsQueryFilters): Promise<AnswerIntelligenceData>;

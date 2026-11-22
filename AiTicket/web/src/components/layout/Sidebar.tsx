@@ -33,19 +33,23 @@ export function Sidebar() {
   }, [pathname]);
 
   return (
-    <aside className="flex h-full w-72 shrink-0 flex-col border-l border-[var(--border)] bg-[var(--sidebar)] text-[var(--sidebar-fg)]">
-      <div className="flex items-center justify-center border-b border-[var(--border)] px-5 py-5">
+    <aside className="flex h-full w-64 shrink-0 flex-col overflow-hidden border-l border-[var(--border)] bg-[var(--sidebar)] text-[var(--sidebar-fg)]">
+      <div className="flex h-12 shrink-0 items-center gap-2 border-b border-[var(--border)] px-3">
         <Image
           src="/behzisti-logo.png"
           alt="لوگوی سازمان بهزیستی کشور"
-          width={72}
-          height={72}
+          width={28}
+          height={28}
           priority
-          className="h-[72px] w-[72px] object-contain"
+          className="h-7 w-7 shrink-0 object-contain"
         />
+        <div className="min-w-0 leading-tight">
+          <p className="truncate text-[11px] font-semibold text-slate-800">سازمان بهزیستی</p>
+          <p className="truncate text-[10px] text-slate-500">هوش تحلیلی</p>
+        </div>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-3 py-4">
+      <nav className="min-h-0 flex-1 overflow-y-auto px-3 py-3">
         {navigation.map((group) => (
           <div key={group.id} className="mb-5">
             <div className="mb-2 px-2 text-[11px] font-semibold text-[var(--muted)]">

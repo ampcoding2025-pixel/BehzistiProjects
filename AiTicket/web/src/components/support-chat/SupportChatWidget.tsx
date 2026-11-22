@@ -5,13 +5,6 @@ import { createAiClient, type FaqItem } from "./ai-client";
 import type { SupportChatConfig, WidgetMessage, WidgetSessionStatus } from "./types";
 import "./support-chat-widget.css";
 
-const STATUS_LABEL: Record<WidgetSessionStatus, string> = {
-  bot: "پاسخ‌گویی هوشمند",
-  waiting_agent: "در انتظار کارشناس",
-  with_agent: "متصل به کارشناس",
-  closed: "بسته شده",
-};
-
 const DEFAULT_WELCOME =
   "سلام! من دستیار دانش سازمانی هستم. سؤال خود را بپرسید یا یکی از پرسش‌های متداول زیر را انتخاب کنید.";
 

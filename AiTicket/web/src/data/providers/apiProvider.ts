@@ -14,6 +14,7 @@ import type {
   KpiMonitoringData,
   KpiTone,
   NamedValue,
+  WorkloadUser,
   RelationKpiCatalogData,
   RelationKpiChartType,
   RelationKpiDrillData,
@@ -24,6 +25,12 @@ import type {
   RequestAnalyticsData,
   TaxonomyLevel,
   TopicExplorerData,
+  UserRateTrendData,
+  CookieWorkflowData,
+  CookieWorkflowStepState,
+  UserRequestsData,
+  UserWorkDistributionData,
+  UserWorkloadRole,
 } from "@/data/providers/types";
 import { mockAnalyticsProvider } from "@/data/providers/mockProvider";
 
@@ -77,7 +84,7 @@ type ApiMeta = {
   warnings?: string[] | null;
 };
 
-type ApiNamed = { name: string; value: number };
+type ApiNamed = { name: string; value: number; id?: number | null };
 
 type ApiVolumePoint = { label: string; requests: number; complaints: number };
 
@@ -116,6 +123,18 @@ type ApiExecutive = {
   };
 };
 
+type ApiOpenClosedTrend = { label: string; requests: number; closed: number };
+type ApiWorkloadUser = {
+  id?: number | null;
+  name: string;
+  value: number;
+  avgHours?: number | null;
+  avgDays?: number | null;
+  totalHours?: number | null;
+  finishedCount?: number | null;
+  avgHoursFinished?: number | null;
+};
+
 type ApiRequests = {
   meta: ApiMeta;
   ruleSetVersion: string;
@@ -124,6 +143,14 @@ type ApiRequests = {
   byChannel: ApiNamed[];
   byRegion: ApiNamed[];
   bySubjectGroup: ApiNamed[];
+  openClosed?: ApiNamed[];
+  openClosedTrend?: ApiOpenClosedTrend[];
+  byWorkflowStep?: ApiNamed[];
+  byFlowActor?: ApiWorkloadUser[];
+  byFlowReferred?: ApiWorkloadUser[];
+  byCartableUser?: ApiWorkloadUser[];
+  byCallUser?: ApiWorkloadUser[];
+  byCaseUser?: ApiWorkloadUser[];
 };
 
 type ApiCategoryNode = {
@@ -228,7 +255,34 @@ function mapKpi(k: ApiKpi): ExecutiveKpi {
 }
 
 function mapNamed(rows: ApiNamed[]): NamedValue[] {
-  return rows.map((r) => ({ name: r.name, value: Number(r.value) }));
+  return rows.map((r) => ({
+    name: r.name,
+    value: Number(r.value),
+    id: r.id ?? null,
+  }));
+}
+
+function mapWorkload(rows: ApiWorkloadUser[] | undefined): WorkloadUser[] {
+  return (rows ?? []).map((r) => ({
+    id: r.id ?? null,
+    name: r.name,
+    value: Number(r.value),
+    avgHours:
+      r.avgHours != null
+        ? Number(r.avgHours)
+        : r.avgDays == null
+          ? null
+          : Number(r.avgDays),
+    totalHours:
+      r.totalHours != null && Number.isFinite(Number(r.totalHours))
+        ? Number(r.totalHours)
+        : null,
+    finishedCount: r.finishedCount != null ? Number(r.finishedCount) : 0,
+    avgHoursFinished:
+      r.avgHoursFinished != null && Number.isFinite(Number(r.avgHoursFinished))
+        ? Number(r.avgHoursFinished)
+        : null,
+  }));
 }
 
 function mapCategoryNode(node: ApiCategoryNode): CategoryNode {
@@ -325,8 +379,163 @@ export const apiAnalyticsProvider: AnalyticsDataProvider = {
     };
   },
 
+  async getUserRateTrend(
+    userId: number,
+    role: UserWorkloadRole,
+    filters?: AnalyticsQueryFilters,
+  ): Promise<UserRateTrendData> {
+    const base = apiPath("/api/v1/analytics/requests/user-rate-trend", filters);
+    const sep = base.includes("?") ? "&" : "?";
+    const data = await fetchJson<{
+      meta: { periodLabel: string };
+      userId: number;
+      role: string;
+      name: string;
+      formula: string;
+      points: {
+        label: string;
+        load: number;
+        avgHours?: number | null;
+        avgDays?: number | null;
+        rate?: number | null;
+      }[];
+    }>(`${base}${sep}userId=${userId}&role=${encodeURIComponent(role)}`);
+    return {
+      userId: data.userId,
+      role: (data.role as UserWorkloadRole) || role,
+      name: data.name,
+      formula: data.formula,
+      periodLabel: data.meta.periodLabel,
+      points: (data.points ?? []).map((p) => ({
+        label: p.label,
+        load: Number(p.load),
+        avgHours:
+          p.avgHours != null
+            ? Number(p.avgHours)
+            : p.avgDays == null
+              ? null
+              : Number(p.avgDays),
+        rate: p.rate == null ? null : Number(p.rate),
+      })),
+    };
+  },
+
+  async getUserWorkDistribution(
+    userId: number,
+    role: UserWorkloadRole,
+    filters?: AnalyticsQueryFilters,
+  ): Promise<UserWorkDistributionData> {
+    const base = apiPath("/api/v1/analytics/requests/user-work-distribution", filters);
+    const sep = base.includes("?") ? "&" : "?";
+    const data = await fetchJson<{
+      meta: { periodLabel: string };
+      userId: number;
+      role: string;
+      name: string;
+      byState?: ApiNamed[];
+      byType?: ApiNamed[];
+    }>(`${base}${sep}userId=${userId}&role=${encodeURIComponent(role)}`);
+    return {
+      userId: data.userId,
+      role: (data.role as UserWorkloadRole) || role,
+      name: data.name,
+      periodLabel: data.meta.periodLabel,
+      byState: mapNamed(data.byState ?? []),
+      byType: mapNamed(data.byType ?? []),
+    };
+  },
+
+  async getUserRequests(
+    userId: number,
+    role: UserWorkloadRole,
+    filters?: AnalyticsQueryFilters,
+  ): Promise<UserRequestsData> {
+    const base = apiPath("/api/v1/analytics/requests/user-requests", filters);
+    const sep = base.includes("?") ? "&" : "?";
+    const data = await fetchJson<{
+      meta: { periodLabel: string };
+      userId: number;
+      role: string;
+      name: string;
+      items?: {
+        cookieId: number;
+        subject?: string;
+        stepName?: string;
+        hours?: number | null;
+        isOpen?: boolean;
+        startTime?: string | null;
+        finishTime?: string | null;
+      }[];
+      stepHoursOpen?: ApiNamed[];
+      stepHoursClosed?: ApiNamed[];
+    }>(`${base}${sep}userId=${userId}&role=${encodeURIComponent(role)}`);
+    return {
+      userId: data.userId,
+      role: (data.role as UserWorkloadRole) || role,
+      name: data.name,
+      periodLabel: data.meta.periodLabel,
+      items: (data.items ?? []).map((i) => ({
+        cookieId: Number(i.cookieId),
+        subject: i.subject ?? `پرونده ${i.cookieId}`,
+        stepName: i.stepName ?? "نامشخص",
+        hours: i.hours == null ? null : Number(i.hours),
+        isOpen: Boolean(i.isOpen),
+        startTime: i.startTime ?? null,
+        finishTime: i.finishTime ?? null,
+      })),
+      stepHoursOpen: mapNamed(data.stepHoursOpen ?? []),
+      stepHoursClosed: mapNamed(data.stepHoursClosed ?? []),
+    };
+  },
+
+  async getCookieWorkflow(cookieId: number): Promise<CookieWorkflowData> {
+    const data = await fetchJson<{
+      cookieId: number;
+      subject?: string;
+      subjectClassName?: string;
+      isOpen?: boolean;
+      currentStepName?: string | null;
+      pathNote?: string;
+      lifetimeHours?: number | null;
+      steps?: {
+        order: number;
+        statusId: number;
+        name?: string;
+        state?: string;
+        startTime?: string | null;
+        finishTime?: string | null;
+        hours?: number | null;
+        cumulativeHours?: number | null;
+      }[];
+    }>(`/api/v1/analytics/requests/cookie-workflow?cookieId=${cookieId}`);
+    const normalizeState = (s: string | undefined): CookieWorkflowStepState => {
+      if (s === "done" || s === "current" || s === "remaining" || s === "skipped") return s;
+      return "remaining";
+    };
+    return {
+      cookieId: Number(data.cookieId),
+      subject: data.subject ?? `پرونده ${cookieId}`,
+      subjectClassName: data.subjectClassName ?? "نامشخص",
+      isOpen: Boolean(data.isOpen),
+      currentStepName: data.currentStepName ?? null,
+      pathNote: data.pathNote ?? "",
+      lifetimeHours: data.lifetimeHours == null ? null : Number(data.lifetimeHours),
+      steps: (data.steps ?? []).map((s) => ({
+        order: Number(s.order),
+        statusId: Number(s.statusId),
+        name: s.name ?? "نامشخص",
+        state: normalizeState(s.state),
+        startTime: s.startTime ?? null,
+        finishTime: s.finishTime ?? null,
+        hours: s.hours == null ? null : Number(s.hours),
+        cumulativeHours: s.cumulativeHours == null ? null : Number(s.cumulativeHours),
+      })),
+    };
+  },
+
   async getRequestAnalytics(filters?: AnalyticsQueryFilters): Promise<RequestAnalyticsData> {
     const data = await fetchJson<ApiRequests>(apiPath("/api/v1/analytics/requests", filters));
+    const openClosed = mapNamed(data.openClosed ?? []);
     return {
       meta: {
         source: "didban",
@@ -338,11 +547,29 @@ export const apiAnalyticsProvider: AnalyticsDataProvider = {
       bySubjectGroup: mapNamed(data.bySubjectGroup),
       byChannel: mapNamed(data.byChannel),
       byRegion: mapNamed(data.byRegion),
+      openClosed:
+        openClosed.length > 0
+          ? openClosed
+          : [
+              { name: "باز", value: 0 },
+              { name: "بسته‌شده", value: 0 },
+            ],
+      openClosedTrend: (data.openClosedTrend ?? []).map((p) => ({
+        label: p.label,
+        requests: Number(p.requests),
+        closed: Number(p.closed),
+      })),
       periodComparison: data.byClass.map((row) => ({
         label: row.name,
         current: Number(row.value),
         previous: Number(row.value),
       })),
+      byWorkflowStep: mapNamed(data.byWorkflowStep ?? []),
+      byFlowActor: mapWorkload(data.byFlowActor),
+      byFlowReferred: mapWorkload(data.byFlowReferred),
+      byCartableUser: mapWorkload(data.byCartableUser),
+      byCallUser: mapWorkload(data.byCallUser),
+      byCaseUser: mapWorkload(data.byCaseUser),
       repeatedCandidates: [
         {
           id: "live-proxy",

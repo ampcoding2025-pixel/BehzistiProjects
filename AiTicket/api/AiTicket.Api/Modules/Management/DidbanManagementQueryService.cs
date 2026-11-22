@@ -689,20 +689,8 @@ public sealed class DidbanManagementQueryService(
 
     // ---- helpers ----
 
-    private (string Sql, Dictionary<string, object?> Parameters) BuildWhere(PeriodFilter filter)
-    {
-        var (sql, p) = SqlFilterBuilder.BuildCookieWhere(filter, _analytics.DefaultCookieTypeId);
-        if (filter.RegionId is not null)
-        {
-            sql += """
-                 AND EXISTS (
-                   SELECT 1 FROM dbo.Inform ix
-                   WHERE ix.CookieId = c.CookieId AND ix.RegionId = @regionId)
-                """;
-            p["regionId"] = filter.RegionId.Value;
-        }
-        return (sql, p);
-    }
+    private (string Sql, Dictionary<string, object?> Parameters) BuildWhere(PeriodFilter filter) =>
+        SqlFilterBuilder.BuildCookieWhere(filter, _analytics.DefaultCookieTypeId);
 
     private static PeriodFilter PreviousPeriod(PeriodFilter filter)
     {

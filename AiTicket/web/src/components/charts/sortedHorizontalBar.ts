@@ -18,13 +18,17 @@ export function sortedHorizontalBarOption(
     barWidth?: number;
     highlightMax?: boolean;
     color?: string;
+    /** Name of the currently selected cross-filter bar */
+    selectedName?: string | null;
   },
 ): EChartsOption {
   const sorted = [...rows].sort((a, b) => a.value - b.value);
   const labelWidth = opts?.labelWidth ?? 130;
   const highlightMax = opts?.highlightMax !== false;
   const baseColor = opts?.color ?? brand;
+  const selectedName = opts?.selectedName ?? null;
   const maxValue = sorted.length ? Math.max(...sorted.map((r) => r.value)) : 0;
+  const selectedColor = "#0369a1";
 
   return {
     textStyle: { fontFamily: "var(--font-vazirmatn), Tahoma, sans-serif" },
@@ -37,7 +41,10 @@ export function sortedHorizontalBarOption(
     xAxis: {
       type: "value",
       min: 0,
-      axisLabel: { color: slate },
+      axisLabel: {
+        color: slate,
+        formatter: (v: number) => formatFaNumber(Number(v)),
+      },
       splitLine: { lineStyle: { color: "#eef2f7" } },
     },
     yAxis: {
@@ -45,24 +52,34 @@ export function sortedHorizontalBarOption(
       data: sorted.map((r) => r.name),
       axisLabel: { color: slate, width: labelWidth, overflow: "truncate" },
       axisTick: { show: false },
+      triggerEvent: true,
     },
     series: [
       {
+        id: "sorted-bar",
         type: "bar",
         barWidth: opts?.barWidth ?? 12,
-        data: sorted.map((r) => ({
-          value: r.value,
-          itemStyle: {
-            color: highlightMax && r.value === maxValue && maxValue > 0 ? amber : baseColor,
-          },
-        })),
+        cursor: "pointer",
+        data: sorted.map((r) => {
+          const isSelected = selectedName != null && r.name === selectedName;
+          const isMax = highlightMax && r.value === maxValue && maxValue > 0;
+          return {
+            value: r.value,
+            itemStyle: {
+              color: isSelected ? selectedColor : isMax ? amber : baseColor,
+              opacity: selectedName && !isSelected ? 0.45 : 1,
+            },
+          };
+        }),
         label: {
           show: true,
           position: "right",
           color: slate,
           fontSize: 11,
-          formatter: (p: { value?: number | number[] }) => {
+          formatter: (p: { value?: number | number[]; name?: string }) => {
             const v = Array.isArray(p.value) ? Number(p.value[0]) : Number(p.value);
+            const isSelected = selectedName != null && p.name === selectedName;
+            if (isSelected) return formatFaNumber(v);
             if (!highlightMax || !Number.isFinite(v) || v !== maxValue || maxValue <= 0) {
               return "";
             }

@@ -38,6 +38,23 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
+    id: "reports",
+    label: "گزارش‌ها",
+    hint: "مغایرت شبا و بازرسی",
+    children: [
+      {
+        href: "/reports",
+        label: "مغایرت شبا",
+        hint: "جدول افراد و فیلتر ستون‌ها",
+      },
+      {
+        href: "/reports/inspection",
+        label: "گزارش‌های بازرسی",
+        hint: "گزارش‌های از پیش‌تعریف‌شده",
+      },
+    ],
+  },
+  {
     id: "settings",
     label: "تنظیمات",
     hint: "دسترسی و دیتابیس",
@@ -106,7 +123,7 @@ type NavAccess = { canSeeTxns: boolean; canSeeSettings: boolean };
 let navAccessCache: NavAccess | null = null;
 
 function defaultOpenIds(): Record<string, boolean> {
-  return { txns: true, settings: false };
+  return { txns: true, reports: false, settings: false };
 }
 
 function readStoredOpenIds(): Record<string, boolean> {
@@ -226,7 +243,7 @@ function SideNav() {
     () =>
       NAV_GROUPS.filter((g) => {
         if (g.id === "settings") return canSeeSettingsNav;
-        if (g.id === "txns") return canSeeTxns;
+        if (g.id === "txns" || g.id === "reports") return canSeeTxns;
         return false;
       }),
     [canSeeSettingsNav, canSeeTxns],
@@ -238,7 +255,8 @@ function SideNav() {
     const onTxns =
       pathname === "/" ||
       pathname.startsWith("/request") ||
-      pathname.startsWith("/transactions");
+      pathname.startsWith("/transactions") ||
+      pathname.startsWith("/reports");
     if (onSettings && !canSeeSettingsNav) {
       router.replace("/");
       return;
@@ -365,12 +383,12 @@ export function AppShell({
     <div className="min-h-screen lg:flex">
       <aside className="lg:w-64 shrink-0 border-b lg:border-b-0 lg:border-l border-[var(--line)] bg-white/90 backdrop-blur lg:min-h-screen sticky top-0 z-20">
         <div className="px-4 py-4 border-b border-[var(--line)]">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col items-center gap-2 text-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/behzisti-logo.png"
               alt="سازمان بهزیستی کشور"
-              className="h-11 w-auto shrink-0"
+              className="h-14 w-auto shrink-0"
             />
             <div>
               <div className="text-lg font-semibold leading-none">پنل دیسکت پرداخت</div>

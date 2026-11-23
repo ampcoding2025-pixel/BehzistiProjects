@@ -1,5 +1,7 @@
+import { Suspense } from "react";
 import { AppShell } from "@/components/AppShell";
-import { ReportsPanel } from "@/components/ReportsPanel";
+import { ShebaDeviationsReportPanel } from "@/components/ShebaDeviationsReportPanel";
+import { LoadingBlock } from "@/components/LoadingSpinner";
 
 export const dynamic = "force-dynamic";
 
@@ -8,10 +10,13 @@ export default function ReportsPage() {
     <AppShell
       crumbs={[
         { label: "پنل", href: "/" },
-        { label: "گزارش‌های بازرسی" },
+        { label: "گزارش‌ها", href: "/reports" },
+        { label: "مغایرت شبا" },
       ]}
     >
-      <ReportsPanel />
+      <Suspense fallback={<LoadingBlock label="بارگذاری گزارش…" />}>
+        <ShebaDeviationsReportPanel />
+      </Suspense>
     </AppShell>
   );
 }

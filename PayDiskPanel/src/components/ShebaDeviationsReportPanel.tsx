@@ -17,6 +17,7 @@ const BASE_COLUMNS = [
   "LastName",
   "NID",
   "Center",
+  "Province",
   "Account",
   "NationalId",
   "ibn",
@@ -29,6 +30,7 @@ const COLUMN_TITLES: Record<string, string> = {
   LastName: "نام خانوادگی",
   NID: "کد ملی",
   Center: "مرکز",
+  Province: "استان",
   Account: "حساب",
   NationalId: "شناسه مرکز",
   ibn: "شبا",
@@ -80,7 +82,7 @@ export function ShebaDeviationsReportPanel() {
       setTotal(0);
       setTotalPages(1);
       setMessage(null);
-      setError("شناسه تراکنش یا حداقل یک فیلتر لازم است");
+      setError("شناسه تراکنش یا حداقل یک فیلتر (نام، مرکز، استان، …) لازم است");
       setLoading(false);
       return;
     }
@@ -157,7 +159,7 @@ export function ShebaDeviationsReportPanel() {
     const f = next || filters;
     if (!hasShebaReportScope(f)) {
       setFilters(f);
-      setError("شناسه تراکنش یا حداقل یک فیلتر (نام، کد ملی، مرکز، …) لازم است");
+      setError("شناسه تراکنش یا حداقل یک فیلتر (نام، کد ملی، مرکز، استان، …) لازم است");
       return;
     }
     const turningSayahOn = f.onlySayahMismatch && !applied.onlySayahMismatch;
@@ -186,11 +188,11 @@ export function ShebaDeviationsReportPanel() {
     <div className="txn-layout">
       <aside className="txn-layout__filters panel p-3 space-y-2">
         <div className="text-sm font-semibold">فیلترها</div>
-        <div className="text-[11px] text-[var(--ink-soft)] leading-5">
-          {db || "…"} · مغایرت شبا یارانه
-          <br />
-          شناسه تراکنش اختیاری است — با فیلترهای دیگر هم جستجو کنید.
-        </div>
+        {db ? (
+          <div className="text-[11px] text-[var(--ink-soft)] leading-5">
+            {db}
+          </div>
+        ) : null}
         <ShebaReportFilterBar
           value={filters}
           onChange={setFilters}

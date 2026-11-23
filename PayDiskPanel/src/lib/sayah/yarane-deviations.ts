@@ -12,6 +12,7 @@ export type YaraneShebaDeviationRow = {
   LastName: string;
   NID: string;
   Center: string;
+  Province?: string;
   Account: string;
   NationalId: string;
   ibn: string;
@@ -27,6 +28,8 @@ export type YaraneShebaDeviationFilters = {
   LastName?: string;
   NID?: string;
   Center?: string;
+  /** استان — matches Province.ProvinceTitle via Center → City. */
+  Province?: string;
   Account?: string;
   NationalId?: string;
   ibn?: string;
@@ -42,6 +45,7 @@ export function hasYaraneShebaReportTextFilter(
     String(filters.LastName || "").trim() ||
     String(filters.NID || "").trim() ||
     String(filters.Center || "").trim() ||
+    String(filters.Province || "").trim() ||
     String(filters.Account || "").trim() ||
     String(filters.NationalId || "").trim() ||
     String(filters.ibn || "").trim()
@@ -68,6 +72,7 @@ function rowMatchesFilters(
     ["LastName", row.LastName],
     ["NID", row.NID],
     ["Center", row.Center],
+    ["Province", row.Province || ""],
     ["Account", row.Account],
     ["NationalId", row.NationalId],
     ["ibn", row.ibn],
@@ -105,6 +110,18 @@ function bindSqlPersonFilters(
     const pname = `f_${key}`;
     req.input(pname, sql.NVarChar, needle);
     parts.push(`AND ${col} LIKE @${pname}`);
+  }
+  const provinceNeedle = likeNeedle(filters?.Province);
+  if (provinceNeedle) {
+    req.input("f_Province", sql.NVarChar, provinceNeedle);
+    parts.push(`AND EXISTS (
+          SELECT 1
+          FROM dbo.City AS cit WITH (NOLOCK)
+          INNER JOIN dbo.Province AS pr WITH (NOLOCK)
+            ON pr.ProvinceId = cit.ProvinceId
+          WHERE cit.CityId = cntr.CityID
+            AND pr.ProvinceTitle LIKE @f_Province
+        )`);
   }
   const devNeedle = String(filters?.sayahDeviation || "").trim().toLowerCase();
   if (devNeedle && !MISSING_SHEBA_REASON.toLowerCase().includes(devNeedle)) {
@@ -472,6 +489,7 @@ export async function labYaraneShebaDeviations(
         per.LastName AS LastName,
         per.NID AS NID,
         cntr.CenterTitle AS Center,
+        LTRIM(RTRIM(pr.ProvinceTitle)) AS Province,
         p.CenterAccount AS Account,
         LTRIM(RTRIM(cntr.NationalId)) AS NationalId,
         LTRIM(RTRIM(cntr.IBN)) AS ibn,
@@ -480,6 +498,8 @@ export async function labYaraneShebaDeviations(
       FROM ${payTable} AS p WITH (NOLOCK)
       INNER JOIN dbo.Person AS per WITH (NOLOCK) ON per.ID = p.PersonId
       INNER JOIN dbo.Center AS cntr WITH (NOLOCK) ON cntr.CenterId = p.CenterId
+      LEFT JOIN dbo.City AS cit WITH (NOLOCK) ON cit.CityId = cntr.CityID
+      LEFT JOIN dbo.Province AS pr WITH (NOLOCK) ON pr.ProvinceId = cit.ProvinceId
       WHERE p.TransactionId = @id
         AND cntr.CenterId IN (${list})
       ORDER BY p.Id DESC
@@ -489,6 +509,7 @@ export async function labYaraneShebaDeviations(
       LastName: String(r.LastName || ""),
       NID: String(r.NID || ""),
       Center: String(r.Center || ""),
+      Province: String(r.Province || ""),
       Account: String(r.Account || ""),
       NationalId: String(r.NationalId || ""),
       ibn: String(r.ibn || ""),
@@ -555,6 +576,7 @@ export async function labYaraneShebaDeviations(
         per.LastName AS LastName,
         per.NID AS NID,
         cntr.CenterTitle AS Center,
+        LTRIM(RTRIM(pr.ProvinceTitle)) AS Province,
         p.CenterAccount AS Account,
         LTRIM(RTRIM(cntr.NationalId)) AS NationalId,
         LTRIM(RTRIM(cntr.IBN)) AS ibn,
@@ -562,6 +584,8 @@ export async function labYaraneShebaDeviations(
       FROM ${payTable} AS p WITH (NOLOCK)
       INNER JOIN dbo.Person AS per WITH (NOLOCK) ON per.ID = p.PersonId
       INNER JOIN dbo.Center AS cntr WITH (NOLOCK) ON cntr.CenterId = p.CenterId
+      LEFT JOIN dbo.City AS cit WITH (NOLOCK) ON cit.CityId = cntr.CityID
+      LEFT JOIN dbo.Province AS pr WITH (NOLOCK) ON pr.ProvinceId = cit.ProvinceId
       WHERE p.TransactionId = @id AND p.CenterId IN (${list})
         ${filterSql}
       ORDER BY p.Id DESC
@@ -573,6 +597,7 @@ export async function labYaraneShebaDeviations(
         LastName: String(r.LastName || ""),
         NID: String(r.NID || ""),
         Center: String(r.Center || ""),
+        Province: String(r.Province || ""),
         Account: String(r.Account || ""),
         NationalId: String(r.NationalId || ""),
         ibn: String(r.ibn || ""),
@@ -615,6 +640,7 @@ export async function labYaraneShebaDeviations(
       "LastName",
       "NID",
       "Center",
+      "Province",
       "Account",
       "NationalId",
       "ibn",
@@ -784,6 +810,7 @@ export async function labYaraneShebaDeviationsCrossTxn(opts: {
     "LastName",
     "NID",
     "Center",
+    "Province",
     "Account",
     "NationalId",
     "ibn",
@@ -818,6 +845,7 @@ export async function labYaraneShebaDeviationsCrossTxn(opts: {
         per.LastName AS LastName,
         per.NID AS NID,
         cntr.CenterTitle AS Center,
+        LTRIM(RTRIM(pr.ProvinceTitle)) AS Province,
         p.CenterAccount AS Account,
         LTRIM(RTRIM(cntr.NationalId)) AS NationalId,
         LTRIM(RTRIM(cntr.IBN)) AS ibn,
@@ -825,6 +853,8 @@ export async function labYaraneShebaDeviationsCrossTxn(opts: {
       FROM dbo.PayedMakeOvers AS p WITH (NOLOCK)
       INNER JOIN dbo.Person AS per WITH (NOLOCK) ON per.ID = p.PersonId
       INNER JOIN dbo.Center AS cntr WITH (NOLOCK) ON cntr.CenterId = p.CenterId
+      LEFT JOIN dbo.City AS cit WITH (NOLOCK) ON cit.CityId = cntr.CityID
+      LEFT JOIN dbo.Province AS pr WITH (NOLOCK) ON pr.ProvinceId = cit.ProvinceId
       WHERE ${MISSING_IBN_PRED}
         ${listFilterSql}
       ORDER BY p.Id DESC
@@ -839,6 +869,7 @@ export async function labYaraneShebaDeviationsCrossTxn(opts: {
       LastName: String(r.LastName || ""),
       NID: String(r.NID || ""),
       Center: String(r.Center || ""),
+      Province: String(r.Province || ""),
       Account: String(r.Account || ""),
       NationalId: String(r.NationalId || ""),
       ibn: String(r.ibn || ""),
@@ -998,6 +1029,7 @@ export async function labYaraneShebaDeviationsCrossTxn(opts: {
       per.LastName AS LastName,
       per.NID AS NID,
       cntr.CenterTitle AS Center,
+      LTRIM(RTRIM(pr.ProvinceTitle)) AS Province,
       p.CenterAccount AS Account,
       LTRIM(RTRIM(cntr.NationalId)) AS NationalId,
       LTRIM(RTRIM(cntr.IBN)) AS ibn,
@@ -1006,6 +1038,8 @@ export async function labYaraneShebaDeviationsCrossTxn(opts: {
     FROM dbo.PayedMakeOvers AS p WITH (NOLOCK)
     INNER JOIN dbo.Person AS per WITH (NOLOCK) ON per.ID = p.PersonId
     INNER JOIN dbo.Center AS cntr WITH (NOLOCK) ON cntr.CenterId = p.CenterId
+    LEFT JOIN dbo.City AS cit WITH (NOLOCK) ON cit.CityId = cntr.CityID
+    LEFT JOIN dbo.Province AS pr WITH (NOLOCK) ON pr.ProvinceId = cit.ProvinceId
     WHERE cntr.CenterId IN (${idList})
       ${listFilterSql}
     ORDER BY p.Id DESC
@@ -1020,6 +1054,7 @@ export async function labYaraneShebaDeviationsCrossTxn(opts: {
     LastName: String(r.LastName || ""),
     NID: String(r.NID || ""),
     Center: String(r.Center || ""),
+    Province: String(r.Province || ""),
     Account: String(r.Account || ""),
     NationalId: String(r.NationalId || ""),
     ibn: String(r.ibn || ""),

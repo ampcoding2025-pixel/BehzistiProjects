@@ -19,6 +19,8 @@ export type ShebaReportFilters = {
   LastName: string;
   NID: string;
   Center: string;
+  /** استان title from dbo.Province */
+  Province: string;
   Account: string;
   NationalId: string;
   ibn: string;
@@ -33,6 +35,7 @@ export const EMPTY_SHEBA_REPORT_FILTERS: ShebaReportFilters = {
   LastName: "",
   NID: "",
   Center: "",
+  Province: "",
   Account: "",
   NationalId: "",
   ibn: "",
@@ -44,6 +47,11 @@ const PAGE_SIZE_OPTIONS = [
   { value: "15", label: "۱۵" },
   { value: "25", label: "۲۵" },
   { value: "50", label: "۵۰" },
+];
+
+const MISMATCH_STATUS_OPTIONS = [
+  { value: "all", label: "همه مغایرت‌ها" },
+  { value: "sayah", label: "فقط سیاح / فرمت" },
 ];
 
 const TEXT_FIELDS: Array<{
@@ -257,6 +265,71 @@ function CenterSuggest({
   );
 }
 
+function ProvinceSelect({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (title: string) => void;
+}) {
+  const [options, setOptions] = useState<Array<{ value: string; label: string }>>(
+    [{ value: "", label: "همه استان‌ها" }],
+  );
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const ac = new AbortController();
+    let alive = true;
+    setLoading(true);
+    fetch("/api/reports/sheba-deviations/provinces?limit=40", {
+      signal: ac.signal,
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (!alive) return;
+        const provinces = Array.isArray(data.provinces) ? data.provinces : [];
+        setOptions([
+          { value: "", label: "همه استان‌ها" },
+          ...provinces.map((p: { id: number; title: string }) => ({
+            value: String(p.title || "").trim(),
+            label: String(p.title || "").trim() || `استان ${p.id}`,
+          })),
+        ]);
+      })
+      .catch(() => {
+        if (!alive) return;
+        setOptions([{ value: "", label: "همه استان‌ها" }]);
+      })
+      .finally(() => {
+        if (alive) setLoading(false);
+      });
+    return () => {
+      alive = false;
+      ac.abort();
+    };
+  }, []);
+
+  const selectOptions = useMemo(() => {
+    if (!value.trim()) return options;
+    if (options.some((o) => o.value === value)) return options;
+    return [...options, { value, label: value }];
+  }, [options, value]);
+
+  return (
+    <UiSelect
+      id="sheba-filter-Province"
+      label="استان"
+      value={value}
+      options={selectOptions}
+      onChange={onChange}
+      placeholder={loading ? "بارگذاری استان‌ها…" : "همه استان‌ها"}
+      searchable
+      searchPlaceholder="جستجوی استان…"
+      disabled={loading && options.length <= 1}
+    />
+  );
+}
+
 /** Side filters — same layout pattern as home TxnFilterBar. */
 export function ShebaReportFilterBar({
   value,
@@ -281,6 +354,7 @@ export function ShebaReportFilterBar({
   const activeCount = useMemo(() => {
     let n = TEXT_FIELDS.filter((f) => value[f.key].trim()).length;
     if (value.Center.trim()) n += 1;
+    if (value.Province.trim()) n += 1;
     if (value.onlySayahMismatch) n += 1;
     return n;
   }, [value]);
@@ -323,6 +397,11 @@ export function ShebaReportFilterBar({
         </div>
       ))}
 
+      <ProvinceSelect
+        value={value.Province}
+        onChange={(title) => applyPatch({ Province: title })}
+      />
+
       <CenterSuggest
         trId={value.trId}
         value={value.Center}
@@ -342,34 +421,15 @@ export function ShebaReportFilterBar({
         </div>
       ))}
 
-      <div className="field">
-        <span className="ui-switch__label-text" id="sheba-filter-sayah-label">
-          مغایرت شبا
-        </span>
-        <button
-          type="button"
-          id="sheba-filter-sayah"
-          role="switch"
-          aria-checked={value.onlySayahMismatch}
-          aria-labelledby="sheba-filter-sayah-label"
-          className={`ui-switch ${value.onlySayahMismatch ? "ui-switch--on" : ""}`}
-          title={
-            value.onlySayahMismatch
-              ? "فقط عدم تطبیق / خطای سیاح و فرمت"
-              : "همه مغایرت‌ها شامل فاقد شبا"
-          }
-          onClick={() =>
-            applyPatch({ onlySayahMismatch: !value.onlySayahMismatch })
-          }
-        >
-          <span className="ui-switch__track" aria-hidden>
-            <span className="ui-switch__thumb" />
-          </span>
-          <span className="ui-switch__state">
-            {value.onlySayahMismatch ? "فقط سیاح/فرمت" : "همه"}
-          </span>
-        </button>
-      </div>
+      <UiSelect
+        id="sheba-filter-status"
+        label="وضعیت مغایرت"
+        value={value.onlySayahMismatch ? "sayah" : "all"}
+        options={MISMATCH_STATUS_OPTIONS}
+        onChange={(v) => applyPatch({ onlySayahMismatch: v === "sayah" })}
+        searchable
+        searchPlaceholder="جستجوی وضعیت…"
+      />
 
       <div className="txn-filter__actions">
         <button type="submit" className="btn btn-primary text-xs">
@@ -439,6 +499,8 @@ export function ShebaReportToolbar({
         label="در صفحه"
         value={String(value.pageSize)}
         options={PAGE_SIZE_OPTIONS}
+        searchable
+        searchPlaceholder="جستجو…"
         onChange={(v) => {
           const next = { ...value, pageSize: Number(v) };
           onChange(next);
@@ -459,6 +521,7 @@ export function hasShebaReportScope(filters: ShebaReportFilters): boolean {
   const trId = toAsciiDigits(filters.trId);
   if (trId) return true;
   if (filters.Center.trim()) return true;
+  if (filters.Province.trim()) return true;
   return TEXT_FIELDS.some((f) => filters[f.key].trim());
 }
 
@@ -475,6 +538,7 @@ export function shebaFiltersToParams(
     if (v) params.set(f.key, v);
   }
   if (filters.Center.trim()) params.set("Center", filters.Center.trim());
+  if (filters.Province.trim()) params.set("Province", filters.Province.trim());
   if (filters.onlySayahMismatch) params.set("onlySayahMismatch", "1");
   return params;
 }

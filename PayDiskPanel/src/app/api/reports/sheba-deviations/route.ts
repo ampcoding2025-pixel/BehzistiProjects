@@ -42,6 +42,7 @@ export async function GET(req: Request) {
     LastName: pickFilter(sp, "LastName"),
     NID: pickFilter(sp, "NID"),
     Center: pickFilter(sp, "Center"),
+    Province: pickFilter(sp, "Province"),
     Account: pickFilter(sp, "Account"),
     NationalId: pickFilter(sp, "NationalId"),
     ibn: pickFilter(sp, "ibn"),
@@ -55,7 +56,7 @@ export async function GET(req: Request) {
       {
         ok: false,
         message:
-          "شناسه تراکنش یا حداقل یک فیلتر (نام، کد ملی، مرکز، …) لازم است",
+          "شناسه تراکنش یا حداقل یک فیلتر (نام، کد ملی، مرکز، استان، …) لازم است",
       },
       { status: 400 },
     );

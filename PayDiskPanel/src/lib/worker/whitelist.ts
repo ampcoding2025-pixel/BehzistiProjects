@@ -6,6 +6,17 @@ export const ALLOWED_SQL_PROCS = [
   "CalculateHaghParastari",
   "CalculateEmdad",
   "CalculateMarakezYarane",
+  /** Preview-then-approve draft path (PAYDISK_CALC_DRAFT=true) */
+  "CalculateTransaction_Draft",
+  "CalculateHadafmandi_Draft",
+  "CalculateHaghParastariFamily_Draft",
+  "CalculateHaghParastari_Draft",
+  "CalculateEmdad_Draft",
+  "CalculateMarakezYarane_Draft",
+  "PromoteMostamariDraft",
+  "PromoteYaraneDraft",
+  "ClearMostamariDraft",
+  "ClearYaraneDraft",
   /** یارانه list CSV → \\sqlcluster\...\Diskette + Key2 (same as Armaghan) */
   "ListExporMarakez",
   /** مستمری bank diskette → \\sqlcluster\...\Diskette + PayedTransaction.FileName (same as Armaghan) */

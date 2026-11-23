@@ -11,7 +11,7 @@ export default function ReportsPage() {
       crumbs={[
         { label: "پنل", href: "/" },
         { label: "گزارش‌ها", href: "/reports" },
-        { label: "مغایرت شبا" },
+        { label: "گزارش گیری" },
       ]}
     >
       <Suspense fallback={<LoadingBlock label="بارگذاری گزارش…" />}>

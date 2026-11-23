@@ -40,17 +40,12 @@ const NAV_GROUPS: NavGroup[] = [
   {
     id: "reports",
     label: "گزارش‌ها",
-    hint: "مغایرت شبا و بازرسی",
+    hint: "مغایرت شبا",
     children: [
       {
         href: "/reports",
-        label: "مغایرت شبا",
+        label: "گزارش گیری",
         hint: "جدول افراد و فیلتر ستون‌ها",
-      },
-      {
-        href: "/reports/inspection",
-        label: "گزارش‌های بازرسی",
-        hint: "گزارش‌های از پیش‌تعریف‌شده",
       },
     ],
   },

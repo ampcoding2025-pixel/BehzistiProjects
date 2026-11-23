@@ -386,7 +386,7 @@ export function AccessSettingsPanel() {
           />
           {userSearching ? (
             <div className="mt-2">
-              <LoadingSpinner label="در حال جستجو…" size="sm" inline />
+              <LoadingSpinner size="sm" inline />
             </div>
           ) : null}
           {userHits.length > 0 && !selectedUser ? (

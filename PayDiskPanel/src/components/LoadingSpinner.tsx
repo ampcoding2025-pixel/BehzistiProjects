@@ -3,24 +3,29 @@
 type Size = "sm" | "md" | "lg";
 
 const SIZE_PX: Record<Size, number> = {
-  sm: 18,
+  sm: 16,
   md: 28,
   lg: 40,
 };
 
 export function LoadingSpinner({
-  label = "در حال بارگذاری…",
+  label,
   size = "md",
   className = "",
   inline = false,
 }: {
+  /** Visible text under/beside the ring. Inline defaults to circle-only. */
   label?: string | null;
   size?: Size;
   className?: string;
-  /** Compact row for buttons / toolbars */
+  /** Compact circle for buttons / toolbars (no visible text). */
   inline?: boolean;
 }) {
   const px = SIZE_PX[size];
+  const visibleLabel =
+    label === undefined ? (inline ? null : "در حال بارگذاری…") : label;
+  const a11y = visibleLabel || label || "در حال بارگذاری";
+
   return (
     <div
       className={`loading-spinner ${inline ? "loading-spinner--inline" : ""} ${className}`.trim()}
@@ -30,11 +35,17 @@ export function LoadingSpinner({
     >
       <span
         className="loading-spinner__ring"
-        style={{ width: px, height: px, borderWidth: Math.max(2, Math.round(px / 10)) }}
+        style={{
+          width: px,
+          height: px,
+          borderWidth: Math.max(2, Math.round(px / 8)),
+        }}
         aria-hidden
       />
-      {label ? <span className="loading-spinner__label">{label}</span> : null}
-      <span className="sr-only">{label || "در حال بارگذاری"}</span>
+      {visibleLabel ? (
+        <span className="loading-spinner__label">{visibleLabel}</span>
+      ) : null}
+      <span className="sr-only">{a11y}</span>
     </div>
   );
 }

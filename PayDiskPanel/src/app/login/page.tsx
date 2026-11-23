@@ -77,7 +77,8 @@ function LoginForm() {
             </div>
           ) : null}
           <button className="btn btn-primary w-full" disabled={busy} type="submit">
-            {busy ? <LoadingSpinner label="ورود…" size="sm" inline /> : "ورود"}
+            {busy ? <LoadingSpinner size="sm" inline /> : null}
+            ورود
           </button>
         </form>
       </div>

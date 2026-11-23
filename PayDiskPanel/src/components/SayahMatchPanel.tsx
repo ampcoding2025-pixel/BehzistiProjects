@@ -30,7 +30,9 @@ type Props = {
   /** Extra help under the title */
   hint?: ReactNode;
   isAdmin?: boolean;
+  /** External disable (e.g. parent nav lock). Spinner stays local via `running`. */
   busy?: boolean;
+  /** Notify parent so stepper/قبلی/ادامه stay locked while Sayah runs. */
   onBusy?: (busy: boolean) => void;
   onError?: (message: string | null) => void;
   /** Gate passed (or admin override recorded by parent). */
@@ -49,7 +51,7 @@ type Props = {
 };
 
 export function SayahMatchPanel(props: Props) {
-  const [limit, setLimit] = useState(20);
+  const [limit, setLimit] = useState(10);
   const [msg, setMsg] = useState<string | null>(null);
   const [stats, setStats] = useState<SayahStats | null>(null);
   const [mismatches, setMismatches] = useState<SayahMismatch[]>([]);
@@ -97,6 +99,8 @@ export function SayahMatchPanel(props: Props) {
           scope: props.scope,
           trId: props.trId || undefined,
           limit,
+          delayMs: 40,
+          concurrency: 4,
         }),
       });
       const data = await res.json();
@@ -130,7 +134,7 @@ export function SayahMatchPanel(props: Props) {
     }
   }, [limit, props]);
 
-  const busy = props.busy || running;
+  const locked = !!props.busy || running;
 
   return (
     <div className="panel p-5 space-y-4">
@@ -168,8 +172,8 @@ export function SayahMatchPanel(props: Props) {
           <select
             className="rounded-lg border border-[var(--line)] px-2 py-1 bg-white"
             value={limit}
-            disabled={busy}
-            onChange={(e) => setLimit(Number(e.target.value) || 20)}
+            disabled={locked}
+            onChange={(e) => setLimit(Number(e.target.value) || 10)}
           >
             {[10, 20, 30, 50].map((n) => (
               <option key={n} value={n}>
@@ -233,7 +237,7 @@ export function SayahMatchPanel(props: Props) {
             <button
               type="button"
               className="btn btn-ghost"
-              disabled={busy}
+              disabled={locked}
               onClick={props.onPrev}
             >
               قبلی
@@ -242,17 +246,17 @@ export function SayahMatchPanel(props: Props) {
           <button
             type="button"
             className="btn btn-primary"
-            disabled={busy || svc?.configured === false}
+            disabled={locked || svc?.configured === false}
             onClick={() => void run()}
           >
-            {busy ? <LoadingSpinner size="sm" inline /> : null}
+            {running ? <LoadingSpinner size="sm" inline /> : null}
             اجرای تطبیق سیاح
           </button>
           {props.onNext ? (
             <button
               type="button"
               className="btn btn-ghost"
-              disabled={busy || props.nextDisabled}
+              disabled={locked || props.nextDisabled}
               onClick={props.onNext}
             >
               {props.nextLabel || "ادامه به محاسبه"}
@@ -264,10 +268,10 @@ export function SayahMatchPanel(props: Props) {
         <button
           type="button"
           className="btn btn-primary"
-          disabled={busy || svc?.configured === false}
+          disabled={locked || svc?.configured === false}
           onClick={() => void run()}
         >
-          {busy ? <LoadingSpinner size="sm" inline /> : null}
+          {running ? <LoadingSpinner size="sm" inline /> : null}
           اجرای تطبیق سیاح
         </button>
       )}

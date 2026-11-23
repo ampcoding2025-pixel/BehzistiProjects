@@ -53,6 +53,7 @@ export async function POST(req: Request) {
     trId?: number;
     limit?: number;
     delayMs?: number;
+    concurrency?: number;
     nationalId?: string;
     shebaId?: string;
     legalId?: string;
@@ -62,8 +63,12 @@ export async function POST(req: Request) {
   } | null;
 
   const action = String(body?.action || "batch").toLowerCase();
-  const limit = Math.min(100, Math.max(1, Number(body?.limit) || 30));
-  const delayMs = Math.min(2000, Math.max(0, Number(body?.delayMs) || 250));
+  const limit = Math.min(100, Math.max(1, Number(body?.limit) || 20));
+  const delayMs = Math.min(2000, Math.max(0, Number(body?.delayMs) || 40));
+  const concurrency = Math.min(
+    8,
+    Math.max(1, Number(body?.concurrency) || 4),
+  );
   const modeRaw = String(body?.mode || getSayahMode()).toLowerCase();
   const mode: SayahMode =
     modeRaw === "rest" || modeRaw === "soap" || modeRaw === "auto"
@@ -150,7 +155,8 @@ export async function POST(req: Request) {
     const batch = await customerHasShebaIdBatch(loaded.candidates, {
       limit,
       delayMs,
-      timeoutMs: 30_000,
+      concurrency,
+      timeoutMs: 20_000,
       mode,
     });
 

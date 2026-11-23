@@ -1,4 +1,5 @@
 import { getReadPool, sql } from "@/lib/db/pool";
+import { resolveMostamariPayTable } from "@/lib/lab/calc-draft";
 import {
   normalizeNationalId,
   normalizeShebaId,
@@ -82,26 +83,23 @@ export async function loadMostamariPayCandidates(
 ): Promise<{ candidates: SayahCandidate[]; totalEligible: number }> {
   const pool = await getReadPool();
   const top = clampLimit(limit);
+  const payTable = await resolveMostamariPayTable(trId);
+
+  // Cheap eligible estimate — avoid COUNT_BIG of LTRIM join on ~1.5M pay rows.
   const countReq = pool.request();
+  countReq.timeout = 30_000;
   countReq.input("id", sql.Int, trId);
   const countRs = await countReq.query(`
     SELECT COUNT_BIG(*) AS cnt
-    FROM dbo.PayedContinusPayment AS pay WITH (NOLOCK)
-    INNER JOIN dbo.Person AS p WITH (NOLOCK) ON pay.PersonId = p.ID
-    INNER JOIN dbo.IBN_AccountNumber AS i WITH (NOLOCK)
-      ON LTRIM(RTRIM(pay.AccountNumber)) = LTRIM(RTRIM(i.AccountNumber))
+    FROM ${payTable} AS pay WITH (NOLOCK)
     WHERE pay.TransactionId = @id
-      AND i.IBN IS NOT NULL
-      AND LTRIM(RTRIM(i.IBN)) <> N''
-      AND i.IBN <> N'null'
-      AND p.NID IS NOT NULL
-      AND LTRIM(RTRIM(p.NID)) <> N''
   `);
   const totalEligible = Number(countRs.recordset[0]?.cnt || 0);
 
   const req = pool.request();
-  req.timeout = 60_000;
+  req.timeout = 45_000;
   req.input("id", sql.Int, trId);
+  // Equality join on AccountNumber (index-friendly); sample TOP only.
   const rs = await req.query(`
     SELECT TOP (${top})
       p.ID AS PersonId,
@@ -110,13 +108,13 @@ export async function loadMostamariPayCandidates(
       LTRIM(RTRIM(p.LastName)) AS LastName,
       LTRIM(RTRIM(pay.AccountNumber)) AS AccountNumber,
       LTRIM(RTRIM(i.IBN)) AS ibn
-    FROM dbo.PayedContinusPayment AS pay WITH (NOLOCK)
+    FROM ${payTable} AS pay WITH (NOLOCK)
     INNER JOIN dbo.Person AS p WITH (NOLOCK) ON pay.PersonId = p.ID
     INNER JOIN dbo.IBN_AccountNumber AS i WITH (NOLOCK)
-      ON LTRIM(RTRIM(pay.AccountNumber)) = LTRIM(RTRIM(i.AccountNumber))
+      ON i.AccountNumber = pay.AccountNumber
     WHERE pay.TransactionId = @id
       AND i.IBN IS NOT NULL
-      AND LTRIM(RTRIM(i.IBN)) <> N''
+      AND i.IBN <> N''
       AND i.IBN <> N'null'
       AND p.NID IS NOT NULL
       AND LTRIM(RTRIM(p.NID)) <> N''

@@ -129,19 +129,94 @@ export function sayahTransportStatus() {
   };
 }
 
-/** Normalize Sheba to IR + 24 digits (26 chars). */
-export function normalizeShebaId(raw: string | null | undefined): string | null {
-  if (raw == null) return null;
-  let s = String(raw).trim().toUpperCase().replace(/\s+/g, "");
-  if (!s) return null;
-  if (s.startsWith("IR")) {
-    s = "IR" + s.slice(2).replace(/\D/g, "");
-  } else {
-    s = "IR" + s.replace(/\D/g, "");
+/** Map Persian/Arabic-Indic digits to ASCII 0-9. */
+function toAsciiDigits(s: string): string {
+  return s.replace(/[۰-۹٠-٩]/g, (ch) => {
+    const fa = "۰۱۲۳۴۵۶۷۸۹".indexOf(ch);
+    if (fa >= 0) return String(fa);
+    const ar = "٠١٢٣٤٥٦٧٨٩".indexOf(ch);
+    return ar >= 0 ? String(ar) : ch;
+  });
+}
+
+/** Strip bidi / zero-width / BOM noise common in pasted Sheba values. */
+function stripShebaNoise(s: string): string {
+  return s.replace(/[\u200B-\u200F\u202A-\u202E\u2060\uFEFF\u00A0]/g, "");
+}
+
+/** Fullwidth Latin → ASCII (ＩＲ → IR). */
+function fullwidthLatinToAscii(s: string): string {
+  return s.replace(/[Ａ-Ｚａ-ｚ]/g, (ch) =>
+    String.fromCharCode(ch.charCodeAt(0) - 0xfee0),
+  );
+}
+
+/**
+ * Clean raw Sheba text: Persian digits, case, spaces, bidi marks.
+ * Detects leading IR in any case (IR / ir / Ir / iR).
+ */
+export function cleanShebaRaw(raw: string | null | undefined): {
+  cleaned: string;
+  hadIr: boolean;
+  digits: string;
+} {
+  if (raw == null) {
+    return { cleaned: "", hadIr: false, digits: "" };
   }
-  if (s.length !== 26) return null;
-  if (!/^IR\d{24}$/.test(s)) return null;
-  return s;
+  let s = fullwidthLatinToAscii(toAsciiDigits(String(raw)));
+  s = stripShebaNoise(s).trim();
+  if (!s || /^null$/i.test(s)) {
+    return { cleaned: "", hadIr: false, digits: "" };
+  }
+  s = s.toUpperCase().replace(/[\s\-_.,]/g, "");
+  // Tolerate I.R / IR: prefixes after cleanup
+  const hadIr = /^IR/.test(s);
+  const body = hadIr ? s.replace(/^IR\.?/, "") : s;
+  const digits = body.replace(/\D/g, "");
+  return { cleaned: s, hadIr, digits };
+}
+
+/**
+ * Normalize Sheba to IR + 24 digits (26 chars).
+ * Accepts IR in any letter-case, with/without spaces/Persian digits.
+ * Values that already start with ir/IR/Ir but lost a leading zero (22–23 digits)
+ * are left-padded — not treated as invalid format.
+ */
+export function normalizeShebaId(raw: string | null | undefined): string | null {
+  const { hadIr, digits: rawDigits } = cleanShebaRaw(raw);
+  if (!rawDigits) return null;
+
+  let digits = rawDigits;
+
+  // Prefer digits after IR when too long; otherwise last 24 (legacy 26-digit dump)
+  if (digits.length > 24) {
+    digits = hadIr ? digits.slice(0, 24) : digits.slice(-24);
+  } else if (digits.length < 24 && digits.length >= 22 && hadIr) {
+    // Common DB issue: IR + 23 digits (leading 0 dropped) — still try as Sheba
+    digits = digits.padStart(24, "0");
+  }
+
+  if (digits.length !== 24) return null;
+  return `IR${digits}`;
+}
+
+/** Same as normalizeShebaId, plus whether IR was added. */
+export function fixShebaId(raw: string | null | undefined): {
+  sheba: string | null;
+  addedIr: boolean;
+  hadIr: boolean;
+  padded: boolean;
+} {
+  const { hadIr, digits } = cleanShebaRaw(raw);
+  const sheba = normalizeShebaId(raw);
+  const padded =
+    !!sheba && hadIr && digits.length >= 22 && digits.length < 24;
+  return {
+    sheba,
+    hadIr,
+    addedIr: !!sheba && !hadIr,
+    padded,
+  };
 }
 
 export function normalizeNationalId(
@@ -648,7 +723,7 @@ export async function customerHasShebaId(
   return { ...soap, tried };
 }
 
-/** Sequential batch with small delay to respect GSB rate limits. */
+/** Parallel batch (limited concurrency) with optional delay between waves. */
 export async function customerHasShebaIdBatch(
   items: Array<SayahMatchRequest & { id?: string | number }>,
   opts?: {
@@ -656,10 +731,16 @@ export async function customerHasShebaIdBatch(
     timeoutMs?: number;
     limit?: number;
     mode?: SayahMode;
+    /** Parallel Sayah calls per wave (default 4, max 8). */
+    concurrency?: number;
   },
 ) {
   const limit = Math.min(items.length, Math.max(1, opts?.limit ?? 50));
-  const delayMs = Math.max(0, opts?.delayMs ?? 200);
+  const delayMs = Math.max(0, opts?.delayMs ?? 40);
+  const concurrency = Math.max(
+    1,
+    Math.min(8, Math.floor(opts?.concurrency ?? 4)),
+  );
   const out: Array<{
     id?: string | number;
     nationalId: string;
@@ -667,19 +748,24 @@ export async function customerHasShebaIdBatch(
     result: SayahMatchResult;
   }> = [];
 
-  for (let i = 0; i < limit; i++) {
-    const item = items[i]!;
-    const result = await customerHasShebaId(item, {
-      timeoutMs: opts?.timeoutMs,
-      mode: opts?.mode,
-    });
-    out.push({
-      id: item.id,
-      nationalId: item.nationalId,
-      shebaId: item.shebaId,
-      result,
-    });
-    if (i < limit - 1 && delayMs > 0) {
+  for (let i = 0; i < limit; i += concurrency) {
+    const slice = items.slice(i, Math.min(i + concurrency, limit));
+    const wave = await Promise.all(
+      slice.map(async (item) => {
+        const result = await customerHasShebaId(item, {
+          timeoutMs: opts?.timeoutMs,
+          mode: opts?.mode,
+        });
+        return {
+          id: item.id,
+          nationalId: item.nationalId,
+          shebaId: item.shebaId,
+          result,
+        };
+      }),
+    );
+    out.push(...wave);
+    if (i + concurrency < limit && delayMs > 0) {
       await new Promise((r) => setTimeout(r, delayMs));
     }
   }

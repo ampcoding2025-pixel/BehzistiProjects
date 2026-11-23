@@ -9,6 +9,7 @@ import { forbidden, getSessionUser, unauthorized } from "@/lib/auth/http";
 import { loadYaraneWizardTxn } from "@/lib/armaghan/inspect";
 import { compareYaraneCalculation } from "@/lib/armaghan/yarane-compare";
 import { ensureActiveTarget, getActiveDbLabel, getDbTarget } from "@/lib/db/pool";
+import { isCalcDraftEnabled } from "@/lib/lab/calc-draft";
 import {
   labApproveYarane,
   labCalculateYarane,
@@ -19,6 +20,10 @@ import {
   labYaranePersonList,
   labYaraneThresholds,
 } from "@/lib/lab/writes";
+import {
+  clearYaraneDeviationCache,
+  labYaraneShebaDeviations,
+} from "@/lib/sayah/yarane-deviations";
 import {
   YARANE_DOC_TYPES,
   YARANE_EXTRA_TYPES,
@@ -39,6 +44,7 @@ export async function GET(req: Request) {
   const base = {
     ok: true as const,
     labWrites: labWritesEnabled(),
+    calcDraft: isCalcDraftEnabled(),
     db: getDbTarget(),
     dbLabel: getActiveDbLabel(),
     types: filterTypesByAccess(YARANE_DOC_TYPES, access),
@@ -128,6 +134,12 @@ type Body = {
   pageSize?: number;
   /** person_list: all | with-ibn | without-ibn */
   ibnScope?: string;
+  /** review: load sample table (default true) */
+  includeSample?: boolean;
+  /** sheba_deviations: max centers to check via Sayah */
+  sayahLimit?: number;
+  /** sheba_deviations: force fresh Sayah (ignore server cache) */
+  refreshSayah?: boolean;
 };
 
 export async function POST(req: Request) {
@@ -137,7 +149,23 @@ export async function POST(req: Request) {
 
   await ensureActiveTarget();
 
-  if (!labWritesEnabled()) {
+  let body: Body = {};
+  try {
+    body = (await req.json()) as Body;
+  } catch {
+    body = {};
+  }
+
+  const action = body.action || "";
+  const readOnlyActions = new Set([
+    "review",
+    "person_list",
+    "sheba_deviations",
+    "thresholds",
+    "compare",
+  ]);
+
+  if (!labWritesEnabled() && !readOnlyActions.has(action)) {
     return NextResponse.json(
       {
         ok: false,
@@ -148,14 +176,6 @@ export async function POST(req: Request) {
     );
   }
 
-  let body: Body = {};
-  try {
-    body = (await req.json()) as Body;
-  } catch {
-    body = {};
-  }
-
-  const action = body.action || "";
   const access = await getEffectiveAccess(user.username, user.role);
 
   try {
@@ -198,6 +218,7 @@ export async function POST(req: Request) {
           return forbidden("این نوع تراکنش برای شما مجاز نیست");
         }
         const result = await labCalculateYarane(trId, supply);
+        clearYaraneDeviationCache(trId);
         return NextResponse.json({
           ok: true,
           db: getDbTarget(),
@@ -210,6 +231,26 @@ export async function POST(req: Request) {
         const result = await labReviewYarane(Number(body.trId), {
           page: body.page,
           pageSize: body.pageSize ?? 15,
+          includeSample: body.includeSample !== false,
+        });
+        return NextResponse.json({
+          ok: true,
+          db: getDbTarget(),
+          labWrites: labWritesEnabled(),
+          result,
+        });
+      }
+      case "sheba_deviations": {
+        const page = body.page ?? 1;
+        const result = await labYaraneShebaDeviations(Number(body.trId), {
+          page,
+          pageSize: body.pageSize ?? 5,
+          sayahLimit: body.sayahLimit,
+          // Page changes reuse cache; explicit button can force refresh.
+          refreshSayah:
+            typeof body.refreshSayah === "boolean"
+              ? body.refreshSayah
+              : page === 1,
         });
         return NextResponse.json({
           ok: true,

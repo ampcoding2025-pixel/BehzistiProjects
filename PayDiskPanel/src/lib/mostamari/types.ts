@@ -62,13 +62,17 @@ export const MOSTAMARI_STEP_CATALOG: Record<MostamariStepId, MostamariStepDef> =
     id: "calculate",
     label: "محاسبه",
     labelEn: "Calculate",
+    hintFa:
+      "با PAYDISK_CALC_DRAFT: نتیجه در جدول پیش‌نویس ذخیره می‌شود؛ ارتقا به Payed* فقط در تایید.",
   },
   report: {
     id: "report",
-    label: "گزارش مبلغ",
-    labelEn: "Money report",
-    hintFa: "توزیع مبلغ و گزارش IsDead=0 قبل از اکسل.",
-    hintEn: "Histogram by Money (+ IsDead=0). Catch bad amounts before Excel.",
+    label: "پیش‌نویس گزارش مبلغ",
+    labelEn: "Draft money report",
+    hintFa:
+      "برای مستمری سازمان: یک ردیف به ازای هر مبلغ + برچسب بعد خانوار (سریع؛ فیلتر زنده اختیاری).",
+    hintEn:
+      "Base pension: one row per Money + family label (fast; optional IsDead=0).",
   },
   ibn: {
     id: "ibn",
@@ -83,8 +87,10 @@ export const MOSTAMARI_STEP_CATALOG: Record<MostamariStepId, MostamariStepDef> =
     id: "payList",
     label: "لیست پرداخت",
     labelEn: "Pay list",
-    hintFa: "نمونه PayedContinusPayment + شبا؛ NID به صورت text.",
-    hintEn: "PayedContinusPayment + Sheba sample. Keep NID as text (leading zeros).",
+    hintFa:
+      "تهیه لیست مستمری‌بگیران — ستون‌های سند عملیات (NIDMadadjo، sheba، Marhale، …).",
+    hintEn:
+      "Ops pensioner list SELECT aliases (NIDMadadjo, sheba, Marhale, …).",
   },
   pairSync: {
     id: "pairSync",
@@ -108,8 +114,10 @@ export const MOSTAMARI_STEP_CATALOG: Record<MostamariStepId, MostamariStepDef> =
     id: "approve",
     label: "تایید",
     labelEn: "Approve",
-    hintFa: "ثبت Ky و Year=YYYYMM و پذیرنده. کنسل فقط Ky=CANCELLED.",
-    hintEn: "SET Ky, Year=YYYYMM, Acceptor*. Cancelled → Ky=CANCELLED only.",
+    hintFa:
+      "ارتقا پیش‌نویس به PayedContinusPayment + ثبت Ky و Year=YYYYMM و دیسکت بانک. کنسل: Ky=CANCELLED و پاک‌سازی پیش‌نویس.",
+    hintEn:
+      "Promote draft → live Payed*, then Ky/Year/diskette. Cancel → Ky=CANCELLED + clear draft.",
   },
   postPay: {
     id: "postPay",

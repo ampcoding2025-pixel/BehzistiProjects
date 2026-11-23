@@ -50,11 +50,10 @@ export function isKnownYaraneSupply(supplyLocationId: number) {
 export const WIZARD_STEPS = [
   { id: "family", label: "خانواده دیسکت", optional: false },
   { id: "type", label: "محل تأمین اعتبار", optional: false },
-  { id: "sayahMatch", label: "تطبیق شبا", optional: false },
-  { id: "calculate", label: "محاسبه", optional: false },
+  { id: "calculate", label: "محاسبه پیش‌نویس", optional: false },
   { id: "check", label: "بررسی صحت", optional: false },
   { id: "list", label: "لیست افراد", optional: true },
-  { id: "approve", label: "تایید", optional: false },
+  { id: "approve", label: "تایید و ارتقا", optional: false },
 ] as const;
 
 export type WizardStepId = (typeof WIZARD_STEPS)[number]["id"];
@@ -67,9 +66,10 @@ export function inferWizardStep(opts: {
   key2?: string | null;
 }): WizardStepId {
   const hasList = opts.key2 != null && String(opts.key2).trim() !== "";
-  if (hasList) return "approve";
+  // Prefer بررسی صحت when calculated so «مغایرت شبا» is visible (not skip to تایید).
   if (Number(opts.payedRows) > 0) return "check";
-  return "sayahMatch";
+  if (hasList) return "approve";
+  return "calculate";
 }
 
 export function nextWizardStep(id: WizardStepId): WizardStepId | null {

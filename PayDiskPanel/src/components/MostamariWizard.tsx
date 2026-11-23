@@ -26,7 +26,16 @@ import {
   type MostamariStepId,
   type MostamariTypeId,
 } from "@/lib/mostamari/types";
-import { jalaliYearMonth, jalaliYearMonthFromIso } from "@/lib/shamsi";
+import {
+  isoToShamsi,
+  jalaliYearMonth,
+  jalaliYearMonthFromIso,
+  JALALI_MONTHS_FA,
+} from "@/lib/shamsi";
+import {
+  MOSTAMARI_OPS_LIST_COLS,
+  MOSTAMARI_OPS_LIST_COL_FA,
+} from "@/lib/mostamari/ops-list-cols";
 import {
   MOSTAMARI_EXPORT_FORMATS,
   MOSTAMARI_EXPORT_IBN_SCOPES,
@@ -75,7 +84,10 @@ function NavButtons(props: {
   optional?: boolean;
   onSkip?: () => void;
   skipLabel?: string;
+  /** Disables controls (no spinner). Prefer actionBusy for action spinner only. */
   busy?: boolean;
+  /** Spinner only on the action button — avoids fake loading on قبلی/ادامه. */
+  actionBusy?: boolean;
   homeHref?: string;
   homeLabel?: string;
   children?: ReactNode;
@@ -86,6 +98,8 @@ function NavButtons(props: {
   const actionBtnPrimary =
     props.actionPrimary === true ||
     (props.actionPrimary !== false && !props.onNext && !!props.onAction);
+  const locked = !!props.busy || !!props.actionBusy;
+  const showActionSpinner = !!props.actionBusy;
 
   return (
     <div
@@ -98,7 +112,7 @@ function NavButtons(props: {
         <button
           type="button"
           className="btn btn-ghost"
-          disabled={props.busy}
+          disabled={locked}
           onClick={props.onPrev}
         >
           قبلی
@@ -108,7 +122,7 @@ function NavButtons(props: {
         <button
           type="button"
           className="btn btn-ghost"
-          disabled={props.busy}
+          disabled={locked}
           onClick={props.onSkip}
         >
           {props.skipLabel || "رد شدن از مرحله اختیاری"}
@@ -119,10 +133,10 @@ function NavButtons(props: {
         <button
           type="button"
           className={actionBtnPrimary ? "btn btn-primary" : "btn btn-ghost"}
-          disabled={props.actionDisabled || props.busy}
+          disabled={props.actionDisabled || locked}
           onClick={props.onAction}
         >
-          {props.busy ? <LoadingSpinner size="sm" inline /> : null}
+          {showActionSpinner ? <LoadingSpinner size="sm" inline /> : null}
           {props.actionLabel}
         </button>
       ) : null}
@@ -135,7 +149,7 @@ function NavButtons(props: {
         <button
           type="button"
           className={actionBtnPrimary ? "btn btn-ghost" : "btn btn-primary"}
-          disabled={props.nextDisabled || props.busy}
+          disabled={props.nextDisabled || locked}
           onClick={props.onNext}
         >
           {props.nextLabel || "ادامه"}
@@ -153,10 +167,15 @@ export function MostamariWizard() {
   const urlTrId = Number(searchParams.get("trId") || 0) || null;
   const urlType = (searchParams.get("type") || "") as MostamariTypeId | "";
   const urlKy = (searchParams.get("ky") || "").trim();
+  const urlStepRaw = (searchParams.get("step") || "").trim() as MostamariStepId | "";
 
   const inferredFromKy = inferMostamariTypeFromKy(urlKy)?.id || "";
 
-  const [step, setStep] = useState<MostamariStepId>(urlTrId ? "calculate" : "type");
+  /** Prefer ?step=… so create→sayah survives URL remount; never default existing trId to calculate. */
+  const [step, setStep] = useState<MostamariStepId>(() => {
+    if (urlStepRaw) return urlStepRaw;
+    return urlTrId ? "define" : "type";
+  });
   const [typeId, setTypeId] = useState<MostamariTypeId | "">(
     urlType || inferredFromKy || "",
   );
@@ -166,10 +185,16 @@ export function MostamariWizard() {
   const [yearMonth, setYearMonth] = useState(defaultYearMonth());
   const [peerTrId, setPeerTrId] = useState("");
   const [busy, setBusy] = useState(false);
+  /** Panel-local work (e.g. سیاح) — locks step nav without hijacking other button spinners. */
+  const [panelBusy, setPanelBusy] = useState(false);
   const [loadingTxn, setLoadingTxn] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [labOk, setLabOk] = useState(false);
+  /** PAYDISK_CALC_DRAFT — next calculate writes preview tables. */
+  const [calcDraft, setCalcDraft] = useState(false);
+  /** Where this txn’s current pay rows live (not the env flag). */
+  const [paySource, setPaySource] = useState<"live" | "draft" | "none">("none");
   const [db, setDb] = useState("");
   const [payedRows, setPayedRows] = useState(0);
   const [ky, setKy] = useState<string | null>(null);
@@ -203,8 +228,66 @@ export function MostamariWizard() {
       match: boolean;
     }>;
   } | null>(null);
+  /** Peer txn with OLD saved rows — assert new SP dry-run vs that snapshot. */
+  const [assertPeerTrId, setAssertPeerTrId] = useState("10801");
+  const [assertBusy, setAssertBusy] = useState(false);
+  const [assertError, setAssertError] = useState<string | null>(null);
+  const [assertResult, setAssertResult] = useState<{
+    messageFa?: string;
+    noteFa?: string;
+    driftNote?: string | null;
+    allMatch?: boolean;
+    coreSpMatchesSaved?: boolean;
+    mismatchCount?: number;
+    peerTrId?: number;
+    peer?: {
+      title?: string | null;
+      ky?: string | null;
+      typeTitleFa?: string | null;
+    };
+    diffs?: Array<{
+      field: string;
+      labelFa: string;
+      newSp: string;
+      saved: string;
+      match: boolean;
+    }>;
+  } | null>(null);
+  /** Draft ↔ live for this TrId (correct post-promote check). */
+  const [draftCmpBusy, setDraftCmpBusy] = useState(false);
+  const [draftCmpError, setDraftCmpError] = useState<string | null>(null);
+  const [draftCmpResult, setDraftCmpResult] = useState<{
+    messageFa?: string;
+    noteFa?: string;
+    allMatch?: boolean;
+    diffs?: Array<{
+      field: string;
+      labelFa: string;
+      draft: string;
+      live: string;
+      match: boolean;
+    }>;
+  } | null>(null);
   const [moneyHist, setMoneyHist] = useState<Array<{ cnt: number; Money: number }>>([]);
   const [aliveHist, setAliveHist] = useState<Array<{ cnt: number; Money: number }>>([]);
+  const [familyMoneyReport, setFamilyMoneyReport] = useState<
+    Array<{
+      familyBucket: number;
+      familyLabel: string;
+      cnt: number;
+      Money: number;
+      totalMoney: number;
+    }>
+  >([]);
+  const [familyAliveTotal, setFamilyAliveTotal] = useState(0);
+  const [familyMoneyGrandTotal, setFamilyMoneyGrandTotal] = useState(0);
+  /** Ops IsDead=0 filter for base-pension Excel report (slower). */
+  const [familyAliveOnly, setFamilyAliveOnly] = useState(false);
+  /** Calculate-step progress (SP is opaque — mix row probe + time estimate). */
+  const [calcPct, setCalcPct] = useState(0);
+  const [calcElapsed, setCalcElapsed] = useState(0);
+  const [calcRows, setCalcRows] = useState<number | null>(null);
+  const [calcRunning, setCalcRunning] = useState(false);
   const [ibnRows, setIbnRows] = useState<Record<string, unknown>[]>([]);
   const [listRows, setListRows] = useState<Record<string, unknown>[]>([]);
   const [listPage, setListPage] = useState(1);
@@ -259,7 +342,26 @@ export function MostamariWizard() {
   const canDownloadDiskette =
     !!trId && (payedRows > 0 || listLoaded || listTotal > 0);
   /** Existing or already-calculated transactions: title/period are read-only. */
-  const defineFieldsLocked = !!trId || payedRows > 0;
+  /** Existing txn: type/title/date are fixed after create — no edit from step 1. */
+  const txnCreated = !!trId;
+  const defineFieldsLocked = txnCreated || payedRows > 0;
+  /** Status/copy for rows already present — draft only if this txn’s rows are in Draft. */
+  const hasDraftRows = paySource === "draft";
+  const hasLiveRows = paySource === "live";
+  /** Draft mode + live already written → calculate runs as dry-run (no Draft write). */
+  const calcIsDryRunOnly = calcDraft && hasLiveRows;
+  const alreadyCalculated =
+    hasDraftRows || hasLiveRows || (!calcDraft && payedRows > 0);
+  /** Block قبلی/ادامه/stepper while any long action runs — leaving the step aborts UX mid-flight. */
+  const navLocked =
+    busy ||
+    calcRunning ||
+    panelBusy ||
+    listLoading ||
+    exportBusy ||
+    draftCmpBusy ||
+    compareBusy ||
+    assertBusy;
 
   async function runCompare() {
     if (!trId) return;
@@ -288,6 +390,61 @@ export function MostamariWizard() {
       setCompareError("خطای شبکه در مقایسه");
     } finally {
       setCompareBusy(false);
+    }
+  }
+
+  async function runSpAssert() {
+    if (!trId) return;
+    const peer = Number(String(assertPeerTrId).replace(/\D/g, ""));
+    if (!peer) {
+      setAssertError("شماره تراکنش نمونه را وارد کنید (مثلاً ۱۰۸۰۱)");
+      setCompareOpen(true);
+      return;
+    }
+    setAssertBusy(true);
+    setAssertError(null);
+    setCompareOpen(true);
+    try {
+      const typeQ = typeId ? `&typeId=${encodeURIComponent(typeId)}` : "";
+      const res = await fetch(
+        `/api/wizard/mostamari?action=assert-sp&trId=${trId}&peerTrId=${peer}${typeQ}`,
+      );
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        setAssertResult(null);
+        setAssertError(data.message || "سنجش SP ناموفق");
+        return;
+      }
+      setAssertResult(data);
+    } catch {
+      setAssertResult(null);
+      setAssertError("خطای شبکه در سنجش SP");
+    } finally {
+      setAssertBusy(false);
+    }
+  }
+
+  async function runDraftVsLive() {
+    if (!trId) return;
+    setDraftCmpBusy(true);
+    setDraftCmpError(null);
+    setCompareOpen(true);
+    try {
+      const res = await fetch(
+        `/api/wizard/mostamari?action=compare-draft&trId=${trId}`,
+      );
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        setDraftCmpResult(null);
+        setDraftCmpError(data.message || "مقایسه پیش‌نویس ناموفق");
+        return;
+      }
+      setDraftCmpResult(data);
+    } catch {
+      setDraftCmpResult(null);
+      setDraftCmpError("خطای شبکه در مقایسه پیش‌نویس");
+    } finally {
+      setDraftCmpBusy(false);
     }
   }
 
@@ -341,23 +498,111 @@ export function MostamariWizard() {
         <div className="flex flex-wrap gap-2 items-center">
           <button
             type="button"
+            className="btn btn-primary text-xs"
+            disabled={draftCmpBusy || !trId}
+            onClick={() => void runDraftVsLive()}
+          >
+            {draftCmpBusy ? <LoadingSpinner size="sm" inline /> : null}
+            مقایسه پیش‌نویس ↔ درج‌شده در DB
+          </button>
+          <span className="text-[11px] text-[var(--ink-soft)] leading-5 max-w-md">
+            درست پس از تایید: Draft ↔ PayedContinusPayment همین تراکنش (تعداد/مبلغ/توزیع)
+          </span>
+        </div>
+        <div className="flex flex-wrap gap-2 items-center border-t border-[var(--line)] pt-3">
+          <button
+            type="button"
             className="btn btn-ghost text-xs"
             disabled={compareBusy || !trId}
             onClick={() => void runCompare()}
           >
             {compareBusy ? <LoadingSpinner size="sm" inline /> : null}
-            اگر محاسبه می‌کردیم — مقایسه با سند
+            مقایسه با سند عملیات
           </button>
           <span className="text-[11px] text-[var(--ink-soft)]">
-            بدون نوشتن؛ فقط مقایسه کوئری پنل با سند عملیات مستمری
+            کوئری پنل ↔ سند ops (بدون نوشتن)
+          </span>
+        </div>
+        <div className="flex flex-wrap gap-2 items-end border-t border-[var(--line)] pt-3">
+          <div className="field max-w-[9rem]">
+            <label htmlFor="assert-peer-tr">تراکنش نمونه (اختیاری)</label>
+            <input
+              id="assert-peer-tr"
+              dir="ltr"
+              value={assertPeerTrId}
+              onChange={(e) =>
+                setAssertPeerTrId(e.target.value.replace(/\D/g, ""))
+              }
+              placeholder="10801"
+            />
+          </div>
+          <button
+            type="button"
+            className="btn btn-ghost text-xs"
+            disabled={assertBusy || !trId}
+            onClick={() => void runSpAssert()}
+          >
+            {assertBusy ? <LoadingSpinner size="sm" inline /> : null}
+            سنجش با تراکنش نمونه
+          </button>
+          <span className="text-[11px] text-[var(--ink-soft)] leading-5 max-w-md">
+            اختیاری — dry-run ContinusPayment ↔ نمونهٔ قدیمی (نه جایگزین مقایسهٔ پیش‌نویس)
           </span>
         </div>
         {compareOpen ? (
-          <div className="rounded-xl border border-[var(--line)] bg-white p-3 space-y-2 text-xs">
+          <div className="rounded-xl border border-[var(--line)] bg-white p-3 space-y-3 text-xs">
+            {draftCmpError ? (
+              <p className="text-[var(--bad)]">{draftCmpError}</p>
+            ) : draftCmpBusy ? (
+              <p className="text-[var(--ink-soft)]">در حال مقایسه پیش‌نویس ↔ زنده…</p>
+            ) : draftCmpResult ? (
+              <>
+                <p
+                  className={
+                    draftCmpResult.allMatch
+                      ? "text-[var(--brand)] font-semibold"
+                      : "text-[var(--bad)] font-semibold"
+                  }
+                >
+                  {draftCmpResult.messageFa}
+                </p>
+                {draftCmpResult.noteFa ? (
+                  <p className="text-[var(--ink-soft)]">{draftCmpResult.noteFa}</p>
+                ) : null}
+                {(draftCmpResult.diffs || []).length > 0 ? (
+                  <table className="w-full text-xs border-collapse">
+                    <thead>
+                      <tr className="text-right border-b border-[var(--line)]">
+                        <th className="py-1">فیلد</th>
+                        <th className="py-1">پیش‌نویس</th>
+                        <th className="py-1">درج‌شده (live)</th>
+                        <th className="py-1">وضعیت</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(draftCmpResult.diffs || []).map((d) => (
+                        <tr key={d.field} className="border-b border-[var(--line)]">
+                          <td className="py-1">{d.labelFa}</td>
+                          <td className="py-1" dir="ltr">
+                            {d.draft}
+                          </td>
+                          <td className="py-1" dir="ltr">
+                            {d.live}
+                          </td>
+                          <td className="py-1">
+                            {d.match ? "✓" : "✗"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : null}
+              </>
+            ) : null}
             {compareError ? (
               <p className="text-[var(--bad)]">{compareError}</p>
             ) : compareBusy ? (
-              <p className="text-[var(--ink-soft)]">در حال مقایسه…</p>
+              <p className="text-[var(--ink-soft)]">در حال مقایسه با سند…</p>
             ) : compareResult ? (
               <>
                 <p
@@ -402,6 +647,74 @@ export function MostamariWizard() {
                   </table>
                 </div>
               </>
+            ) : null}
+
+            {assertError ? (
+              <p className="text-[var(--bad)] border-t border-[var(--line)] pt-2">
+                {assertError}
+              </p>
+            ) : assertBusy ? (
+              <p className="text-[var(--ink-soft)] border-t border-[var(--line)] pt-2">
+                در حال سنجش SP جدید با ذخیره‌شده…
+              </p>
+            ) : assertResult ? (
+              <div className="border-t border-[var(--line)] pt-2 space-y-2">
+                <p
+                  className={
+                    assertResult.coreSpMatchesSaved || assertResult.allMatch
+                      ? "text-[var(--brand)] font-semibold"
+                      : "text-[var(--accent)] font-semibold"
+                  }
+                >
+                  {assertResult.messageFa}
+                </p>
+                <p className="text-[var(--ink-soft)]">
+                  نمونه #{assertResult.peerTrId}
+                  {assertResult.peer?.title
+                    ? ` — ${assertResult.peer.title}`
+                    : ""}
+                  {assertResult.peer?.typeTitleFa
+                    ? ` · ${assertResult.peer.typeTitleFa}`
+                    : ""}
+                  {assertResult.peer?.ky ? ` · Ky=${assertResult.peer.ky}` : ""}
+                </p>
+                {assertResult.noteFa ? (
+                  <p className="text-[var(--ink-soft)] leading-5">
+                    {assertResult.noteFa}
+                  </p>
+                ) : null}
+                {assertResult.driftNote ? (
+                  <p className="text-[#a15c00] leading-5">
+                    {assertResult.driftNote}
+                  </p>
+                ) : null}
+                <div className="overflow-auto">
+                  <table className="data text-xs w-full">
+                    <thead>
+                      <tr>
+                        <th>فیلد</th>
+                        <th>SP جدید / جاری</th>
+                        <th>ذخیره‌شده نمونه</th>
+                        <th>نتیجه</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(assertResult.diffs || []).map((d) => (
+                        <tr key={d.field}>
+                          <td>{d.labelFa}</td>
+                          <td className="wrap" dir="ltr">
+                            {d.newSp}
+                          </td>
+                          <td className="wrap" dir="ltr">
+                            {d.saved}
+                          </td>
+                          <td>{d.match ? "✓" : "≠"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             ) : null}
           </div>
         ) : null}
@@ -468,11 +781,17 @@ export function MostamariWizard() {
   }
 
   function goNext() {
+    if (navLocked) return;
     const n = nextPipelineStep(pipeline, step);
     if (n) setStep(n);
   }
   function goPrev() {
-    const p = prevPipelineStep(pipeline, step);
+    if (navLocked) return;
+    let p = prevPipelineStep(pipeline, step);
+    // Existing txn: skip locked type step when going back.
+    if (p === "type" && txnCreated) {
+      p = prevPipelineStep(pipeline, "type");
+    }
     if (p) setStep(p);
   }
   function skipOptional() {
@@ -487,6 +806,7 @@ export function MostamariWizard() {
       const data = await res.json();
       if (res.ok && data.ok) {
         setLabOk(!!data.labWrites);
+        if (typeof data.calcDraft === "boolean") setCalcDraft(!!data.calcDraft);
         setDb(data.dbLabel || data.mode || "");
       }
     } catch {
@@ -531,6 +851,13 @@ export function MostamariWizard() {
       // Period picker = RelatedTo (دوره پرداخت); fall back to registration.
       setDate(relIso || regIso || todayIso());
       setPayedRows(Number(h.payedRows || 0));
+      setPaySource(
+        h.paySource === "draft" || h.paySource === "live" || h.paySource === "none"
+          ? h.paySource
+          : Number(h.payedRows || 0) > 0
+            ? "live"
+            : "none",
+      );
       setKy(h.Ky || null);
       setListToken(h.ListToken != null ? String(h.ListToken) : null);
       setBankToken(
@@ -557,15 +884,21 @@ export function MostamariWizard() {
       // Prefer server inference / title over a stale empty URL type.
       setTypeId(fromHeader || fromTitle || urlType || "");
       setLabOk(!!data.labWrites);
+      if (typeof data.calcDraft === "boolean") setCalcDraft(!!data.calcDraft);
       setDb(data.dbLabel || "");
       setMsg(
         fromHeader || fromTitle
           ? `تراکنش مستمری #${h.Id}`
           : `تراکنش مستمری #${h.Id} — نوع را دستی انتخاب کنید`,
       );
-      if (Number(h.payedRows || 0) > 0) {
-        setStep((s) => (s === "type" || s === "define" ? "calculate" : s));
-      }
+      // Existing txn: never stay on type (type is fixed at create).
+      // Calculated: also skip define → calculate. Leave sayahMatch alone.
+      const rows = Number(h.payedRows || 0);
+      setStep((s) => {
+        if (s === "type") return rows > 0 ? "calculate" : "define";
+        if (rows > 0 && s === "define") return "calculate";
+        return s;
+      });
     } catch {
       setError("خطای شبکه در بارگذاری تراکنش");
     } finally {
@@ -598,29 +931,23 @@ export function MostamariWizard() {
   }, [urlTrId, loadTxn]);
 
   useEffect(() => {
-    if (!pipeline.some((s) => s.id === step)) {
-      setStep(trId ? "calculate" : "type");
+    if (trId && step === "type") {
+      setStep(payedRows > 0 ? "calculate" : "define");
+      return;
     }
-  }, [pipeline, step, trId]);
+    if (!pipeline.some((s) => s.id === step)) {
+      // Prefer define (then sayah) over jumping straight to calculate.
+      setStep(trId ? "define" : "type");
+    }
+  }, [pipeline, step, trId, payedRows]);
 
-  /** Auto-load amount histogram when entering «گزارش مبلغ» (no separate mystery button). */
+  /** Clear progress chrome when leaving calculate — avoids looking like a re-run. */
   useEffect(() => {
-    if (step !== "report" || !trId) return;
-    let cancelled = false;
-    (async () => {
-      setBusy(true);
-      setError(null);
-      try {
-        if (!cancelled) await refreshReview(trId);
-      } finally {
-        if (!cancelled) setBusy(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only when step/trId change
-  }, [step, trId]);
+    if (step === "calculate" || calcRunning) return;
+    setCalcPct(0);
+    setCalcElapsed(0);
+    setCalcRows(null);
+  }, [step, calcRunning]);
 
   async function post(body: Record<string, unknown>) {
     setBusy(true);
@@ -647,10 +974,11 @@ export function MostamariWizard() {
     }
   }
 
-  async function refreshReview(id: number) {
-    // Light report only (money groups) — alive/sample are opt-in and slow
+  async function refreshReview(id: number, aliveOnly = familyAliveOnly) {
+    // Default: fast GROUP BY Money (no Person join). alive=1 = ops IsDead=0 (slower).
+    const aliveQ = aliveOnly ? "&alive=1" : "";
     const res = await fetch(
-      `/api/wizard/mostamari?action=review&trId=${id}&page=1&pageSize=10`,
+      `/api/wizard/mostamari?action=review&trId=${id}&page=1&pageSize=10${aliveQ}`,
     );
     const data = await res.json().catch(() => ({}));
     if (!res.ok || !data.ok) {
@@ -659,7 +987,13 @@ export function MostamariWizard() {
     }
     setPayedRows(Number(data.total || 0));
     setMoneyHist(Array.isArray(data.moneyHistogram) ? data.moneyHistogram : []);
-    setAliveHist([]);
+    setAliveHist(Array.isArray(data.aliveHistogram) ? data.aliveHistogram : []);
+    setFamilyMoneyReport(
+      Array.isArray(data.familyMoneyReport) ? data.familyMoneyReport : [],
+    );
+    setFamilyAliveTotal(Number(data.familyAliveTotal || 0));
+    setFamilyMoneyGrandTotal(Number(data.familyMoneyGrandTotal || 0));
+    setFamilyAliveOnly(!!data.familyReportAliveOnly);
     if (data.header?.Ky) setKy(data.header.Ky);
     if (data.header?.approved != null) setApproved(!!data.header.approved);
     setMsg(data.message || null);
@@ -789,8 +1123,15 @@ export function MostamariWizard() {
   }
 
   const listColumns = useMemo(() => {
-    if (!listRows.length) return [] as string[];
-    return Object.keys(listRows[0]);
+    if (listRows.length) {
+      const keys = Object.keys(listRows[0]!);
+      const ordered = MOSTAMARI_OPS_LIST_COLS.filter((c) => keys.includes(c));
+      const extra = keys.filter(
+        (k) => !(MOSTAMARI_OPS_LIST_COLS as readonly string[]).includes(k),
+      );
+      return [...ordered, ...extra];
+    }
+    return [...MOSTAMARI_OPS_LIST_COLS];
   }, [listRows]);
 
   if (loadingTxn && !trId) {
@@ -820,13 +1161,24 @@ export function MostamariWizard() {
         {pipeline.map((s, i) => {
           const active = s.id === step;
           const done = i < idx || !!skipped[s.id];
+          // Created txn: type is locked — don't reopen step 1 for editing.
+          const typeLocked = txnCreated && s.id === "type";
+          const stepNavBlocked = typeLocked || navLocked;
           return (
             <button
               key={s.id}
               type="button"
-              className={`stepper-item ${active ? "is-active" : ""} ${done ? "is-done" : ""}`}
-              title={s.hintFa || s.hintEn || s.label}
+              className={`stepper-item ${active ? "is-active" : ""} ${done || typeLocked ? "is-done" : ""}`}
+              title={
+                typeLocked
+                  ? "نوع تراکنش پس از ثبت قابل تغییر نیست"
+                  : navLocked
+                    ? "تا پایان عملیات جاری نمی‌توانید مرحله را عوض کنید"
+                    : s.hintFa || s.hintEn || s.label
+              }
+              disabled={stepNavBlocked}
               onClick={() => {
+                if (stepNavBlocked) return;
                 if (i <= idx || trId) setStep(s.id);
               }}
             >
@@ -866,24 +1218,39 @@ export function MostamariWizard() {
             <UiSelect
               id="mst-type-select"
               label="انتخاب نوع"
-              searchable
+              searchable={!txnCreated}
               searchPlaceholder="جستجوی نوع مستمری…"
               placeholder="یک نوع را انتخاب کنید"
               value={typeId || ""}
+              disabled={txnCreated}
               options={MOSTAMARI_TYPES.map((t) => ({
                 value: t.id,
                 label: t.shortFa,
                 title: t.titleFa,
               }))}
               onChange={(v) => {
+                if (txnCreated) return;
                 setTypeId(v as MostamariTypeId);
                 setSkipped({});
               }}
             />
           </div>
+          {txnCreated ? (
+            <p className="text-xs text-[var(--ink-soft)]">
+              تراکنش #{trId} قبلاً ثبت شده — نوع قابل تغییر نیست. برای کار روی این تراکنش از
+              مراحل بعدی استفاده کنید.
+            </p>
+          ) : null}
           <NavButtons
+            busy={navLocked}
             nextDisabled={!typeId}
+            nextLabel={txnCreated ? "ادامه" : undefined}
             onNext={() => {
+              if (navLocked) return;
+              if (txnCreated) {
+                setStep(payedRows > 0 ? "calculate" : "define");
+                return;
+              }
               if (selectedType && !title) setTitle(selectedType.shortFa);
               setStep("define");
             }}
@@ -920,10 +1287,11 @@ export function MostamariWizard() {
             </p>
           ) : null}
           <NavButtons
-            onPrev={goPrev}
+            onPrev={txnCreated ? undefined : goPrev}
             nextLabel={trId ? "ادامه" : "ثبت تراکنش"}
             nextDisabled={busy || (!trId && (!title.trim() || !labOk))}
-            busy={busy && !trId}
+            busy={navLocked}
+            actionBusy={busy && !trId}
             onNext={async () => {
               if (trId) {
                 goNext();
@@ -931,11 +1299,13 @@ export function MostamariWizard() {
               }
               const data = await post({ action: "create", title, date, typeId });
               if (!data) return;
-              setTrId(Number(data.trId));
+              const newId = Number(data.trId);
+              setTrId(newId);
+              setStep("sayahMatch");
+              // step=sayahMatch in URL so remount after replace does not skip تطبیق شبا
               router.replace(
-                `/request/new?family=mostamari&trId=${data.trId}&type=${typeId}`,
+                `/request/new?family=mostamari&trId=${newId}&type=${typeId}&step=sayahMatch`,
               );
-              goNext();
             }}
           />
         </div>
@@ -946,8 +1316,8 @@ export function MostamariWizard() {
           scope={payedRows > 0 && trId ? "mostamari-pay" : "mostamari-ibn"}
           trId={trId}
           isAdmin={isAdmin}
-          busy={busy}
-          onBusy={setBusy}
+          busy={navLocked}
+          onBusy={setPanelBusy}
           onError={setError}
           gateOk={sayahGateOk}
           onGateChange={setSayahGateOk}
@@ -998,26 +1368,71 @@ export function MostamariWizard() {
             </div>
           ) : (
             <p className="text-sm text-[var(--ink-soft)] leading-7">
-              محاسبهٔ «{selectedType?.shortFa}» برای تراکنش #{trId}. این کار ممکن است چند
-              دقیقه طول بکشد؛ صفحه را نبندید.
+              {calcDraft
+                ? `محاسبهٔ پیش‌نویس «${selectedType?.shortFa}» برای #${trId} فقط جدول Draft را پر می‌کند؛ ردیف زندهٔ Payed* تا تایید تغییر نمی‌کند.`
+                : `محاسبهٔ «${selectedType?.shortFa}» برای تراکنش #${trId} روی سرور SQL اجرا می‌شود.`}{" "}
+              پیشرفت تقریبی است — صفحه را نبندید.
             </p>
           )}
           <div className="text-sm">
             وضعیت محاسبه:{" "}
             <strong>
-              {payedRows > 0
-                ? "انجام شده — می‌توانید به گزارش بروید"
-                : "هنوز محاسبه نشده"}
+              {calcRunning
+                ? "در حال اجرا…"
+                : payedRows > 0
+                  ? hasDraftRows
+                    ? "پیش‌نویس آماده — می‌توانید به گزارش بروید"
+                    : "انجام شده — می‌توانید به گزارش بروید"
+                  : "هنوز محاسبه نشده"}
             </strong>
           </div>
-          {payedRows > 0 && !busy ? (
-            <div className="rounded-xl bg-[#e8f4ee] text-[#1f7a4d] px-4 py-3 text-sm">
-              این تراکنش قبلاً محاسبه شده است. ادامه دهید یا در صورت نیاز مجدداً محاسبه کنید.
+          {calcIsDryRunOnly && !calcRunning ? (
+            <div className="rounded-xl bg-[#fff8e6] text-[#8a6d1d] px-4 py-3 text-sm">
+              Live از قبل نوشته شده — «محاسبه» فقط به‌صورت خواندنی اجرا می‌شود (نتیجهٔ امروز
+              در برابر live) و در Draft چیزی ذخیره نمی‌شود. برای نوشتن پیش‌نویس واقعی یک
+              تراکنش تازه بسازید.
             </div>
           ) : null}
-          {busy ? (
+          {payedRows > 0 && !calcRunning && !calcIsDryRunOnly ? (
             <div className="rounded-xl bg-[#e8f4ee] text-[#1f7a4d] px-4 py-3 text-sm">
-              در حال محاسبهٔ {selectedType?.shortFa}… این تب را باز نگه دارید.
+              {hasDraftRows
+                ? "پیش‌نویس قبلاً ساخته شده. ادامه دهید یا در صورت نیاز «محاسبه مجدد» را بزنید (فقط Draft پاک و دوباره پر می‌شود)."
+                : "این تراکنش قبلاً محاسبه شده است. ادامه دهید یا در صورت نیاز «محاسبه مجدد» را بزنید."}
+            </div>
+          ) : null}
+          {calcRunning ? (
+            <div className="space-y-2 rounded-xl border border-[var(--line)] bg-[var(--paper)] px-4 py-3">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
+                <span>
+                  پیشرفت تقریبی:{" "}
+                  <strong dir="ltr">
+                    {Math.round(calcPct).toLocaleString("fa-IR")}٪
+                  </strong>
+                </span>
+                <span className="text-[var(--ink-soft)]" dir="ltr">
+                  {Math.floor(calcElapsed / 60)}:
+                  {String(calcElapsed % 60).padStart(2, "0")}
+                  {calcRows != null
+                    ? ` · ${calcRows.toLocaleString("fa-IR")} ردیف`
+                    : ""}
+                </span>
+              </div>
+              <div
+                className="h-2.5 w-full overflow-hidden rounded-full bg-[var(--line)]"
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={Math.round(calcPct)}
+              >
+                <div
+                  className="h-full rounded-full bg-[var(--brand)] transition-[width] duration-500 ease-out"
+                  style={{ width: `${Math.min(100, Math.max(0, calcPct))}%` }}
+                />
+              </div>
+              <p className="text-[11px] text-[var(--ink-soft)] leading-5">
+                درصد واقعی از داخل SP در دسترس نیست؛ اگر ردیف‌ها رشد کنند از آن‌ها
+                استفاده می‌شود، وگرنه بر اساس زمان تخمینی پیش می‌رود.
+              </p>
             </div>
           ) : null}
           {!sayahGateOk && !skipped.sayahMatch && payedRows <= 0 ? (
@@ -1027,24 +1442,112 @@ export function MostamariWizard() {
           ) : null}
           <NavButtons
             onPrev={goPrev}
-            actionLabel={payedRows > 0 ? "اجرای مجدد" : "اجرای محاسبه"}
+            actionLabel={alreadyCalculated ? "محاسبه مجدد" : "محاسبه"}
             actionPrimary
             actionDisabled={
               !trId ||
               !typeId ||
               !labOk ||
-              (!sayahGateOk && !skipped.sayahMatch && payedRows <= 0)
+              calcRunning ||
+              (!sayahGateOk &&
+                !skipped.sayahMatch &&
+                !alreadyCalculated &&
+                payedRows <= 0)
             }
-            busy={busy}
+            busy={navLocked}
+            actionBusy={calcRunning || busy}
             onAction={async () => {
               if (!trId || !typeId) return;
-              const data = await post({ action: "calculate", trId, typeId });
-              if (!data) return;
-              setPayedRows(Number(data.payedRows || 0) > 0 ? 1 : 0);
-              goNext();
+              if (alreadyCalculated) {
+                const ok = window.confirm(
+                  calcIsDryRunOnly
+                    ? "Live از قبل پر است. محاسبه فقط خواندنی است و Draft نوشته نمی‌شود — نتیجهٔ امروز با live مقایسه می‌شود. ادامه؟"
+                    : calcDraft
+                      ? "پیش‌نویس قبلاً ساخته شده. محاسبه مجدد فقط جدول Draft را پاک و دوباره پر می‌کند. ادامه؟"
+                      : approved
+                        ? "این تراکنش تایید شده است. محاسبه مجدد، ردیف‌های فعلی را پاک و دوباره می‌سازد. ادامه؟"
+                        : "محاسبه قبلاً انجام شده. محاسبه مجدد ردیف‌ها را دوباره می‌سازد. ادامه؟",
+                );
+                if (!ok) return;
+              }
+              const expectedRows =
+                typeId === "mst-base" || typeId === "mst-hadafmandi"
+                  ? 1_600_000
+                  : typeId === "mst-emdad"
+                    ? 80_000
+                    : 50_000;
+              const expectedSec =
+                typeId === "mst-base" || typeId === "mst-hadafmandi" ? 90 : 60;
+              setCalcRunning(true);
+              setCalcPct(1);
+              setCalcElapsed(0);
+              setCalcRows(null);
+              setError(null);
+              setMsg(null);
+              const started = Date.now();
+              const tick = window.setInterval(() => {
+                const elapsed = Math.floor((Date.now() - started) / 1000);
+                setCalcElapsed(elapsed);
+                setCalcPct((prev) => {
+                  const timePct =
+                    95 * (1 - Math.exp(-elapsed / Math.max(30, expectedSec)));
+                  return Math.max(prev, Math.min(95, timePct));
+                });
+              }, 1000);
+              const poll = window.setInterval(() => {
+                void (async () => {
+                  try {
+                    const res = await fetch(
+                      `/api/wizard/mostamari?action=calc-progress&trId=${trId}`,
+                    );
+                    const data = await res.json().catch(() => ({}));
+                    if (!res.ok || !data.ok || data.rows == null) return;
+                    const rows = Number(data.rows);
+                    if (!Number.isFinite(rows)) return;
+                    setCalcRows(rows);
+                    const rowPct = Math.min(
+                      95,
+                      (rows / Math.max(1, expectedRows)) * 100,
+                    );
+                    setCalcPct((prev) => Math.max(prev, rowPct));
+                  } catch {
+                    /* ignore probe errors while SP holds locks */
+                  }
+                })();
+              }, 4000);
+              try {
+                const data = await post({
+                  action: "calculate",
+                  trId,
+                  typeId,
+                });
+                if (!data) return;
+                setPayedRows(Number(data.payedRows || 0) > 0 ? 1 : 0);
+                if (
+                  data.paySource === "draft" ||
+                  data.paySource === "live" ||
+                  data.paySource === "none"
+                ) {
+                  setPaySource(data.paySource);
+                } else if (Number(data.payedRows || 0) > 0) {
+                  setPaySource(data.draft ? "draft" : "live");
+                }
+                setCalcPct(100);
+                if (data.ms != null) {
+                  setCalcElapsed(Math.round(Number(data.ms) / 1000));
+                }
+                setMsg(
+                  data.message ||
+                    "محاسبه تمام شد — برای گزارش، «ادامه» را بزنید سپس بروزرسانی.",
+                );
+              } finally {
+                window.clearInterval(tick);
+                window.clearInterval(poll);
+                setCalcRunning(false);
+              }
             }}
             nextLabel="ادامه"
-            nextDisabled={payedRows <= 0}
+            nextDisabled={payedRows <= 0 || calcRunning}
             onNext={goNext}
           />
         </div>
@@ -1052,22 +1555,27 @@ export function MostamariWizard() {
 
       {step === "report" ? (
         <div className="panel p-5 space-y-4">
-          <h2 className="font-[family-name:var(--font-display)] text-2xl">گزارش مبلغ</h2>
+          <h2 className="font-[family-name:var(--font-display)] text-2xl">
+            پیش‌نویس گزارش مبلغ
+          </h2>
           <p className="text-sm text-[var(--ink-soft)] leading-7">
-            خلاصهٔ تعداد افراد به تفکیک مبلغ پرداخت. مبالغ نامتعارف را اینجا کنترل کنید، سپس
-            ادامه دهید.
+            {typeId === "mst-base"
+              ? "قالب اکسل عملیات: یک ردیف به ازای هر مبلغ؛ برچسب بعد خانوار از جدول تعریف مبلغ. گزارش خودکار بارگذاری نمی‌شود — «بروزرسانی» را بزنید."
+              : "خلاصهٔ تعداد افراد به تفکیک مبلغ. برای بارگذاری گزارش، «بروزرسانی» را بزنید."}
           </p>
           <NavButtons
             onPrev={goPrev}
             actionLabel="بروزرسانی"
+            actionPrimary={!familyMoneyReport.length && !moneyHist.length}
             actionDisabled={!trId}
-            busy={busy}
+            busy={navLocked}
+            actionBusy={busy}
             onAction={async () => {
               if (!trId) return;
               setBusy(true);
               setError(null);
               try {
-                await refreshReview(trId);
+                await refreshReview(trId, familyAliveOnly);
               } finally {
                 setBusy(false);
               }
@@ -1077,23 +1585,125 @@ export function MostamariWizard() {
             onNext={goNext}
           />
           <div>
-            <div className="text-sm font-semibold mb-2">توزیع مبلغ</div>
-            {busy && !moneyHist.length ? (
-              <LoadingBlock label="بارگذاری توزیع مبلغ…" />
-            ) : moneyHist.length ? (
-              <FaDataTable
-                columns={["cnt", "Money"]}
-                columnTitles={{ cnt: "تعداد", Money: "مبلغ" }}
-                rows={moneyHist.map((r) => ({
-                  cnt: Number(r.cnt).toLocaleString("fa-IR"),
-                  Money: Number(r.Money).toLocaleString("fa-IR"),
-                }))}
-                empty="—"
-              />
+            {typeId === "mst-base" ? (
+              <>
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                  <div className="text-sm font-semibold text-center flex-1">
+                    {(() => {
+                      const shamsi = isoToShamsi(date);
+                      if (!shamsi) return "گزارش مستمری";
+                      const month =
+                        JALALI_MONTHS_FA[shamsi.jm - 1] || String(shamsi.jm);
+                      const yearFa = String(shamsi.jy).replace(
+                        /\d/g,
+                        (d) => "۰۱۲۳۴۵۶۷۸۹"[Number(d)]!,
+                      );
+                      return `گزارش مستمری ${month} ${yearFa}`;
+                    })()}
+                  </div>
+                  <label className="inline-flex items-center gap-2 text-xs text-[var(--ink-soft)] cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={familyAliveOnly}
+                      disabled={busy || !trId}
+                      onChange={async (e) => {
+                        const next = e.target.checked;
+                        setFamilyAliveOnly(next);
+                        if (!trId || !familyMoneyReport.length) return;
+                        setBusy(true);
+                        setError(null);
+                        try {
+                          await refreshReview(trId, next);
+                        } finally {
+                          setBusy(false);
+                        }
+                      }}
+                    />
+                    فقط زنده‌ها (IsDead=۰) — کندتر
+                  </label>
+                </div>
+                <p className="text-[11px] text-[var(--ink-soft)] mb-2">
+                  {familyMoneyReport.length
+                    ? familyAliveOnly
+                      ? "فیلتر زنده‌ها فعال است (اسکریپت عملیات)."
+                      : "حالت سریع: همه ردیف‌های تراکنش، بدون جوین Person."
+                    : "هنوز گزارشی بارگذاری نشده — «بروزرسانی» را بزنید."}
+                </p>
+                {busy && !familyMoneyReport.length ? (
+                  <LoadingBlock label="بارگذاری گزارش مستمری…" />
+                ) : familyMoneyReport.length ? (
+                  <div className="requests-table w-full border border-[var(--line)] rounded-xl overflow-x-auto">
+                    <table className="data">
+                      <thead>
+                        <tr>
+                          <th>ردیف</th>
+                          <th>بعد خانوار</th>
+                          <th>تعداد</th>
+                          <th>مبلغ</th>
+                          <th>جمع</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {familyMoneyReport.map((r, i) => (
+                          <tr key={`${r.familyBucket}-${r.Money}-${i}`}>
+                            <td>{(i + 1).toLocaleString("fa-IR")}</td>
+                            <td>{r.familyLabel}</td>
+                            <td dir="ltr">
+                              {r.cnt.toLocaleString("fa-IR")}
+                            </td>
+                            <td dir="ltr">
+                              {r.Money.toLocaleString("fa-IR")}
+                            </td>
+                            <td dir="ltr">
+                              {r.totalMoney.toLocaleString("fa-IR")}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                      <tfoot>
+                        <tr className="font-semibold border-t border-[var(--line)]">
+                          <td>جمع</td>
+                          <td />
+                          <td dir="ltr">
+                            {familyAliveTotal.toLocaleString("fa-IR")}
+                          </td>
+                          <td />
+                          <td dir="ltr">
+                            {familyMoneyGrandTotal.toLocaleString("fa-IR")}
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                ) : (
+                  <p className="text-xs text-[var(--ink-soft)]">
+                    گزارشی یافت نشد — «بروزرسانی» را بزنید یا محاسبه را دوباره اجرا
+                    کنید.
+                  </p>
+                )}
+              </>
             ) : (
-              <p className="text-xs text-[var(--ink-soft)]">
-                گزارشی یافت نشد — «بروزرسانی» را بزنید یا محاسبه را دوباره اجرا کنید.
-              </p>
+              <>
+                <div className="text-sm font-semibold mb-2">توزیع مبلغ</div>
+                {busy && !moneyHist.length ? (
+                  <LoadingBlock label="بارگذاری توزیع مبلغ…" />
+                ) : moneyHist.length ? (
+                  <FaDataTable
+                    columns={["cnt", "Money"]}
+                    columnTitles={{ cnt: "تعداد", Money: "مبلغ" }}
+                    rows={moneyHist.map((r) => ({
+                      cnt: Number(r.cnt).toLocaleString("fa-IR"),
+                      Money: Number(r.Money).toLocaleString("fa-IR"),
+                    }))}
+                    empty="—"
+                  />
+                ) : (
+                  <p className="text-xs text-[var(--ink-soft)]">
+                    گزارشی یافت نشد — «بروزرسانی» را بزنید یا محاسبه را دوباره اجرا
+                    کنید.
+                  </p>
+                )}
+              </>
             )}
           </div>
         </div>
@@ -1114,7 +1724,8 @@ export function MostamariWizard() {
             onSkip={skipOptional}
             actionLabel="بررسی شباهای تکراری"
             actionPrimary
-            busy={busy}
+            busy={navLocked}
+            actionBusy={busy}
             onAction={async () => {
               setBusy(true);
               setError(null);
@@ -1152,13 +1763,16 @@ export function MostamariWizard() {
         <div className="panel p-5 space-y-4">
           <h2 className="font-[family-name:var(--font-display)] text-2xl">لیست پرداخت</h2>
           <p className="text-sm text-[var(--ink-soft)] leading-7">
-            نمونهٔ فهرست پرداخت‌شوندگان با شبا.
+            تهیه لیست مستمری‌بگیران (قالب سند عملیات): ستون‌هایی مثل{" "}
+            <span dir="ltr">NIDMadadjo</span>، <span dir="ltr">sheba</span>،{" "}
+            <span dir="ltr">Marhale</span>، <span dir="ltr">khanevar_dim</span> — همان
+            هدرهای فایل CSV دانلود.
           </p>
           <div className="flex flex-wrap items-center gap-2 w-full">
             <button
               type="button"
               className="btn btn-ghost"
-              disabled={listLoading}
+              disabled={navLocked}
               onClick={goPrev}
             >
               قبلی
@@ -1196,7 +1810,7 @@ export function MostamariWizard() {
             <button
               type="button"
               className="btn btn-ghost"
-              disabled={!trId || payedRows <= 0 || listLoading}
+              disabled={!trId || payedRows <= 0 || navLocked}
               onClick={() => {
                 setListActionActive(null);
                 goNext();
@@ -1227,6 +1841,7 @@ export function MostamariWizard() {
           </div>
           <FaDataTable
             columns={listColumns}
+            columnTitles={{ ...MOSTAMARI_OPS_LIST_COL_FA }}
             rows={listRows}
             empty="ردیفی نیست — «بارگذاری لیست» را بزنید"
             page={listPage}
@@ -1267,7 +1882,8 @@ export function MostamariWizard() {
             actionLabel="مقایسه"
             actionPrimary
             actionDisabled={!trId || !peerTrId}
-            busy={busy}
+            busy={navLocked}
+            actionBusy={busy}
             onAction={() => void runPairDiff()}
             nextLabel="ادامه"
             onNext={goNext}
@@ -1317,7 +1933,7 @@ export function MostamariWizard() {
             <button
               type="button"
               className="btn btn-ghost"
-              disabled={busy || exportBusy}
+              disabled={navLocked}
               onClick={goPrev}
             >
               قبلی
@@ -1325,7 +1941,7 @@ export function MostamariWizard() {
             <button
               type="button"
               className="btn btn-ghost"
-              disabled={busy || exportBusy}
+              disabled={navLocked}
               onClick={() => {
                 setBankActionActive(null);
                 skipOptional();
@@ -1363,7 +1979,7 @@ export function MostamariWizard() {
             <button
               type="button"
               className="btn btn-ghost"
-              disabled={busy || exportBusy}
+              disabled={navLocked}
               onClick={() => {
                 setBankActionActive(null);
                 goNext();
@@ -1423,14 +2039,46 @@ export function MostamariWizard() {
           {ky === "CANCELLED" ? (
             <p className="text-sm text-[var(--bad)]">این تراکنش کنسل‌شده علامت خورده است.</p>
           ) : null}
+          {!approved &&
+          ky !== "CANCELLED" &&
+          !hasDraftRows &&
+          !hasLiveRows &&
+          payedRows <= 0 ? (
+            <p className="text-sm text-[#8a6d1d] bg-[#fff8e6] rounded-xl px-4 py-3">
+              هنوز محاسبه‌ای نوشته نشده — اول مرحلهٔ «محاسبه» را کامل کنید؛ تا آن زمان تایید
+              غیرفعال است.
+            </p>
+          ) : null}
+          {calcDraft && hasLiveRows && !hasDraftRows && !approved ? (
+            <p className="text-xs text-[var(--ink-soft)] leading-5">
+              پیش‌نویس خالی است و فقط live موجود است — تایید فقط Ky/Year را می‌زند (ارتقا
+              پیش‌نویس لازم نیست). برای پیش‌نویس جدید تراکنش تازه بسازید.
+            </p>
+          ) : null}
           <NavButtons
             onPrev={goPrev}
             actionLabel="تایید پرداخت این تراکنش"
             actionPrimary
-            actionDisabled={!trId || !typeId || !labOk || yearMonth.length !== 6}
-            busy={busy}
+            actionDisabled={
+              !trId ||
+              !typeId ||
+              !labOk ||
+              yearMonth.length !== 6 ||
+              approved ||
+              ky === "CANCELLED" ||
+              (calcDraft
+                ? !hasDraftRows && !hasLiveRows
+                : payedRows <= 0)
+            }
+            busy={navLocked}
+            actionBusy={busy}
             onAction={async () => {
               if (!trId || !typeId) return;
+              if (approved || ky === "CANCELLED") return;
+              if (calcDraft ? !hasDraftRows && !hasLiveRows : payedRows <= 0) {
+                setError("قبل از تایید باید محاسبه نوشته شده باشد.");
+                return;
+              }
               const data = await post({
                 action: "approve",
                 trId,
@@ -1484,17 +2132,19 @@ export function MostamariWizard() {
       {step === "postPay" ? (
         <div className="panel p-5 space-y-4">
           <h2 className="font-[family-name:var(--font-display)] text-2xl">پس از پرداخت</h2>
-          {isLastStep && isAdmin ? txnDoneStatus : null}
+          {isLastStep ? txnDoneStatus : null}
           <p className="text-sm text-[var(--ink-soft)] leading-7">
             کارهای پیگیری بعد از پرداخت در صفحات جداگانه انجام می‌شود. از اینجا می‌توانید
             مسیر را ببندید یا به فهرست برگردید.
           </p>
           <NavButtons
             onPrev={goPrev}
+            busy={navLocked}
             homeHref="/?family=mostamari"
             homeLabel="بازگشت به فهرست مستمری"
             nextLabel="پایان"
             onNext={() => {
+              if (navLocked) return;
               setMsg("پایان مسیر مستمری");
               router.push("/?family=mostamari");
             }}

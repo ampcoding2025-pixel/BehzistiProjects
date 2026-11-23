@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 import { getSessionUser, unauthorized } from "@/lib/auth/http";
 import { compareMostamariCalculation } from "@/lib/armaghan/mostamari-compare";
+import { compareMostamariDraftVsLive } from "@/lib/armaghan/mostamari-draft-compare";
+import { assertNewSpVsSavedPeer } from "@/lib/armaghan/mostamari-sp-assert";
 import {
   getMostamariTransaction,
   labApproveMostamari,
   labCalculateMostamari,
   labCreateMostamariTransaction,
+  mostamariCalcProgress,
   mostamariIbnDuplicates,
   mostamariMissingIbn,
   mostamariPairDiff,
@@ -13,6 +16,7 @@ import {
   mostamariPaymentListCount,
   mostamariReview,
 } from "@/lib/lab/mostamari-writes";
+import { isCalcDraftEnabled } from "@/lib/lab/calc-draft";
 import { labWritesEnabled } from "@/lib/lab/writes";
 import {
   ensureActiveTarget,
@@ -30,6 +34,7 @@ import {
 function meta() {
   return {
     labWrites: labWritesEnabled(),
+    calcDraft: isCalcDraftEnabled(),
     dbLabel: getActiveDbLabel(),
     db: getDbTarget(),
     mode: getDbMode(),
@@ -86,8 +91,30 @@ export async function GET(req: Request) {
       return NextResponse.json({ ...data, ...meta(), ok: true });
     }
 
+    if (trId > 0 && action === "calc-progress") {
+      const data = await mostamariCalcProgress(trId);
+      return NextResponse.json({ ...data, ...meta(), ok: true });
+    }
+
     if (trId > 0 && action === "compare") {
       const data = await compareMostamariCalculation(trId);
+      return NextResponse.json({ ...data, ...meta(), ok: true });
+    }
+
+    if (trId > 0 && action === "compare-draft") {
+      const data = await compareMostamariDraftVsLive(trId);
+      return NextResponse.json({ ...data, ...meta(), ok: true });
+    }
+
+    if (trId > 0 && action === "assert-sp") {
+      const peerTrId = Number(url.searchParams.get("peerTrId") || 0);
+      const typeId = (url.searchParams.get("typeId") ||
+        "") as MostamariTypeId | "";
+      const data = await assertNewSpVsSavedPeer({
+        trId,
+        peerTrId,
+        typeId: typeId || null,
+      });
       return NextResponse.json({ ...data, ...meta(), ok: true });
     }
 

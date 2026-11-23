@@ -6,7 +6,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { FaDataTable } from "@/components/FaDataTable";
 import { LoadingBlock, LoadingSpinner } from "@/components/LoadingSpinner";
 import { PersianDatePicker } from "@/components/PersianDatePicker";
-import { SayahMatchPanel } from "@/components/SayahMatchPanel";
 import {
   defaultYaraneTxnTitle,
   formatFaDateForTitle,
@@ -152,8 +151,8 @@ export function YaraneWizard() {
   const [listTotalPages, setListTotalPages] = useState(1);
   const [listTotal, setListTotal] = useState(0);
   const [listLoaded, setListLoaded] = useState(false);
-  /** all | without-ibn — filter for «نمایش فاقد شبا» */
-  const [listIbnScope, setListIbnScope] = useState<"all" | "without-ibn">("all");
+  /** all | deviations — list filter */
+  const [listIbnScope, setListIbnScope] = useState<"all" | "deviations">("all");
   const [exportFormat, setExportFormat] =
     useState<MostamariExportFormat>("csv-excel");
   const [exportBusy, setExportBusy] = useState(false);
@@ -168,11 +167,18 @@ export function YaraneWizard() {
   const [isAdmin, setIsAdmin] = useState(false);
   /** Exclusive highlight on list toolbar (only one primary at a time). */
   const [listActionActive, setListActionActive] = useState<
-    "refresh" | "without-ibn" | "download" | null
+    "refresh" | "deviations" | "download" | null
   >(null);
-  const [sayahChecked, setSayahChecked] = useState(false);
-  const [sayahGateOk, setSayahGateOk] = useState(false);
-  const [sayahOverride, setSayahOverride] = useState(false);
+  /** بررسی صحت: show deviations only after «مغایرت شبا» */
+  const [checkShowDeviations, setCheckShowDeviations] = useState(false);
+  const [checkDevRows, setCheckDevRows] = useState<Record<string, unknown>[]>(
+    [],
+  );
+  const [checkDevCols, setCheckDevCols] = useState<string[]>([]);
+  const [checkDevMsg, setCheckDevMsg] = useState<string | null>(null);
+  const [checkDevPage, setCheckDevPage] = useState(1);
+  const [checkDevTotalPages, setCheckDevTotalPages] = useState(1);
+  const [checkDevTotal, setCheckDevTotal] = useState(0);
   const [compareBusy, setCompareBusy] = useState(false);
   const [compareOpen, setCompareOpen] = useState(false);
   const [compareError, setCompareError] = useState<string | null>(null);
@@ -290,9 +296,11 @@ export function YaraneWizard() {
         const next: WizardStepId =
           raw === "thresholds"
             ? "approve"
-            : WIZARD_STEPS.some((s) => s.id === raw)
-              ? (raw as WizardStepId)
-              : "calculate";
+            : raw === "sayahMatch"
+              ? "calculate"
+              : WIZARD_STEPS.some((s) => s.id === raw)
+                ? (raw as WizardStepId)
+                : "calculate";
         setStep(next);
       }
       setMsg(`تراکنش #${t.trId}`);
@@ -429,7 +437,7 @@ export function YaraneWizard() {
     } else {
       setSupplyLocationId(selectedType.supplyLocationId);
     }
-    setStep("sayahMatch");
+    setStep("calculate");
     router.replace(
       `/request/new?trId=${newId}&type=${selectedType.supplyLocationId}`,
     );
@@ -576,36 +584,79 @@ export function YaraneWizard() {
     if (!data) return;
     setPayedRows(Number(data.result.payedRows || 0));
     setSupplyCount(Number(data.result.supplyCount || 0));
+    setCheckShowDeviations(false);
+    setCheckDevRows([]);
     setStep("check");
-    await loadReview();
+    await loadReviewSummary();
   }
 
-  async function loadReview(page = samplePage) {
+  /** Aggregates only — do not load the full calculated sample table. */
+  async function loadReviewSummary() {
     if (!trId) return;
-    const data = await post("review", { trId, page, pageSize: 15 });
+    const data = await post("review", {
+      trId,
+      page: 1,
+      pageSize: 15,
+      includeSample: false,
+    });
     if (!data) return;
     setPayedRows(Number(data.result.payedRows || 0));
     setSupplyCount(Number(data.result.supplyCount || 0));
     setSubsidySum(Number(data.result.subsidySum || 0));
-    setSampleRows(data.result.sampleRows || []);
-    setSamplePage(Number(data.result.page || page));
-    setSampleTotalPages(Number(data.result.totalPages || 1));
-    setSampleTotal(Number(data.result.total || data.result.payedRows || 0));
+    setSampleRows([]);
+    setSampleTotal(Number(data.result.payedRows || 0));
   }
 
-  async function loadPersonList(
-    page = listPage,
-    ibnScope: "all" | "without-ibn" = listIbnScope,
+  async function loadShebaDeviations(
+    page = 1,
+    target: "check" | "list" = "check",
+    opts?: { refreshSayah?: boolean },
   ) {
+    if (!trId) return;
+    /** Step 4 (بررسی صحت): 5 rows/page. List step keeps 25. */
+    const pageSize = target === "check" ? 5 : 25;
+    /** First click may hit Sayah; pagination + re-open reuse server cache. */
+    const refreshSayah = opts?.refreshSayah ?? false;
+    const data = await post("sheba_deviations", {
+      trId,
+      page,
+      pageSize,
+      sayahLimit: 40,
+      refreshSayah,
+    });
+    if (!data) return;
+    const rows = data.result.rows || [];
+    const cols = data.result.columns || [];
+    const msg = data.result.message || null;
+    if (target === "check") {
+      setCheckShowDeviations(true);
+      setCheckDevRows(rows);
+      setCheckDevCols(cols);
+      setCheckDevMsg(msg);
+      setCheckDevPage(Number(data.result.page || page));
+      setCheckDevTotalPages(Number(data.result.totalPages || 1));
+      setCheckDevTotal(Number(data.result.total || 0));
+    } else {
+      setListIbnScope("deviations");
+      setListRows(rows);
+      setListCols(cols);
+      setListPage(Number(data.result.page || page));
+      setListTotalPages(Number(data.result.totalPages || 1));
+      setListTotal(Number(data.result.total || 0));
+      setListLoaded(true);
+    }
+  }
+
+  async function loadPersonList(page = listPage) {
     if (!trId) return;
     const data = await post("person_list", {
       trId,
       page,
       pageSize: 25,
-      ibnScope,
+      ibnScope: "all",
     });
     if (!data) return;
-    setListIbnScope(ibnScope);
+    setListIbnScope("all");
     setListRows(data.result.rows || []);
     setListCols(data.result.columns || []);
     setListPage(Number(data.result.page || page));
@@ -680,21 +731,26 @@ export function YaraneWizard() {
     router.replace("/request/new");
   }
 
-  const sampleCols = useMemo(() => {
-    if (!sampleRows.length) return [] as string[];
-    return Object.keys(sampleRows[0]);
-  }, [sampleRows]);
-
   function goToStep(next: WizardStepId) {
     setError(null);
-    setStep(next);
-    if (next === "list" && trId) {
+    const normalized: WizardStepId =
+      (next as string) === "sayahMatch" ? "calculate" : next;
+    setStep(normalized);
+    if (normalized === "list" && trId) {
+      // Do not auto-load people — wait for «بروزرسانی لیست» or «مغایرت شبا»
       setListPage(1);
-      void loadPersonList(1);
+      setListActionActive(null);
+      setListRows([]);
+      setListCols([]);
+      setListTotal(0);
+      setListTotalPages(1);
+      setListLoaded(false);
+      setListIbnScope("all");
     }
-    if (next === "check" && trId) {
-      setSamplePage(1);
-      void loadReview(1);
+    if (normalized === "check" && trId) {
+      setCheckShowDeviations(false);
+      setCheckDevRows([]);
+      void loadReviewSummary();
     }
   }
 
@@ -876,51 +932,17 @@ export function YaraneWizard() {
                 }
                 setPriorStepsLocked(true);
                 if (trId) {
-                  goToStep("sayahMatch");
+                  goToStep("calculate");
                   return;
                 }
                 void createTxn();
               }}
             >
-              {busy && !trId ? (
-                <LoadingSpinner label="در حال ثبت…" size="sm" inline />
-              ) : trId ? (
-                "ادامه"
-              ) : (
-                "ثبت تراکنش و ادامه"
-              )}
+              {busy && !trId ? <LoadingSpinner size="sm" inline /> : null}
+              {trId ? "ادامه" : "ثبت تراکنش و ادامه"}
             </button>
           </div>
         </div>
-      ) : null}
-
-      {step === "sayahMatch" ? (
-        <SayahMatchPanel
-          scope="yarane-center"
-          isAdmin={isAdmin}
-          busy={busy}
-          onBusy={setBusy}
-          onError={setError}
-          gateOk={sayahGateOk}
-          onGateChange={setSayahGateOk}
-          checked={sayahChecked}
-          onCheckedChange={setSayahChecked}
-          hint={
-            <>
-              قبل از محاسبه، شناسه ملی/حقوقی مراکز ↔ شبا در سامانه سیاح بررسی
-              می‌شود تا دیسکت یارانه با عدم تطابق صادر نشود.
-            </>
-          }
-          onPrev={() => setStep("type")}
-          nextLabel="ادامه به محاسبه"
-          nextDisabled={
-            !sayahChecked || (!sayahGateOk && !isAdmin && !sayahOverride)
-          }
-          onNext={() => {
-            if (!sayahGateOk && isAdmin) setSayahOverride(true);
-            goToStep("calculate");
-          }}
-        />
       ) : null}
 
       {step === "calculate" ? (
@@ -946,29 +968,18 @@ export function YaraneWizard() {
               </div>
             </div>
           </div>
-          {!sayahGateOk && !sayahOverride && payedRows <= 0 ? (
-            <div className="rounded-xl bg-[#fff8e6] text-[#8a6d1d] px-4 py-3 text-sm">
-              ابتدا مرحلهٔ «تطبیق شبا» را با موفقیت انجام دهید.
-            </div>
-          ) : null}
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
               className="btn btn-ghost"
-              onClick={() => setStep("sayahMatch")}
+              onClick={() => setStep("type")}
             >
               قبلی
             </button>
             <button
               type="button"
               className="btn btn-primary"
-              disabled={
-                busy ||
-                !labOk ||
-                !trId ||
-                supplyLocationId === "" ||
-                (!sayahGateOk && !sayahOverride && payedRows <= 0)
-              }
+              disabled={busy || !labOk || !trId || supplyLocationId === ""}
               title={
                 labOk
                   ? "اجرای CalculateMarakezYarane روی دیتابیس فعال"
@@ -976,17 +987,8 @@ export function YaraneWizard() {
               }
               onClick={runCalculate}
             >
-              {busy ? (
-                <LoadingSpinner
-                  label={payedRows > 0 ? "در حال اجرای مجدد…" : "در حال محاسبه…"}
-                  size="sm"
-                  inline
-                />
-              ) : payedRows > 0 ? (
-                "اجرای مجدد"
-              ) : (
-                "اجرای محاسبه"
-              )}
+              {busy ? <LoadingSpinner size="sm" inline /> : null}
+              {payedRows > 0 ? "اجرای مجدد" : "اجرای محاسبه"}
             </button>
             {payedRows > 0 ? (
               <button
@@ -1010,6 +1012,10 @@ export function YaraneWizard() {
       {step === "check" ? (
         <div className="panel p-5 space-y-4">
           <h2 className="font-[family-name:var(--font-display)] text-2xl">بررسی صحت تراکنش</h2>
+          <p className="text-sm text-[var(--ink-soft)] leading-7">
+            خلاصهٔ محاسبه را ببینید. برای دیدن فقط ردیف‌های مشکل‌دار (فاقد شبا یا عدم
+            تطبیق سیاح) «مغایرت شبا» را بزنید — کل جدول محاسبه بارگذاری نمی‌شود.
+          </p>
           <div className="grid sm:grid-cols-3 gap-3">
             <div className="rounded-xl border border-[var(--line)] p-3">
               <div className="text-xs text-[var(--ink-soft)]">تعداد ردیف محاسبه</div>
@@ -1042,32 +1048,70 @@ export function YaraneWizard() {
               type="button"
               className="btn btn-ghost"
               disabled={busy}
-              onClick={() => loadReview(samplePage)}
+              onClick={() => {
+                setCheckShowDeviations(false);
+                void loadReviewSummary();
+              }}
             >
-              بروزرسانی
+              بروزرسانی خلاصه
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              disabled={busy || (payedRows <= 0 && !key2)}
+              title="فاقد شبا + عدم تطبیق سیاح (بدون بارگذاری کل لیست)"
+              onClick={() =>
+                void loadShebaDeviations(1, "check", { refreshSayah: false })
+              }
+            >
+              {busy && checkShowDeviations ? (
+                <LoadingSpinner size="sm" inline />
+              ) : null}
+              مغایرت شبا
             </button>
             <button
               type="button"
               className="btn btn-ghost"
-              disabled={busy || payedRows <= 0}
+              disabled={busy || (payedRows <= 0 && !key2)}
               onClick={() => goToStep("list")}
             >
               ادامه
             </button>
           </div>
-          <FaDataTable
-            columns={sampleCols}
-            rows={sampleRows}
-            empty="نمونه‌ای نیست"
-            page={samplePage}
-            totalPages={sampleTotalPages}
-            total={sampleTotal}
-            loading={busy}
-            onPageChange={(p) => {
-              setSamplePage(p);
-              void loadReview(p);
-            }}
-          />
+          {checkDevMsg && checkShowDeviations ? (
+            <div className="rounded-xl bg-[#fff8e6] text-[#8a6d1d] px-4 py-3 text-sm">
+              {checkDevMsg}
+            </div>
+          ) : null}
+          {checkShowDeviations ? (
+            <FaDataTable
+              columns={checkDevCols}
+              columnTitles={{
+                FirstName: "نام",
+                LastName: "نام خانوادگی",
+                NID: "کد ملی",
+                Center: "مرکز",
+                Account: "حساب",
+                NationalId: "شناسه مرکز",
+                ibn: "شبا",
+                sayahDeviation: "مغایرت شبا",
+              }}
+              rows={checkDevRows}
+              empty="مغایرتی یافت نشد"
+              page={checkDevPage}
+              totalPages={checkDevTotalPages}
+              total={checkDevTotal}
+              loading={busy}
+              onPageChange={(p) => {
+                void loadShebaDeviations(p, "check");
+              }}
+            />
+          ) : (
+            <p className="text-xs text-[var(--ink-soft)]">
+              جدول کامل محاسبه اینجا نشان داده نمی‌شود. برای مغایرت‌ها دکمهٔ «مغایرت
+              شبا» را بزنید.
+            </p>
+          )}
         </div>
       ) : null}
 
@@ -1075,8 +1119,10 @@ export function YaraneWizard() {
         <div className="panel p-5 space-y-4">
           <h2 className="font-[family-name:var(--font-display)] text-2xl">تهیه لیست افراد</h2>
           <p className="text-sm text-[var(--ink-soft)] leading-7">
-            نمونهٔ فهرست افراد؛ برای فایل کامل از «دانلود دیسکت» استفاده کنید (با شبا /
-            بدون شبا / همه).
+            لیست افراد به‌صورت خودکار بارگذاری نمی‌شود. «بروزرسانی لیست» سریع است (فقط
+            صفحهٔ فعلی). «مغایرت شبا» اگر قبلاً در بررسی صحت زده شده باشد از کش استفاده
+            می‌کند؛ اولین بار ممکن است چند ثانیه طول بکشد (سیاح). فایل کامل از «دانلود
+            دیسکت».
           </p>
           <div className="flex flex-wrap gap-2">
             <button type="button" className="btn btn-ghost" onClick={() => setStep("check")}>
@@ -1085,26 +1131,28 @@ export function YaraneWizard() {
             <button
               type="button"
               className={`btn ${listActionActive === "refresh" ? "btn-primary" : "btn-ghost"}`}
-              disabled={busy}
+              disabled={busy || !trId || (payedRows <= 0 && !key2)}
               onClick={() => {
                 setListActionActive("refresh");
-                void loadPersonList(listPage, "all");
+                setListPage(1);
+                void loadPersonList(1);
               }}
             >
               بروزرسانی لیست
             </button>
             <button
               type="button"
-              className={`btn ${listActionActive === "without-ibn" ? "btn-primary" : "btn-ghost"}`}
-              disabled={busy || !trId || payedRows <= 0}
-              title="افراد/مراکزی که Center.IBN خالی است"
+              className={`btn ${listActionActive === "deviations" ? "btn-primary" : "btn-ghost"}`}
+              disabled={busy || !trId || (payedRows <= 0 && !key2)}
+              title="فاقد شبا + عدم تطبیق سیاح با شرح مغایرت"
               onClick={() => {
-                setListActionActive("without-ibn");
+                setListActionActive("deviations");
                 setListPage(1);
-                void loadPersonList(1, "without-ibn");
+                // Reuse Sayah cache from step 4 when present (fast).
+                void loadShebaDeviations(1, "list", { refreshSayah: false });
               }}
             >
-              نمایش فاقد شبا
+              مغایرت شبا
             </button>
             <button
               type="button"
@@ -1134,9 +1182,9 @@ export function YaraneWizard() {
               ادامه
             </button>
           </div>
-          {listIbnScope === "without-ibn" ? (
+          {listIbnScope === "deviations" && listLoaded ? (
             <p className="text-xs text-[var(--ink-soft)]">
-              فیلتر فعال: فقط فاقد شبا
+              فیلتر فعال: مغایرت شبا
               {listTotal > 0
                 ? ` · ${listTotal.toLocaleString("fa-IR")} ردیف`
                 : ""}
@@ -1148,32 +1196,52 @@ export function YaraneWizard() {
                 onClick={() => {
                   setListActionActive("refresh");
                   setListPage(1);
-                  void loadPersonList(1, "all");
+                  void loadPersonList(1);
                 }}
               >
                 نمایش همه
               </button>
             </p>
           ) : null}
-          <FaDataTable
-            columns={listCols}
-            rows={listRows}
-            empty={
-              busy
-                ? "…"
-                : listIbnScope === "without-ibn"
-                  ? "فاقد شبا یافت نشد"
-                  : "ردیفی نیست"
-            }
-            page={listPage}
-            totalPages={listTotalPages}
-            total={listTotal}
-            loading={busy}
-            onPageChange={(p) => {
-              setListPage(p);
-              void loadPersonList(p, listIbnScope);
-            }}
-          />
+          {listLoaded || busy ? (
+            <FaDataTable
+              columns={listCols}
+              columnTitles={{
+                FirstName: "نام",
+                LastName: "نام خانوادگی",
+                NID: "کد ملی",
+                Center: "مرکز",
+                Account: "حساب",
+                NationalId: "شناسه مرکز",
+                ibn: "شبا",
+                sayahDeviation: "مغایرت شبا",
+              }}
+              rows={listRows}
+              empty={
+                busy
+                  ? "…"
+                  : listIbnScope === "deviations"
+                    ? "مغایرت شبایی یافت نشد"
+                    : "ردیفی نیست"
+              }
+              page={listPage}
+              totalPages={listTotalPages}
+              total={listTotal}
+              loading={busy}
+              onPageChange={(p) => {
+                setListPage(p);
+                if (listIbnScope === "deviations") {
+                  void loadShebaDeviations(p, "list");
+                } else {
+                  void loadPersonList(p);
+                }
+              }}
+            />
+          ) : (
+            <p className="text-xs text-[var(--ink-soft)]">
+              هنوز لیستی بارگذاری نشده — «بروزرسانی لیست» یا «مغایرت شبا» را بزنید.
+            </p>
+          )}
         </div>
       ) : null}
 
@@ -1321,6 +1389,23 @@ export function YaraneWizard() {
                 <Link href="/" className="btn btn-primary">
                   بازگشت به فهرست تراکنش ها
                 </Link>
+                <button
+                  type="button"
+                  className="btn btn-ghost"
+                  disabled={busy}
+                  title="فاقد شبا و عدم تطبیق سیاح"
+                  onClick={() => {
+                    setStep("check");
+                    void (async () => {
+                      await loadReviewSummary();
+                      await loadShebaDeviations(1, "check", {
+                        refreshSayah: false,
+                      });
+                    })();
+                  }}
+                >
+                  مغایرت شبا
+                </button>
                 <button type="button" className="btn btn-ghost" onClick={resetNew}>
                   تراکنش جدید
                 </button>
@@ -1347,7 +1432,8 @@ export function YaraneWizard() {
                 disabled={busy || !trId || payedRows <= 0 || !canApproveAccess}
                 onClick={approve}
               >
-                {busy ? <LoadingSpinner label="در حال تایید…" size="sm" inline /> : "تایید و علامت لیست افراد"}
+                {busy ? <LoadingSpinner size="sm" inline /> : null}
+                تایید و علامت لیست افراد
               </button>
               <button
                 type="button"

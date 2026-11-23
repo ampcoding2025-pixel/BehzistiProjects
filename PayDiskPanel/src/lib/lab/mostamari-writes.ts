@@ -9,13 +9,26 @@ import {
   mostamariBankFilename,
   writeMostamariArmaghanBankFile,
 } from "@/lib/lab/mostamari-bank-export";
+import {
+  countMostamariOpsPayList,
+  marhaleForMostamariTrId,
+  queryMostamariOpsPayListPage,
+} from "@/lib/lab/mostamari-ops-list";
+import { MOSTAMARI_OPS_LIST_COLS } from "@/lib/mostamari/ops-list-cols";
 import { defaultLabBankFile, labExecProc } from "@/lib/lab/writes";
+import {
+  draftProcName,
+  isCalcDraftEnabled,
+  mostamariDraftHasRows,
+  mostamariLiveHasRows,
+  resolveMostamariPayTable,
+} from "@/lib/lab/calc-draft";
 import {
   getMostamariType,
   inferMostamariType,
   type MostamariTypeId,
 } from "@/lib/mostamari/types";
-import { assertSqlProc } from "@/lib/worker/whitelist";
+import { assertSqlProc, type AllowedSqlProc } from "@/lib/worker/whitelist";
 
 function requireLab() {
   if (!targetAllowsWrites()) {
@@ -60,13 +73,14 @@ export async function getMostamariTransaction(
   const req = pool.request();
   req.timeout = 60_000;
   req.input("id", sql.Int, trId);
+  const payTable = await resolveMostamariPayTable(trId);
   const countExpr = opts?.countRows
     ? `ISNULL((
-        SELECT COUNT_BIG(*) FROM dbo.PayedContinusPayment p WITH (NOLOCK)
+        SELECT COUNT_BIG(*) FROM ${payTable} p WITH (NOLOCK)
         WHERE p.TransactionId = t.Id
       ), 0)`
     : `CASE WHEN EXISTS (
-        SELECT 1 FROM dbo.PayedContinusPayment p WITH (NOLOCK)
+        SELECT 1 FROM ${payTable} p WITH (NOLOCK)
         WHERE p.TransactionId = t.Id
       ) THEN 1 ELSE 0 END`;
   const rs = await req.query(`
@@ -94,6 +108,13 @@ export async function getMostamariTransaction(
   const registrationDate =
     (row.RegistrationDate as string | Date | null) || null;
   const relatedTo = (row.RelatedTo as string | Date | null) || null;
+  /** Where current readable pay rows live — not the global PAYDISK_CALC_DRAFT flag. */
+  const paySource: "live" | "draft" | "none" =
+    payedRows <= 0
+      ? "none"
+      : payTable.includes("_Draft")
+        ? "draft"
+        : "live";
   return {
     ok: true as const,
     header: {
@@ -114,6 +135,8 @@ export async function getMostamariTransaction(
       payedRows,
       /** When countRows=false, payedRows is 0|1 presence only */
       payedRowsExact: !!opts?.countRows,
+      paySource,
+      payTable,
       typeId: inferred?.id || null,
       typeTitleFa: inferred?.titleFa || null,
       typeInferredFrom: ky
@@ -188,32 +211,137 @@ export async function labCreateMostamariTransaction(opts: {
   };
 }
 
-/** EXEC Calculate* for the selected mostamari type (lab). */
+/** Supply filter for Calculate* / dry-run — matches draft SPs. */
+function mostamariSupplySql(typeId: MostamariTypeId): string {
+  switch (typeId) {
+    case "mst-hadafmandi":
+      return `(1,2,3,4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,38)`;
+    case "mst-emdad":
+      return `(8)`;
+    case "mst-hagh-spinal":
+      return `(37)`;
+    case "mst-hagh-family":
+      return `(40)`;
+    case "mst-base":
+    default:
+      return `(1,2,3,4,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,38)`;
+  }
+}
+
+/**
+ * Read-only: what Calculate*_Draft would insert now vs current live rows.
+ * Used when live already written — calculate is allowed, writing Draft is not.
+ */
+export async function labDryRunMostamariCalc(
+  trId: number,
+  typeId: MostamariTypeId,
+) {
+  requireLab();
+  const type = getMostamariType(typeId);
+  if (!type) throw new Error("نوع مستمری نامعتبر");
+  const supply = mostamariSupplySql(typeId);
+  const pool = await getReadPool();
+  const started = Date.now();
+  const wouldRs = await pool.request().query(`
+    SELECT COUNT_BIG(*) AS cnt,
+           SUM(CONVERT(bigint, Money)) AS moneySum
+    FROM dbo.ContinusPayment WITH (NOLOCK)
+    WHERE ContinusPaymentSupplyLocationId IN ${supply}
+  `);
+  const liveRs = await pool.request().input("id", sql.Int, trId).query(`
+    SELECT COUNT_BIG(*) AS cnt,
+           SUM(CONVERT(bigint, Money)) AS moneySum
+    FROM dbo.PayedContinusPayment WITH (NOLOCK)
+    WHERE TransactionId = @id
+  `);
+  const wouldCnt = Number(wouldRs.recordset[0]?.cnt || 0);
+  const wouldSum =
+    wouldRs.recordset[0]?.moneySum == null
+      ? null
+      : Number(wouldRs.recordset[0].moneySum);
+  const liveCnt = Number(liveRs.recordset[0]?.cnt || 0);
+  const liveSum =
+    liveRs.recordset[0]?.moneySum == null
+      ? null
+      : Number(liveRs.recordset[0].moneySum);
+  const match =
+    wouldCnt === liveCnt &&
+    (wouldSum == null && liveSum == null
+      ? true
+      : Number(wouldSum) === Number(liveSum));
+  const ms = Date.now() - started;
+  const fmt = (n: number | null) =>
+    n == null || !Number.isFinite(n) ? "—" : n.toLocaleString("en-US");
+  return {
+    ok: true as const,
+    action: "calculate" as const,
+    dryRun: true as const,
+    wrote: false as const,
+    typeId: type.id,
+    ky: type.ky,
+    draft: true as const,
+    paySource: "live" as const,
+    proc: `${type.proc}_Draft`,
+    payedRows: liveCnt > 0 ? 1 : 0,
+    wouldRows: wouldCnt,
+    liveRows: liveCnt,
+    wouldMoneySum: wouldSum,
+    liveMoneySum: liveSum,
+    match,
+    ms,
+    rowsAffected: 0,
+    message: match
+      ? `محاسبه (بدون نوشتن): نتیجهٔ امروز با live #${trId} یکی است — ردیف ${fmt(wouldCnt)}. Draft نوشته نشد.`
+      : `محاسبه (بدون نوشتن): امروز ${fmt(wouldCnt)} ردیف / مبلغ ${fmt(wouldSum)} — live فعلی ${fmt(liveCnt)} / ${fmt(liveSum)}. Draft نوشته نشد چون live از قبل پر است.`,
+  };
+}
+
+/** EXEC Calculate* (or *_Draft when PAYDISK_CALC_DRAFT=true). */
 export async function labCalculateMostamari(trId: number, typeId: MostamariTypeId) {
   requireLab();
   const type = getMostamariType(typeId);
   if (!type) throw new Error("نوع مستمری نامعتبر");
-  const exec = await labExecProc(type.proc, { trId });
-  // Cheap EXISTS only — full COUNT right after Calculate* often times out on lab.
-  let hasPayed = 0;
+  // Live already written → allow calculate as dry-run only (no Draft INSERT).
+  if (isCalcDraftEnabled() && (await mostamariLiveHasRows(trId))) {
+    return labDryRunMostamariCalc(trId, typeId);
+  }
+  const proc = draftProcName(type.proc) as AllowedSqlProc;
+  const exec = await labExecProc(proc, { trId });
+  const draft = isCalcDraftEnabled();
+  // After a successful draft SP, trust write — avoid extra EXISTS/resolve round-trips
+  // that compete with post-insert IO on ~1.5M rows.
+  let hasPayed = 1;
+  let paySource: "live" | "draft" | "none" = draft ? "draft" : "live";
   try {
-    const after = await getMostamariTransaction(trId, { countRows: false });
-    hasPayed = after.header.payedRows > 0 ? 1 : 0;
+    if (draft) {
+      const ok = await mostamariDraftHasRows(trId);
+      hasPayed = ok ? 1 : 0;
+      paySource = ok ? "draft" : "none";
+    } else {
+      const after = await getMostamariTransaction(trId, { countRows: false });
+      hasPayed = after.header.payedRows > 0 ? 1 : 0;
+      paySource = after.header.paySource;
+    }
   } catch {
     hasPayed = -1;
   }
   return {
     ...exec,
     action: "calculate" as const,
+    dryRun: false as const,
+    wrote: true as const,
     typeId: type.id,
     ky: type.ky,
+    draft,
+    paySource,
+    proc,
     payedRows: hasPayed > 0 ? 1 : 0,
     message:
       hasPayed > 0
-        ? `${type.proc} finished in ${Math.round(exec.ms / 1000)}s — rows present (exact count on Report step)`
+        ? `${proc} finished in ${Math.round(exec.ms / 1000)}s — ${paySource} rows ready (Report step)`
         : hasPayed < 0
-          ? `${type.proc} finished — could not verify rows yet; open Report`
-          : `${type.proc} finished but no PayedContinusPayment rows found yet`,
+          ? `${proc} finished — could not verify rows yet; open Report`
+          : `${proc} finished but no pay rows found yet`,
   };
 }
 
@@ -246,16 +374,84 @@ export async function mostamariIbnDuplicates(limit = 50) {
   };
 }
 
+const FAMILY_LABELS_FA: Record<number, string> = {
+  1: "یک نفره",
+  2: "دونفره",
+  3: "سه نفره",
+  4: "چهار نفره",
+  5: "پنج نفره و بیشتر",
+};
+
+function familyBucketFromCount(n: number) {
+  if (!Number.isFinite(n) || n <= 1) return 1;
+  if (n === 2) return 2;
+  if (n === 3) return 3;
+  if (n === 4) return 4;
+  return 5;
+}
+
+/**
+ * One row per Money (ops Excel shape). Prefer FamilyCount on pay rows, then
+ * definition Cost. If two Money values share a label (stale def / mixed years),
+ * fall back to ascending Money rank so هر مبلغ یک بعد خانوار یکتا دارد.
+ */
+function buildFamilyMoneyReport(
+  moneyRows: Array<{ cnt: number; Money: number; FamilyCount?: number }>,
+  costToFamily: Map<number, number>,
+) {
+  const sorted = [...moneyRows].sort(
+    (a, b) => Number(a.Money) - Number(b.Money),
+  );
+
+  const bySource = sorted.map((r) => {
+    const Money = Number(r.Money) || 0;
+    const cnt = Number(r.cnt) || 0;
+    const fromRow =
+      r.FamilyCount != null && Number.isFinite(Number(r.FamilyCount))
+        ? Number(r.FamilyCount)
+        : null;
+    const fromDef = costToFamily.get(Money);
+    let familyBucket: number | null = null;
+    if (fromRow != null) familyBucket = familyBucketFromCount(fromRow);
+    else if (fromDef != null) familyBucket = familyBucketFromCount(fromDef);
+    return { Money, cnt, familyBucket, totalMoney: cnt * Money };
+  });
+
+  const buckets = bySource.map((r) => r.familyBucket);
+  const hasGap = buckets.some((b) => b == null);
+  const hasDup =
+    !hasGap &&
+    new Set(buckets.filter((b): b is number => b != null)).size !==
+      buckets.length;
+  const useRank = hasGap || hasDup;
+
+  return bySource.map((r, i) => {
+    const familyBucket = useRank
+      ? Math.min(5, i + 1)
+      : (r.familyBucket as number);
+    return {
+      familyBucket,
+      familyLabel:
+        FAMILY_LABELS_FA[familyBucket] ||
+        `سایر (${r.Money.toLocaleString("fa-IR")})`,
+      cnt: r.cnt,
+      Money: r.Money,
+      totalMoney: r.totalMoney,
+    };
+  });
+}
+
 /**
  * Money report (ops «گزارش مستمری»).
- * Default = light (money groups only) — alive/sample are slow on large txns.
+ * Default = light GROUP BY Money on PayedContinusPayment only (fast, Excel shape).
+ * `includeAlive` adds Person.IsDead=0 filter (ops count script — slower on ~1.5M rows).
  */
 export async function mostamariReview(
   trId: number,
   opts?: {
     page?: number;
     pageSize?: number;
-    /** Include IsDead=0 breakdown (slower). */
+    /** IsDead=0 money groups (slower — Person join). */
     includeAlive?: boolean;
     /** Include paged person sample (slower). */
     includeSample?: boolean;
@@ -269,31 +465,43 @@ export async function mostamariReview(
   const includeAlive = !!opts?.includeAlive;
   const includeSample = !!opts?.includeSample;
 
+  const payTable = await resolveMostamariPayTable(trId);
   const histReq = pool.request();
   histReq.timeout = 90_000;
   histReq.input("id", sql.Int, trId);
+  // FamilyCount via MAX() — calc copies it from ContinusPayment; one Money → one size.
   const hist = await histReq.query(`
-    SELECT COUNT_BIG(*) AS cnt, Money
-    FROM dbo.PayedContinusPayment WITH (NOLOCK)
+    SELECT COUNT_BIG(*) AS cnt, Money, MAX(FamilyCount) AS FamilyCount
+    FROM ${payTable} WITH (NOLOCK)
     WHERE TransactionId = @id
     GROUP BY Money
-    ORDER BY Money DESC
+    ORDER BY Money ASC
   `);
 
-  let aliveHistogram: Array<{ cnt: number; Money: number }> = [];
+  let aliveHistogram: Array<{
+    cnt: number;
+    Money: number;
+    FamilyCount?: number;
+  }> = [];
   if (includeAlive) {
     const aliveReq = pool.request();
-    aliveReq.timeout = 90_000;
+    aliveReq.timeout = 120_000;
     aliveReq.input("id", sql.Int, trId);
+    // Ops count script shape: GROUP BY money (+ IsDead=0); FamilyCount for labels.
     const alive = await aliveReq.query(`
-      SELECT COUNT_BIG(*) AS cnt, r.Money
-      FROM dbo.PayedContinusPayment AS r WITH (NOLOCK)
-      INNER JOIN dbo.Person AS p WITH (NOLOCK) ON r.PersonId = p.ID
-      WHERE r.TransactionId = @id AND p.IsDead = 0
+      SELECT COUNT_BIG(*) AS cnt, r.Money, MAX(r.FamilyCount) AS FamilyCount
+      FROM ${payTable} AS r WITH (NOLOCK)
+      INNER JOIN dbo.Person AS p WITH (NOLOCK)
+        ON p.ID = r.PersonId AND p.IsDead = 0
+      WHERE r.TransactionId = @id
       GROUP BY r.Money
-      ORDER BY r.Money DESC
+      ORDER BY r.Money ASC
     `);
-    aliveHistogram = alive.recordset as Array<{ cnt: number; Money: number }>;
+    aliveHistogram = alive.recordset as Array<{
+      cnt: number;
+      Money: number;
+      FamilyCount?: number;
+    }>;
   }
 
   let sampleRows: Record<string, unknown>[] = [];
@@ -309,7 +517,7 @@ export async function mostamariReview(
         Person.NID, Person.FirstName, Person.LastName,
         Center.CenterTitle, City.CityTitle, Province.ProvinceTitle,
         LTRIM(RTRIM(i.IBN)) AS ibn
-      FROM dbo.PayedContinusPayment AS p WITH (NOLOCK)
+      FROM ${payTable} AS p WITH (NOLOCK)
       INNER JOIN dbo.Person WITH (NOLOCK) ON p.PersonId = Person.ID
       INNER JOIN dbo.Center WITH (NOLOCK) ON p.CenterRegistrarId = Center.CenterId
       INNER JOIN dbo.City WITH (NOLOCK) ON Center.CityID = City.CityId
@@ -323,7 +531,43 @@ export async function mostamariReview(
     sampleRows = sample.recordset as Record<string, unknown>[];
   }
 
-  const moneyHistogram = hist.recordset as Array<{ cnt: number; Money: number }>;
+  /** Tiny lookup: Cost → FamilyCount for Excel «بعد خانوار» labels. */
+  const costToFamily = new Map<number, number>();
+  try {
+    const defReq = pool.request();
+    defReq.timeout = 15_000;
+    const defRs = await defReq.query(`
+      SELECT FamilyCount, Cost
+      FROM dbo.ContinusPaymentDefenition WITH (NOLOCK)
+    `);
+    for (const row of defRs.recordset as Array<{
+      FamilyCount: number;
+      Cost: number;
+    }>) {
+      const cost = Number(row.Cost);
+      const fc = Number(row.FamilyCount);
+      if (!Number.isFinite(cost) || !Number.isFinite(fc)) continue;
+      const prev = costToFamily.get(cost);
+      if (prev == null || fc < prev) costToFamily.set(cost, fc);
+    }
+  } catch {
+    /* definition table missing on some peers — rank fallback still works */
+  }
+
+  const moneyHistogram = hist.recordset as Array<{
+    cnt: number;
+    Money: number;
+    FamilyCount?: number;
+  }>;
+  const reportSource =
+    includeAlive && aliveHistogram.length ? aliveHistogram : moneyHistogram;
+  const familyMoneyReport = buildFamilyMoneyReport(reportSource, costToFamily);
+  const familyAliveTotal = familyMoneyReport.reduce((a, r) => a + r.cnt, 0);
+  const familyMoneyGrandTotal = familyMoneyReport.reduce(
+    (a, r) => a + r.totalMoney,
+    0,
+  );
+
   const total = moneyHistogram.reduce((a, r) => a + Number(r.cnt || 0), 0);
   const totalPages = Math.max(1, Math.ceil(Math.max(total, 1) / pageSize) || 1);
   const ready = total > 0 || header.header.payedRows > 0;
@@ -333,6 +577,10 @@ export async function mostamariReview(
     header: { ...header.header, payedRows: total || header.header.payedRows },
     moneyHistogram,
     aliveHistogram,
+    familyMoneyReport,
+    familyAliveTotal,
+    familyMoneyGrandTotal,
+    familyReportAliveOnly: includeAlive,
     sampleRows,
     page,
     pageSize,
@@ -346,21 +594,53 @@ export async function mostamariReview(
 }
 
 /**
+ * Lightweight progress probe while Calculate* runs.
+ * Short timeout — if COUNT is slow, return rows=null (UI falls back to time-based %).
+ */
+export async function mostamariCalcProgress(trId: number) {
+  if (!Number.isFinite(trId) || trId <= 0) throw new Error("TransactionId نامعتبر");
+  const pool = await getReadPool();
+  const req = pool.request();
+  req.timeout = 5_000;
+  req.input("id", sql.Int, trId);
+  try {
+    // Do NOT COUNT the draft/live pay table while INSERT runs — that slows the write.
+    // Read status text only (Calculate*_Draft sets «پیش‌نویس آماده =N»).
+    const rs = await req.query(`
+      SELECT Description
+      FROM dbo.PayedTransaction WITH (NOLOCK)
+      WHERE Id = @id
+    `);
+    const desc = String(rs.recordset[0]?.Description || "");
+    const m = desc.match(/آماده\s*=\s*([\d\s]+)/);
+    const rows =
+      m && m[1]
+        ? Number(String(m[1]).replace(/\s/g, ""))
+        : null;
+    return {
+      ok: true as const,
+      trId,
+      rows: rows != null && Number.isFinite(rows) ? rows : null,
+      timedOut: false as const,
+      description: desc || null,
+    };
+  } catch {
+    return {
+      ok: true as const,
+      trId,
+      rows: null as number | null,
+      timedOut: true as const,
+    };
+  }
+}
+
+/**
  * Exact row count for a pay list (can be slow on large lab tables).
  * Kept separate from paging so «بارگذاری لیست» is not blocked by COUNT_BIG.
  */
 export async function mostamariPaymentListCount(trId: number) {
   if (!Number.isFinite(trId) || trId <= 0) throw new Error("TransactionId نامعتبر");
-  const pool = await getReadPool();
-  const countReq = pool.request();
-  countReq.timeout = 120_000;
-  countReq.input("id", sql.Int, trId);
-  const countRs = await countReq.query(`
-    SELECT COUNT_BIG(*) AS total
-    FROM dbo.PayedContinusPayment WITH (NOLOCK)
-    WHERE TransactionId = @id
-  `);
-  const total = Number(countRs.recordset[0]?.total || 0);
+  const total = await countMostamariOpsPayList(trId, "all");
   return {
     ok: true as const,
     trId,
@@ -373,9 +653,8 @@ export async function mostamariPaymentListCount(trId: number) {
 }
 
 /**
- * Fast paged pay list — no COUNT_BIG (that made «بارگذاری لیست» hang on large txns).
- * Fetches pageSize+1 to detect hasMore; exact total via mostamariPaymentListCount.
- * Key pattern: page Ids first, then join Person/Center/IBN only for that page.
+ * Ops «تهیه لیست مستمری بگیران» — paged preview for step 6.
+ * Column aliases match the ops Excel SELECT (NIDMadadjo, sheba, Marhale, …).
  */
 export async function mostamariPaymentList(
   trId: number,
@@ -385,51 +664,18 @@ export async function mostamariPaymentList(
   const page = clampPage(opts?.page ?? 1);
   const pageSize = clampPageSize(opts?.pageSize ?? 10, 10);
   const offset = (page - 1) * pageSize;
-  const pool = await getReadPool();
+  const marhale = await marhaleForMostamariTrId(trId);
+  const { rows: fetched, listSource, ibnSource } =
+    await queryMostamariOpsPayListPage({
+      trId,
+      offset,
+      fetchN: pageSize + 1,
+      marhale,
+      ibnScope: "all",
+    });
 
-  const listReq = pool.request();
-  listReq.timeout = 60_000;
-  listReq.input("id", sql.Int, trId);
-  listReq.input("offset", sql.Int, offset);
-  // One extra row → hasMore without a full table COUNT.
-  listReq.input("fetchN", sql.Int, pageSize + 1);
-  const listRs = await listReq.query(`
-    ;WITH page_ids AS (
-      SELECT p.Id
-      FROM dbo.PayedContinusPayment AS p WITH (NOLOCK)
-      WHERE p.TransactionId = @id
-      ORDER BY p.Id DESC
-      OFFSET @offset ROWS FETCH NEXT @fetchN ROWS ONLY
-    )
-    SELECT
-      p.Id,
-      p.PersonId,
-      p.AccountNumber,
-      p.Money,
-      p.FamilyCount,
-      p.SupplyLocationId,
-      Person.NID,
-      Person.FirstName,
-      Person.LastName,
-      Center.CenterTitle,
-      City.CityTitle,
-      Province.ProvinceTitle,
-      LTRIM(RTRIM(i.IBN)) AS ibn
-    FROM page_ids pid
-    INNER JOIN dbo.PayedContinusPayment AS p WITH (NOLOCK) ON p.Id = pid.Id
-    INNER JOIN dbo.Person WITH (NOLOCK) ON p.PersonId = Person.ID
-    INNER JOIN dbo.Center WITH (NOLOCK) ON p.CenterRegistrarId = Center.CenterId
-    INNER JOIN dbo.City WITH (NOLOCK) ON Center.CityID = City.CityId
-    INNER JOIN dbo.Province WITH (NOLOCK) ON City.ProvinceId = Province.ProvinceId
-    LEFT JOIN dbo.IBN_AccountNumber AS i WITH (NOLOCK)
-      ON i.AccountNumber = p.AccountNumber
-    ORDER BY p.Id DESC
-  `);
-
-  const fetched = listRs.recordset as Record<string, unknown>[];
   const hasMore = fetched.length > pageSize;
   const rows = hasMore ? fetched.slice(0, pageSize) : fetched;
-  // Enough pages to navigate next; exact total arrives from list-count.
   const totalPages = hasMore ? page + 1 : Math.max(1, page);
   const minKnown = offset + rows.length;
 
@@ -439,12 +685,14 @@ export async function mostamariPaymentList(
     page,
     pageSize,
     hasMore,
-    /** Exact total unknown until list-count; minKnown for UI fallback. */
     totalExact: false as const,
     total: minKnown,
     totalPages,
-    columns: rows[0] ? Object.keys(rows[0]) : [],
+    columns: [...MOSTAMARI_OPS_LIST_COLS],
     rows,
+    marhale,
+    listSource,
+    ibnSource,
     message:
       rows.length > 0
         ? `صفحه ${page.toLocaleString("fa-IR")} — ${rows.length.toLocaleString("fa-IR")} ردیف (شمارش کل در پس‌زمینه)`
@@ -466,6 +714,8 @@ export async function mostamariPairDiff(
   if (trId === peerTrId) throw new Error("Pair ids must differ");
   const top = Math.min(100, Math.max(5, limit));
   const pool = await getReadPool();
+  const tableA = await resolveMostamariPayTable(trId);
+  const tableB = await resolveMostamariPayTable(peerTrId);
 
   const onlyA = await pool
     .request()
@@ -474,11 +724,11 @@ export async function mostamariPairDiff(
     .query(`
       SELECT TOP (${top})
         p.Id, p.PersonId, p.Money, p.FamilyCount, p.TransactionId, Person.NID
-      FROM dbo.PayedContinusPayment AS p WITH (NOLOCK)
+      FROM ${tableA} AS p WITH (NOLOCK)
       INNER JOIN dbo.Person WITH (NOLOCK) ON p.PersonId = Person.ID
       WHERE p.TransactionId = @a
         AND p.PersonId NOT IN (
-          SELECT PersonId FROM dbo.PayedContinusPayment WITH (NOLOCK)
+          SELECT PersonId FROM ${tableB} WITH (NOLOCK)
           WHERE TransactionId = @b
         )
       ORDER BY p.Id DESC
@@ -491,11 +741,11 @@ export async function mostamariPairDiff(
     .query(`
       SELECT TOP (${top})
         p.Id, p.PersonId, p.Money, p.FamilyCount, p.TransactionId, Person.NID
-      FROM dbo.PayedContinusPayment AS p WITH (NOLOCK)
+      FROM ${tableB} AS p WITH (NOLOCK)
       INNER JOIN dbo.Person WITH (NOLOCK) ON p.PersonId = Person.ID
       WHERE p.TransactionId = @b
         AND p.PersonId NOT IN (
-          SELECT PersonId FROM dbo.PayedContinusPayment WITH (NOLOCK)
+          SELECT PersonId FROM ${tableA} WITH (NOLOCK)
           WHERE TransactionId = @a
         )
       ORDER BY p.Id DESC
@@ -509,8 +759,8 @@ export async function mostamariPairDiff(
       SELECT TOP (${top})
         pa.PersonId, Person.NID, pa.Money AS MoneyA, pb.Money AS MoneyB,
         pa.Id AS IdA, pb.Id AS IdB
-      FROM dbo.PayedContinusPayment AS pa WITH (NOLOCK)
-      INNER JOIN dbo.PayedContinusPayment AS pb WITH (NOLOCK)
+      FROM ${tableA} AS pa WITH (NOLOCK)
+      INNER JOIN ${tableB} AS pb WITH (NOLOCK)
         ON pa.PersonId = pb.PersonId
       INNER JOIN dbo.Person WITH (NOLOCK) ON pa.PersonId = Person.ID
       WHERE pa.TransactionId = @a AND pb.TransactionId = @b
@@ -543,29 +793,38 @@ export async function mostamariPairDiff(
   };
 }
 
-/** Sample rows missing Sheba (bank disk prep). */
+/**
+ * Sample rows missing Sheba (bank disk prep).
+ * Fast path: equality join on AccountNumber (uses IX) + NOT EXISTS — no LTRIM on both sides.
+ */
 export async function mostamariMissingIbn(trId: number, limit = 40) {
   if (!Number.isFinite(trId) || trId <= 0) throw new Error("TransactionId invalid");
   const top = Math.min(100, Math.max(5, limit));
   const pool = await getReadPool();
-  const rs = await pool
-    .request()
-    .input("id", sql.Int, trId)
-    .query(`
-      SELECT TOP (${top})
-        p.Id, p.PersonId, p.AccountNumber, p.Money, Person.NID,
-        Person.FirstName, Person.LastName, Center.CenterTitle, Province.ProvinceTitle
-      FROM dbo.PayedContinusPayment AS p WITH (NOLOCK)
-      INNER JOIN dbo.Person WITH (NOLOCK) ON p.PersonId = Person.ID
-      INNER JOIN dbo.Center WITH (NOLOCK) ON p.CenterRegistrarId = Center.CenterId
-      INNER JOIN dbo.City WITH (NOLOCK) ON Center.CityID = City.CityId
-      INNER JOIN dbo.Province WITH (NOLOCK) ON City.ProvinceId = Province.ProvinceId
-      LEFT JOIN dbo.IBN_AccountNumber AS i WITH (NOLOCK)
-        ON LTRIM(RTRIM(p.AccountNumber)) = LTRIM(RTRIM(i.AccountNumber))
-      WHERE p.TransactionId = @id
-        AND (i.IBN IS NULL OR LTRIM(RTRIM(i.IBN)) = N'' OR i.IBN = N'null')
-      ORDER BY p.Id DESC
-    `);
+  const payTable = await resolveMostamariPayTable(trId);
+  const req = pool.request();
+  req.timeout = 45_000;
+  req.input("id", sql.Int, trId);
+  const rs = await req.query(`
+    SELECT TOP (${top})
+      p.Id, p.PersonId, p.AccountNumber, p.Money, Person.NID,
+      Person.FirstName, Person.LastName, Center.CenterTitle, Province.ProvinceTitle
+    FROM ${payTable} AS p WITH (NOLOCK)
+    INNER JOIN dbo.Person WITH (NOLOCK) ON p.PersonId = Person.ID
+    INNER JOIN dbo.Center WITH (NOLOCK) ON p.CenterRegistrarId = Center.CenterId
+    INNER JOIN dbo.City WITH (NOLOCK) ON Center.CityID = City.CityId
+    INNER JOIN dbo.Province WITH (NOLOCK) ON City.ProvinceId = Province.ProvinceId
+    WHERE p.TransactionId = @id
+      AND NOT EXISTS (
+        SELECT 1
+        FROM dbo.IBN_AccountNumber AS i WITH (NOLOCK)
+        WHERE i.AccountNumber = p.AccountNumber
+          AND i.IBN IS NOT NULL
+          AND i.IBN <> N''
+          AND i.IBN <> N'null'
+      )
+    ORDER BY p.Id DESC
+  `);
   const rows = rs.recordset as Record<string, unknown>[];
   return {
     ok: true as const,
@@ -674,15 +933,37 @@ export async function labApproveMostamari(opts: {
     throw new Error("سال/ماه باید به صورت YYYYMM باشد (مثال ۱۴۰۴۰۱ → 140401)");
   }
 
+  let existingBankFile: string | null = null;
+  let promoted = false;
+  const started = Date.now();
   if (!cancelled) {
     const gate = await getMostamariTransaction(trId, { countRows: false });
     if (gate.header.payedRows <= 0) {
-      throw new Error("Cannot approve — no PayedContinusPayment rows for this TrId");
+      throw new Error("Cannot approve — no pay rows (draft or live) for this TrId");
+    }
+    existingBankFile = gate.header.FileName || null;
+    // Promote only when draft exists and live is still empty (first approve).
+    // If live already has rows, skip DELETE+INSERT (~1.5M) — just set Ky below.
+    // SyncIt=0: IT sync is the other big cost; bank diskette stays on bankPrep.
+    if (isCalcDraftEnabled() && (await mostamariDraftHasRows(trId))) {
+      const liveAlready = await mostamariLiveHasRows(trId);
+      if (!liveAlready) {
+        await labExecProc("PromoteMostamariDraft", {
+          trId,
+          syncIt: false,
+        });
+        promoted = true;
+      }
+    }
+  } else if (isCalcDraftEnabled()) {
+    try {
+      await labExecProc("ClearMostamariDraft", { trId });
+    } catch {
+      /* draft table may be empty */
     }
   }
 
   const pool = await getWritePool();
-  const started = Date.now();
   const req = pool.request();
   req.input("id", sql.Int, trId);
 
@@ -719,16 +1000,11 @@ export async function labApproveMostamari(opts: {
     WHERE Id = @id
   `);
 
-  let bankFileName: string | null = null;
-  let bankVia: "unc" | "sp" | null = null;
-  let bankWarning: string | null = null;
-  try {
-    const bank = await labExportMostamariBank(trId);
-    bankFileName = bank.fileName || null;
-    bankVia = bank.via;
-  } catch (err) {
-    bankWarning = err instanceof Error ? err.message : String(err);
-  }
+  // Never rebuild bank diskette here — use bankPrep step (or existing FileName).
+  const bankFileName: string | null = existingBankFile;
+  const bankWarning: string | null = existingBankFile
+    ? null
+    : "دیسکت بانک در تایید ساخته نشد — از مرحله «تهیه دیسکت بانک» استفاده کنید.";
 
   return {
     ok: true as const,
@@ -737,11 +1013,12 @@ export async function labApproveMostamari(opts: {
     ky: type!.ky,
     yearMonth,
     fileName: bankFileName,
-    bankVia,
+    bankVia: bankFileName ? ("reuse" as const) : null,
+    promoted,
     ms: Date.now() - started,
     message: bankFileName
-      ? `تایید شد — Ky=${type!.ky} · Year=${yearMonth} · دیسکت بانک=${bankFileName}`
-      : `تایید شد — Ky=${type!.ky} · Year=${yearMonth}`,
+      ? `تایید شد — Ky=${type!.ky} · Year=${yearMonth} · دیسکت=${bankFileName}${promoted ? " · ارتقا پیش‌نویس" : ""}`
+      : `تایید شد — Ky=${type!.ky} · Year=${yearMonth}${promoted ? " · ارتقا پیش‌نویس" : ""}`,
     bankWarning,
   };
 }

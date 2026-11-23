@@ -1,4 +1,11 @@
-import { getReadPool, sql } from "@/lib/db/pool";
+import {
+  marhaleForMostamariTrId,
+  queryMostamariOpsPayListPage,
+} from "@/lib/lab/mostamari-ops-list";
+import {
+  MOSTAMARI_OPS_LIST_COLS,
+  type MostamariOpsListCol,
+} from "@/lib/mostamari/ops-list-cols";
 import {
   MOSTAMARI_EXPORT_FORMATS,
   MOSTAMARI_EXPORT_IBN_SCOPES,
@@ -9,54 +16,22 @@ import {
 export type { MostamariExportFormat, MostamariExportIbnScope };
 export { MOSTAMARI_EXPORT_FORMATS, MOSTAMARI_EXPORT_IBN_SCOPES };
 
+/** @deprecated alias — ops list columns are the export headers now. */
+export const MOSTAMARI_ARMAGHAN_LIST_COLS = MOSTAMARI_OPS_LIST_COLS;
+
 const BATCH = 3000;
+const COLS = MOSTAMARI_OPS_LIST_COLS;
+type Col = MostamariOpsListCol;
 
-/**
- * Same column set as Armaghan / ops-doc Excel for مستمری pay list
- * (`mst-nurse-emdad-list` in txn-scripts — «خروجی اکسل پرداخت»).
- *
- * Order + English headers match the ops SELECT aliases:
- *   Id, PersonId, AccountNumber, Money, NID, FirstName, LastName,
- *   CenterTitle, CityTitle, ProvinceTitle, ibn
- *
- * Not included (panel UI-only): FamilyCount, SupplyLocationId.
- */
-export const MOSTAMARI_ARMAGHAN_LIST_COLS = [
-  "Id",
-  "PersonId",
-  "AccountNumber",
-  "Money",
-  "NID",
-  "FirstName",
-  "LastName",
-  "CenterTitle",
-  "CityTitle",
-  "ProvinceTitle",
-  "ibn",
-] as const;
-
-const COLS = MOSTAMARI_ARMAGHAN_LIST_COLS;
-type Col = (typeof COLS)[number];
-
-/** SELECT list matching ops-doc / Armaghan Excel (aliases = header names). */
-export const MOSTAMARI_ARMAGHAN_LIST_SELECT = `
-  p.Id AS Id,
-  p.PersonId AS PersonId,
-  p.AccountNumber AS AccountNumber,
-  p.Money AS Money,
-  Person.NID AS NID,
-  Person.FirstName AS FirstName,
-  Person.LastName AS LastName,
-  Center.CenterTitle AS CenterTitle,
-  City.CityTitle AS CityTitle,
-  Province.ProvinceTitle AS ProvinceTitle,
-  LTRIM(RTRIM(i.IBN)) AS ibn
-`;
+const NID_COLS: ReadonlySet<Col> = new Set(["NIDMadadjo", "NIDSahebHesab"]);
 
 function csvEscape(v: unknown, format: MostamariExportFormat, col: Col): string {
   let s = v == null ? "" : String(v);
-  // Preserve leading zeros on NID for Excel (ops: «NID باید text بماند»)
-  if (col === "NID" && s && (format === "csv-excel" || format === "csv")) {
+  if (v instanceof Date && !Number.isNaN(v.getTime())) {
+    s = v.toISOString().slice(0, 10);
+  }
+  // Preserve leading zeros on national IDs for Excel
+  if (NID_COLS.has(col) && s && (format === "csv-excel" || format === "csv")) {
     const inner = s.replace(/"/g, '""');
     return `"=""${inner}"""`;
   }
@@ -79,7 +54,6 @@ function rowLine(
 
 function headerLine(format: MostamariExportFormat): string {
   const sep = format === "tsv" ? "\t" : ",";
-  // English aliases — same as Armaghan/ops SELECT column names
   return COLS.map((c) => {
     if (format === "tsv") return c;
     return csvEscape(c, format, c);
@@ -93,20 +67,9 @@ function normalizeIbnScope(scope?: string | null): MostamariExportIbnScope {
   return "all";
 }
 
-/** SQL predicate on joined IBN alias `i` (after LEFT JOIN). */
-function ibnScopeSql(scope: MostamariExportIbnScope): string {
-  if (scope === "with-ibn") {
-    return `AND i.IBN IS NOT NULL AND LTRIM(RTRIM(i.IBN)) <> N'' AND i.IBN <> N'null'`;
-  }
-  if (scope === "without-ibn") {
-    return `AND (i.IBN IS NULL OR LTRIM(RTRIM(i.IBN)) = N'' OR i.IBN = N'null')`;
-  }
-  return "";
-}
-
 /**
- * Async generator: streams pay-list rows in batches (no full materialization).
- * Columns match Armaghan ops-doc Excel (`MOSTAMARI_ARMAGHAN_LIST_COLS`).
+ * Async generator: streams ops-doc pay-list rows (تهیه لیست مستمری بگیران).
+ * Headers = exact ops aliases (NIDMadadjo, sheba, Marhale, …).
  */
 export async function* iterateMostamariPayListExport(
   trId: number,
@@ -117,10 +80,8 @@ export async function* iterateMostamariPayListExport(
     throw new Error("TransactionId نامعتبر");
   }
   const scope = normalizeIbnScope(ibnScope);
-  const scopePred = ibnScopeSql(scope);
-  const pool = await getReadPool();
+  const marhale = await marhaleForMostamariTrId(trId);
 
-  // UTF-8 BOM so Excel opens Persian correctly
   if (format === "csv" || format === "csv-excel") {
     yield "\uFEFF";
   }
@@ -128,35 +89,13 @@ export async function* iterateMostamariPayListExport(
 
   let offset = 0;
   for (;;) {
-    const req = pool.request();
-    req.timeout = 120_000;
-    req.input("id", sql.Int, trId);
-    req.input("offset", sql.Int, offset);
-    req.input("pageSize", sql.Int, BATCH);
-    const rs = await req.query(`
-      ;WITH page_ids AS (
-        SELECT p.Id
-        FROM dbo.PayedContinusPayment AS p WITH (NOLOCK)
-        LEFT JOIN dbo.IBN_AccountNumber AS i WITH (NOLOCK)
-          ON LTRIM(RTRIM(i.AccountNumber)) = LTRIM(RTRIM(p.AccountNumber))
-        WHERE p.TransactionId = @id
-          ${scopePred}
-        ORDER BY p.Id DESC
-        OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY
-      )
-      SELECT
-        ${MOSTAMARI_ARMAGHAN_LIST_SELECT}
-      FROM page_ids pid
-      INNER JOIN dbo.PayedContinusPayment AS p WITH (NOLOCK) ON p.Id = pid.Id
-      INNER JOIN dbo.Person WITH (NOLOCK) ON p.PersonId = Person.ID
-      INNER JOIN dbo.Center WITH (NOLOCK) ON p.CenterRegistrarId = Center.CenterId
-      INNER JOIN dbo.City WITH (NOLOCK) ON Center.CityID = City.CityId
-      INNER JOIN dbo.Province WITH (NOLOCK) ON City.ProvinceId = Province.ProvinceId
-      LEFT JOIN dbo.IBN_AccountNumber AS i WITH (NOLOCK)
-        ON LTRIM(RTRIM(i.AccountNumber)) = LTRIM(RTRIM(p.AccountNumber))
-      ORDER BY p.Id DESC
-    `);
-    const rows = rs.recordset as Record<string, unknown>[];
+    const { rows } = await queryMostamariOpsPayListPage({
+      trId,
+      offset,
+      fetchN: BATCH,
+      marhale,
+      ibnScope: scope,
+    });
     if (!rows.length) break;
     let chunk = "";
     for (const row of rows) {

@@ -10,6 +10,13 @@ import {
 } from "@/lib/db/pool";
 import { assertSqlProc, type AllowedSqlProc } from "@/lib/worker/whitelist";
 import {
+  draftProcName,
+  isCalcDraftEnabled,
+  resolveYaranePayTable,
+  yaraneDraftHasRows,
+  yaraneLiveHasRows,
+} from "@/lib/lab/calc-draft";
+import {
   parseYaraneExportIbnScope,
   yaraneIbnScopeSql,
   YARANE_ARMAGHAN_LIST_COLS,
@@ -37,30 +44,53 @@ function requireLab() {
   }
 }
 
-/** EXEC CalculateMarakezYarane @TransactionId, @SupplyLocationId */
+/** EXEC CalculateMarakezYarane (_Draft when PAYDISK_CALC_DRAFT=true). */
 export async function labCalculateYarane(trId: number, supplyLocationId: number) {
   requireLab();
   if (!Number.isFinite(trId) || trId <= 0) throw new Error("TransactionId نامعتبر");
   if (!Number.isFinite(supplyLocationId) || supplyLocationId <= 0) {
     throw new Error("SupplyLocationId نامعتبر");
   }
+  // Live already written → dry-run only (no Draft INSERT).
+  if (isCalcDraftEnabled() && (await yaraneLiveHasRows(trId))) {
+    const pool = await getReadPool();
+    const started = Date.now();
+    const liveRs = await pool.request().input("id", sql.Int, trId).query(`
+      SELECT COUNT(*) AS payedRows,
+             COUNT(DISTINCT MakeOverSupplyLocationId) AS supplyCount
+      FROM dbo.PayedMakeOvers WITH (NOLOCK)
+      WHERE TransactionId = @id
+    `);
+    const payedRows = Number(liveRs.recordset[0]?.payedRows || 0);
+    const supplyCount = Number(liveRs.recordset[0]?.supplyCount || 0);
+    return {
+      ok: true as const,
+      action: "calculate_yarane" as const,
+      dryRun: true as const,
+      wrote: false as const,
+      proc: "CalculateMarakezYarane_Draft",
+      draft: true as const,
+      trId,
+      supplyLocationId,
+      ms: Date.now() - started,
+      rowsAffected: 0,
+      payedRows,
+      supplyCount,
+      message: `محاسبه (بدون نوشتن): live از قبل ${payedRows.toLocaleString("fa-IR")} ردیف دارد — Draft نوشته نشد.`,
+    };
+  }
+
+  const proc = draftProcName("CalculateMarakezYarane") as AllowedSqlProc;
+  const exec = await labExecProc(proc, { trId, supplyLocationId });
+  const payTable = await resolveYaranePayTable(trId);
 
   const pool = await getWritePool();
-  const req = pool.request();
-  req.input("TransactionId", sql.BigInt, trId);
-  req.input("SupplyLocationId", sql.BigInt, supplyLocationId);
-  const started = Date.now();
-  const result = await req.execute("CalculateMarakezYarane");
-  const rowsAffected = Array.isArray(result.rowsAffected)
-    ? result.rowsAffected.reduce((a: number, b: number) => a + b, 0)
-    : Number(result.rowsAffected || 0);
-
   const countReq = pool.request();
   countReq.input("id", sql.Int, trId);
   const cnt = await countReq.query(`
     SELECT COUNT(*) AS payedRows,
            COUNT(DISTINCT MakeOverSupplyLocationId) AS supplyCount
-    FROM dbo.PayedMakeOvers
+    FROM ${payTable}
     WHERE TransactionId = @id
   `);
   const payedRows = Number(cnt.recordset[0]?.payedRows || 0);
@@ -69,21 +99,22 @@ export async function labCalculateYarane(trId: number, supplyLocationId: number)
   return {
     ok: true as const,
     action: "calculate_yarane" as const,
-    proc: "CalculateMarakezYarane",
+    proc,
+    draft: isCalcDraftEnabled(),
     trId,
     supplyLocationId,
-    ms: Date.now() - started,
-    rowsAffected,
+    ms: exec.ms,
+    rowsAffected: exec.rowsAffected,
     payedRows,
     supplyCount,
-    message: `CalculateMarakezYarane اجرا شد — PayedMakeOvers=${payedRows}`,
+    message: `${proc} اجرا شد — ${isCalcDraftEnabled() ? "پیش‌نویس" : "PayedMakeOvers"}=${payedRows}`,
   };
 }
 
 /** Whitelisted Calculate* SP (lab only). Long-running — 30 min request timeout. */
 export async function labExecProc(
   proc: AllowedSqlProc,
-  params: { trId: number; supplyLocationId?: number },
+  params: { trId: number; supplyLocationId?: number; syncIt?: boolean },
 ) {
   requireLab();
   assertSqlProc(proc);
@@ -94,10 +125,15 @@ export async function labExecProc(
   req.timeout = LAB_CALC_REQUEST_TIMEOUT_MS;
   const started = Date.now();
 
-  if (proc === "CalculateMarakezYarane") {
+  if (
+    proc === "CalculateMarakezYarane" ||
+    proc === "CalculateMarakezYarane_Draft"
+  ) {
     if (!params.supplyLocationId) throw new Error("SupplyLocationId لازم است");
     req.input("TransactionId", sql.BigInt, params.trId);
     req.input("SupplyLocationId", sql.BigInt, params.supplyLocationId);
+  } else if (proc === "PromoteYaraneDraft" || proc === "ClearYaraneDraft") {
+    req.input("TransactionId", sql.BigInt, params.trId);
   } else if (proc === "ListExporMarakez") {
     // Prefer labListExporMarakez(); keep worker path working with generated name
     req.input("TranId", sql.BigInt, params.trId);
@@ -106,20 +142,32 @@ export async function labExecProc(
     // Armaghan مستمری bank diskette — dbo.Export @name, @transactionId
     req.input("name", sql.NVarChar(100), defaultLabBankFile(params.trId));
     req.input("transactionId", sql.BigInt, params.trId);
+  } else if (proc === "PromoteMostamariDraft") {
+    req.input("TrId", sql.BigInt, params.trId);
+    // IT sync is expensive — off unless caller explicitly passes syncIt: true.
+    req.input("SyncIt", sql.Bit, params.syncIt === true ? 1 : 0);
   } else {
-    // Ops docs: CalculateTransaction / Hadafmandi / HaghParastari* / Emdad use @TrId
+    // Calculate* / *_Draft / ClearMostamariDraft use @TrId
     req.input("TrId", sql.BigInt, params.trId);
   }
 
   let result: Awaited<ReturnType<typeof req.execute>>;
+  // Always schema-qualify — avoids "Could not find stored procedure" if default schema ≠ dbo
+  // (also safer across DROP/CREATE deploys on lab).
+  const qualified = proc.includes(".") ? proc : `dbo.${proc}`;
   try {
-    result = await req.execute(proc);
+    result = await req.execute(qualified);
   } catch (err) {
     const raw = err instanceof Error ? err.message : String(err);
     if (/timeout|ETIMEOUT|Query timeout/i.test(raw)) {
       throw new Error(
-        `${proc} still running past ${LAB_CALC_REQUEST_TIMEOUT_MS / 60000} min client timeout. ` +
+        `${qualified} still running past ${LAB_CALC_REQUEST_TIMEOUT_MS / 60000} min client timeout. ` +
           `Check lab SQL for session on TrId=${params.trId}; if the SP finished, use "Skip calc (already done)" and open Report. Original: ${raw}`,
+      );
+    }
+    if (/Could not find stored procedure/i.test(raw)) {
+      throw new Error(
+        `${qualified} یافت نشد روی هدف فعلی دیتابیس — آزمایشی (lab) را انتخاب کنید و مطمئن شوید SP دیپلوی شده است. Original: ${raw}`,
       );
     }
     throw err;
@@ -296,13 +344,21 @@ function clampPageSize(pageSize: number, fallback = 20) {
 /** Review calculation result for wizard check step (paged sample). */
 export async function labReviewYarane(
   trId: number,
-  opts?: { page?: number; pageSize?: number },
+  opts?: {
+    page?: number;
+    pageSize?: number;
+    /** When false, only aggregates — no full sample table (بررسی صحت). */
+    includeSample?: boolean;
+  },
 ) {
   requireLab();
   const pool = await getWritePool();
   const page = clampPage(opts?.page ?? 1);
   const pageSize = clampPageSize(opts?.pageSize ?? 15);
   const offset = (page - 1) * pageSize;
+  const includeSample = opts?.includeSample !== false;
+
+  const payTable = await resolveYaranePayTable(trId);
 
   const hdr = pool.request();
   hdr.input("id", sql.BigInt, trId);
@@ -319,7 +375,7 @@ export async function labReviewYarane(
       COUNT(*) AS payedRows,
       COUNT(DISTINCT MakeOverSupplyLocationId) AS supplyCount,
       SUM(ISNULL(LocalSubsidy,0) + ISNULL(UniverseSubsidy,0)) AS subsidySum
-    FROM dbo.PayedMakeOvers WITH (NOLOCK)
+    FROM ${payTable} WITH (NOLOCK)
     WHERE TransactionId = @id
   `);
 
@@ -353,7 +409,7 @@ export async function labReviewYarane(
       p.MakeOverSupplyLocationId AS Id,
       ISNULL(s.MakeOverSupplyLocationTitle, N'(نامشخص)') AS Title,
       COUNT(*) AS cnt
-    FROM dbo.PayedMakeOvers p WITH (NOLOCK)
+    FROM ${payTable} p WITH (NOLOCK)
     LEFT JOIN dbo.MakeOverSupplyLocation s WITH (NOLOCK)
       ON s.MakeOverSupplyLocationId = p.MakeOverSupplyLocationId
     WHERE p.TransactionId = @id
@@ -361,25 +417,29 @@ export async function labReviewYarane(
     ORDER BY COUNT(*) DESC
   `);
 
-  const sample = pool.request();
-  sample.input("id", sql.Int, trId);
-  sample.input("offset", sql.Int, offset);
-  sample.input("pageSize", sql.Int, pageSize);
-  const sampleRows = await sample.query(`
-    SELECT
-      PayedMakeOvers.Id, Person.FirstName, Person.LastName, Person.NID,
-      Center.CenterTitle, City.CityTitle, Province.ProvinceTitle,
-      PayedMakeOvers.LocalSubsidy, PayedMakeOvers.UniverseSubsidy,
-      PayedMakeOvers.MakeOverSupplyLocationId
-    FROM dbo.PayedMakeOvers WITH (NOLOCK)
-    INNER JOIN dbo.Person WITH (NOLOCK) ON PayedMakeOvers.PersonId = Person.ID
-    INNER JOIN dbo.Center WITH (NOLOCK) ON PayedMakeOvers.CenterId = Center.CenterId
-    INNER JOIN dbo.City WITH (NOLOCK) ON Center.CityID = City.CityId
-    INNER JOIN dbo.Province WITH (NOLOCK) ON City.ProvinceId = Province.ProvinceId
-    WHERE PayedMakeOvers.TransactionId = @id
-    ORDER BY PayedMakeOvers.Id DESC
-    OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY
-  `);
+  let sampleRows: Record<string, unknown>[] = [];
+  if (includeSample) {
+    const sample = pool.request();
+    sample.input("id", sql.Int, trId);
+    sample.input("offset", sql.Int, offset);
+    sample.input("pageSize", sql.Int, pageSize);
+    const sampleRs = await sample.query(`
+      SELECT
+        p.Id, Person.FirstName, Person.LastName, Person.NID,
+        Center.CenterTitle, City.CityTitle, Province.ProvinceTitle,
+        p.LocalSubsidy, p.UniverseSubsidy,
+        p.MakeOverSupplyLocationId
+      FROM ${payTable} AS p WITH (NOLOCK)
+      INNER JOIN dbo.Person WITH (NOLOCK) ON p.PersonId = Person.ID
+      INNER JOIN dbo.Center WITH (NOLOCK) ON p.CenterId = Center.CenterId
+      INNER JOIN dbo.City WITH (NOLOCK) ON Center.CityID = City.CityId
+      INNER JOIN dbo.Province WITH (NOLOCK) ON City.ProvinceId = Province.ProvinceId
+      WHERE p.TransactionId = @id
+      ORDER BY p.Id DESC
+      OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY
+    `);
+    sampleRows = sampleRs.recordset as Record<string, unknown>[];
+  }
 
   return {
     ok: true as const,
@@ -389,7 +449,7 @@ export async function labReviewYarane(
     supplyCount: Number(a.supplyCount || 0),
     subsidySum: Number(a.subsidySum || 0),
     supplies: supplyRows.recordset,
-    sampleRows: sampleRows.recordset as Record<string, unknown>[],
+    sampleRows,
     page,
     pageSize,
     total: payedRows,
@@ -409,29 +469,40 @@ export async function labYaranePersonList(
     ibnScope?: "all" | "with-ibn" | "without-ibn";
   },
 ) {
-  requireLab();
   const ibnScope = parseYaraneExportIbnScope(opts?.ibnScope || "all");
   const ibnPred = yaraneIbnScopeSql(ibnScope);
-  const pool = await getWritePool();
+  const pool = await getReadPool();
   const page = clampPage(opts?.page ?? 1);
   const pageSize = clampPageSize(opts?.pageSize ?? 25);
   const offset = (page - 1) * pageSize;
   const started = Date.now();
 
+  const payTable = await resolveYaranePayTable(trId);
   const countReq = pool.request();
+  countReq.timeout = 60_000;
   countReq.input("id", sql.Int, trId);
-  const countRs = await countReq.query(`
+  // «همه»: count only pay table (no Center join). Filtered scopes keep Center.
+  const countRs = await countReq.query(
+    ibnScope === "all"
+      ? `
     SELECT COUNT(*) AS total
-    FROM dbo.PayedMakeOvers WITH (NOLOCK)
+    FROM ${payTable} WITH (NOLOCK)
+    WHERE TransactionId = @id
+  `
+      : `
+    SELECT COUNT(*) AS total
+    FROM ${payTable} AS PayedMakeOvers WITH (NOLOCK)
     INNER JOIN dbo.Center WITH (NOLOCK)
       ON PayedMakeOvers.CenterId = Center.CenterId
     WHERE PayedMakeOvers.TransactionId = @id
       ${ibnPred}
-  `);
+  `,
+  );
   const total = Number(countRs.recordset[0]?.total || 0);
   const totalPages = Math.max(1, Math.ceil(total / pageSize) || 1);
 
   const req = pool.request();
+  req.timeout = 60_000;
   req.input("id", sql.Int, trId);
   req.input("offset", sql.Int, offset);
   req.input("pageSize", sql.Int, pageSize);
@@ -439,7 +510,7 @@ export async function labYaranePersonList(
   const result = await req.query(`
     SELECT
       ${YARANE_ARMAGHAN_LIST_SELECT}
-    FROM dbo.PayedMakeOvers AS p WITH (NOLOCK)
+    FROM ${payTable} AS p WITH (NOLOCK)
     INNER JOIN dbo.Person AS per WITH (NOLOCK) ON per.ID = p.PersonId
     INNER JOIN dbo.Center AS cntr WITH (NOLOCK) ON cntr.CenterId = p.CenterId
     INNER JOIN dbo.City AS cit WITH (NOLOCK) ON cit.CityId = cntr.CityID
@@ -616,6 +687,11 @@ export async function labApproveYarane(trId: number) {
     throw new Error("بدون ردیف محاسبه نمی‌توان تایید کرد");
   }
 
+  // Promote draft → live PayedMakeOvers before Key2 / diskette (Armaghan path needs live).
+  if (isCalcDraftEnabled() && (await yaraneDraftHasRows(trId))) {
+    await labExecProc("PromoteYaraneDraft", { trId });
+  }
+
   const key2 = defaultLabListFile(trId);
   const started = Date.now();
   let uncPath = `${YARANE_DISKETTE_UNC}\\${key2}`;
@@ -695,6 +771,14 @@ export async function labCancelYaraneTransaction(
   const deleteHeader = opts?.deleteHeader !== false;
   const pool = await getWritePool();
   const started = Date.now();
+
+  if (isCalcDraftEnabled()) {
+    try {
+      await labExecProc("ClearYaraneDraft", { trId });
+    } catch {
+      /* empty draft ok */
+    }
+  }
 
   const hdr = await pool
     .request()
